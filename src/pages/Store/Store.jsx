@@ -1,7 +1,7 @@
 const Store = () => {
   return (
     <div>
-      <h1>Welcome to the Store</h1>
+      <h1>Hello may ban nha</h1>
     </div>
   );
 };
