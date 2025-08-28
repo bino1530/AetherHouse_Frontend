@@ -10,7 +10,6 @@
 
 .spacing{
     padding: 0 5rem ;
-    
 }
 
 *{
@@ -34,4 +33,8 @@ body {
 html{
     font-size: 62.5%;
     line-height: 1.6;
+}
+a{
+    text-decoration: none!important;
+    color: inherit;
 }

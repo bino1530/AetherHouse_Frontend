@@ -1,0 +1,118 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 5rem; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    transition: background-color 0.7s cubic-bezier(.4,0,.2,1);
+}
+
+.header_logo {
+    width: 12rem;
+    margin-right: 2rem;
+    cursor: pointer;
+    fill: var(--white-color);
+    transition: fill 0.7s cubic-bezier(.4,0,.2,1);
+
+}
+
+.header_col1 {
+    display: flex;
+    align-items: center;
+    gap: 32px; 
+}
+.header_navcol1 ul {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.header_navcol1 ul li a {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--white-color);
+    letter-spacing: 0.05em;
+    transition: color 1s;
+    position: relative;
+    overflow: hidden;
+}
+
+.header_navcol1 ul li a::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background: var(--black-color);
+    transition: all 0.7s cubic-bezier(.4,0,.2,1); 
+    transform: translateX(-50%);
+}
+
+.header_navcol1 ul li a:hover::after {
+    width: 100%;
+}
+
+.header_col2 {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.header_search input {
+    padding: 10px 12px ;
+    max-width: 400px;
+    width: 40vh;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+}
+
+.headers_icons {
+    display: flex;
+    gap: 16px;
+}
+
+.header_icon {
+    font-size: 2.6rem;
+    color: var(--white-color);
+    cursor: pointer;
+    transition: color 1s;
+}  
+.home-header:hover {
+    background: var(--white-color);
+}
+
+.home-header:hover .header_logo,
+.home-header:hover .header_navcol1 ul li a {
+    color: var(--black-color);
+    fill: var(--black-color);
+    transition: color 0.7 cubic-bezier(.4,0,.2,1), fill 0.7 cubic-bezier(.4,0,.2,1);
+}
+
+.home-header:hover .header_icon {
+    color: var(--black-color);
+    transition: color 0.7 cubic-bezier(.4,0,.2,1);
+}
+
+.home-header:hover .header_icon svg {
+    stroke: var(--black-color);
+    fill: none;
+    transition: stroke 0.7 cubic-bezier(.4,0,.2,1);
+}
+
+.home-header:hover .header_logo svg path,
+.home-header:hover .header_logo svg circle {
+    fill: var(--black-color);
+    transition: fill 0.7 cubic-bezier(.4,0,.2,1);
+}
+
+.home-header:hover .header_search input {
+    border: 2px solid var(--black-color);
+    transition: border-color 0.7 cubic-bezier(.4,0,.2,1);
+}
