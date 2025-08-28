@@ -12,9 +12,6 @@
     width: 100%;
 }
 
-
-
-
 .footer_content{
     display: grid;
     grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -131,7 +128,7 @@
 /* từ tablet trở lên >= 768px */
 @media (min-width:768px) {
     .footer__bg{
-        background-image: url('../../../images/background_footer.webp');
+        background-image: url('/background_footer.webp');
         width: 100%;
         height: auto;
         min-height: auto;
@@ -283,7 +280,7 @@
 /* từ pc trở lên >= 768px */
 @media (min-width:1280px) {
     .footer__bg{
-        background-image: url('../../../images/background_footer.webp');
+        background-image: url('/background_footer.webp');
         width: 100%;
         height: auto;
         min-height: auto;
