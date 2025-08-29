@@ -1,7 +1,7 @@
 .home-banner {
     width: 100%;    
-    min-height: 750px;
-    height: 60vh;    
+    /* min-height: 750px; */
+    height: 100vh;    
     background-image: url('/quality_80.webp');
     background-size: cover;
     background-position: center;
@@ -22,11 +22,17 @@
         to bottom,
         rgba(0, 0, 0, 1) 0%,   /* đầu trên */
         rgba(0, 0, 0, 0) 50%,     /* giữa trong suốt */
-        rgba(0, 0, 0, 0.7) 100%   /* cuối dưới */
+        rgba(0, 0, 0, 1) 100%   /* cuối dưới */
     );
 }
 .banner-content {
     color: #fff;
-    padding: 10rem 5rem;
+    padding: 5rem 5rem;
     z-index: 1;
+}
+.banner-content h1{
+    font-size: 6.5rem;
+}
+.banner-content p{
+    font-size: 2.2rem;
 }

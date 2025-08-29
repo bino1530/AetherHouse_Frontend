@@ -4,7 +4,7 @@ const Footer = () => {
     return (
         <footer className="footer">
             <div className="footer__bg">
-                <div className="footer_content pad">
+                <div className="footer_content spacing">
                     <div className="footer_content__top">
                         <div className="footer_content__top-sologan col__top-left">
                             <p>Aether House Thương hiệu tiên phong trong thiết kế và phong cách sống hiện đại.</p>

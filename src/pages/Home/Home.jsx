@@ -4,8 +4,12 @@ const Home = () => {
     <div className="home-banner">
       {/* Nội dung nằm trên banner */}
       <div className="banner-content">
-        <h1>Chào mừng đến với Aether House</h1>
-        <p>Khám phá không gian sống tuyệt vời!</p>
+        <h1>Welcome to Aether House</h1>
+        <p>Discover the amazing living space!</p>
+        <button className="btn_style_1">
+          <span>Explore Now 
+          </span>
+        </button>
       </div>
     </div>
   );
