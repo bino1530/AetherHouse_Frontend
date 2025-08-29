@@ -4,12 +4,20 @@ import Home from './pages/Home/Home.jsx'
 import Footer from './components/Footer/Footer.jsx'
 function App() {
 
-  return (
-    <>
+    return (
+    <BrowserRouter>
       <Header />
-      <Home />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/whatsnew" element={<WhatsNew />} />
+        <Route path="/lighting" element={<Lighting />} />
+        <Route path="/furniture" element={<Furniture />} />
+        <Route path="/accessories" element={<Accessories />} />
+        <Route path="/gifts" element={<Gifts />} />
+        <Route path="/explore" element={<Explore />} />
+      </Routes>
       {/* <Footer /> */}
-    </>
+    </BrowserRouter>
   )
 }
 
