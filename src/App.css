@@ -22,6 +22,7 @@
 
 h1, h2, h3 {
     font-family: 'Playfair Display', serif;
+    font-weight: bold;
 }
 
 body {
@@ -91,6 +92,52 @@ ul{
 }
 
 .btn_style_1:hover span {
+    color: var(--white-color);
+}
+
+.btn_style_2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 15rem;
+    height: 4rem;
+    position: relative;
+    background-color: var(--white-color);
+    color: var(--white-color);
+    border: 1px solid var(--white-color);
+    border-radius: 1rem;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 1;
+    font-size: 1.2rem;
+    border: 1px solid grey;
+}
+.btn_style_2::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: var(--black-color);
+    transition: left 0.3s ease-in-out;
+    z-index: 0; /* nằm dưới chữ */
+}
+
+.btn_style_2:hover::after {
+    left: 0;
+}
+
+.btn_style_2 span {
+    position: relative;
+    font-weight: bold;
+
+    color: var(--black-color);
+    z-index: 1;
+    transition: color 0.3s ease-in-out;
+}
+
+.btn_style_2:hover span {
     color: var(--white-color);
 }
 

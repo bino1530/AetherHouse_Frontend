@@ -1,0 +1,440 @@
+/* @import url('../common/utils.css'); */
+.link_page{
+    font-size: 1.2rem;
+    background-color: var(--gray1-color);
+    color: var(--gray-color);
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+
+.store_title{
+    font-size: 2rem;
+    color: var(--black-color);
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+
+.store_row{
+    display: grid;
+    grid-template-columns: repeat(1 , minmax(0 , 1fr));
+    gap: 24px;
+}
+.store_col{
+    grid-column: span 1;
+    padding: 0;
+    position: relative;
+}
+
+.store_frame_img{
+    position: relative;
+    width: 100%;
+    height: 30.5rem;
+    overflow: hidden;
+    border-radius: 2rem;
+}
+.store_frame_img::after{
+    pointer-events: none;
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.4),      /* trên: trong suốt */
+        rgba(0, 0, 0, 0.5),    /* giữa: đen mờ */
+        rgba(0, 0, 0, 1)       /* dưới: đen đậm */
+    );
+}
+.store_frame_img img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+.store_frame_img img:hover{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 30px;
+    transform: scale(1.1);
+}
+
+.store_info{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    color: var(--white-color);
+    padding: 2rem;
+}
+
+.store_info--top{
+    display: flex;
+    justify-content: space-between;
+}
+.country{
+    font-size: 1.6rem;
+    padding-top: 5px;
+}
+
+.store_info--bottom{
+    font-size: 1rem;
+    padding-top: 20px;
+    line-height: 2.2rem;
+    text-align: justify;
+}
+.usp{
+    padding: 8rem 0;
+
+}
+.usp-section{
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    /* border: 1px solid var(--gray-color); */
+    padding: 1rem 0;
+    border-radius: 2rem;
+
+}
+
+
+
+.usp-item{
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--gray-color);
+}
+
+.usp-item:nth-child(1){
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--gray-color);
+    border-radius: 2rem 2rem 0 0 ;
+}
+.usp-item:nth-child(4){
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--gray-color);
+    border-radius: 0 0 2rem 2rem  ;
+}
+
+
+.icon-usp{
+    width: 32px; 
+    height: 32px;
+    margin: 0 1.6rem 0 2rem;
+}
+
+
+.usp-item-right{
+    padding: 2rem 0;
+}
+.usp-item-right h4{
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding-bottom: 1rem;
+}
+.usp-item-right p{
+    font-size: 1.4rem;
+    padding-right: 1rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (min-width:768px) {
+    .link_page{
+        font-size: 1.2rem;
+        background-color: var(--gray1-color);
+        color: var(--gray-color);
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+    }
+
+
+    .store_title{
+        font-size: 2rem;
+        color: var(--black-color);
+        padding-top: 2rem;
+        padding-bottom: 4rem;
+    }
+
+    .store_row{
+        display: grid;
+        grid-template-columns: repeat(1 , minmax(0 , 1fr));
+        gap: 24px;
+    }
+    .store_col{
+        grid-column: span 1;
+        padding: 0;
+        position: relative;
+    }
+
+    .store_frame_img{
+        position: relative;
+        width: 100%;
+        height: 60rem;
+        overflow: hidden;
+        border-radius: 3rem;
+    }
+    .store_frame_img::after{
+        pointer-events: none;
+        position: absolute;
+        content: '';
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.4),      /* trên: trong suốt */
+            rgba(0, 0, 0, 0.5),    /* giữa: đen mờ */
+            rgba(0, 0, 0, 1)       /* dưới: đen đậm */
+        );
+    }
+    .store_frame_img img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    .store_frame_img img:hover{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 30px;
+        transform: scale(1.1);
+    }
+
+    .store_info{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        color: var(--white-color);
+        padding: 4rem;
+    }
+
+    .store_info--top{
+        display: flex;
+        justify-content: space-between;
+    }
+    .country{
+        font-size: 3rem;
+        padding-top: 5px;
+    }
+
+    .store_info--bottom{
+        font-size: 1.4rem;
+        padding-top: 20px;
+        line-height: 2.4rem;
+        text-align: justify;
+    }
+
+
+
+
+    .usp{
+        padding: 8rem 0;
+
+    }
+    .usp-section{
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding:  0;
+        border-radius: 2rem;
+
+    }
+
+    .usp-item{
+        grid-column: span 2;
+        display: flex;
+        align-items: center;
+        border-right: 1px solid var(--gray-color);
+    }
+
+    .usp-item:nth-child(1){
+        display: flex;
+        align-items: center;
+        border: 1px solid var(--gray-color);
+        border-radius: 2rem 2rem 0 0 ;
+    }
+    
+    .usp-item:nth-child(4){
+        display: flex;
+        align-items: center;
+        border: 1px solid var(--gray-color);
+        border-radius: 0 0  2rem 2rem  ;
+    }
+
+    .icon-usp{
+        width: 32px; 
+        height: 32px;
+        margin: 0 1.6rem 0 2rem;
+    }
+
+
+    .usp-item-right{
+        padding: 2rem 0;
+    }
+    .usp-item-right h4{
+        font-size: 1.4rem;
+        font-weight: 500;
+        padding-bottom: 1rem;
+    }
+    .usp-item-right p{
+        font-size: 1.6rem;
+    }
+
+}
+@media (min-width: 1024px){
+
+}
+@media (min-width:1280px){
+    .link_page{
+        font-size: 1.4rem;
+        background-color: var(--gray1-color);
+        color: var(--gray-color);
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+    }
+
+
+    .store_title{
+        font-size: 2.6rem;
+        color: var(--black-color);
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+    }
+
+    .store_row{
+        display: grid;
+        grid-template-columns: repeat(12 , minmax(0 , 1fr));
+        gap: 24px;
+    }
+    .store_col{
+        grid-column: span 6;
+        padding: 0;
+        position: relative;
+    }
+
+    .store_frame_img{
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 3rem;
+    }
+    .store_frame_img::after{
+        pointer-events: none;
+        position: absolute;
+        content: '';
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.4),      /* trên: trong suốt */
+            rgba(0, 0, 0, 0.5),    /* giữa: đen mờ */
+            rgba(0, 0, 0, 1)       /* dưới: đen đậm */
+        );
+    }
+    .store_frame_img img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    .store_frame_img img:hover{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 30px;
+        transform: scale(1.1);
+    }
+
+    .store_info{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        color: var(--white-color);
+        padding: 4rem;
+    }
+
+    .store_info--top{
+        display: flex;
+        justify-content: space-between;
+    }
+    .name_store{
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--white-color);
+        padding-bottom: 1rem;
+    }
+    .country{
+        font-size: 2.5rem;
+        padding-top: 5px;
+    }
+
+    .store_info--bottom{
+        font-size: 1.6rem;
+        padding-top: 20px;
+        line-height: 2.8rem;
+        text-align: justify;
+    }
+
+
+    .usp{
+        padding: 8rem 0;
+
+    }
+    .usp-section{
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        column-gap: 2rem;
+        padding:  0;
+
+    }
+
+    .usp-item{
+        grid-column: span 1;
+        display: flex;
+        align-items: center;
+        border-right: 1px solid var(--gray-color);
+        border-radius: 2rem  !important;
+    }
+
+    
+    .icon-usp{
+        width: 35px; 
+        height: 35px;
+        margin: 0 1.6rem 0 2rem;
+    }
+
+
+    .usp-item-right{
+        padding: 2rem 0;
+    }
+    .usp-item-right h4{
+        font-size: 1.6rem;
+        font-weight: 500;
+        padding-bottom: 1rem;
+    }
+    .usp-item-right p{
+        font-size: 1.8rem;
+    }
+}

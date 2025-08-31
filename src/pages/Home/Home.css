@@ -36,3 +36,75 @@
 .banner-content p{
     font-size: 2.2rem;
 }
+.studio_fav{
+    margin-top: 2rem;
+}
+.studio_fav h1{
+    font-size: 4.5rem;
+    font-weight: 500;
+}
+.studio_fav p{
+    font-size: 1.6rem;
+    margin: 0;
+}
+.row_studio_fav_content {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    align-items: center;
+    margin-top: 2rem;
+}
+.col_studio_fav_1 {
+    justify-self: start; 
+}
+.col_studio_fav_2 {
+    justify-self: end; 
+}
+
+.row_studio_fav_product {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.studio_card {
+    border-radius: 0.5rem;
+    transition: transform 0.2s;
+    margin-top: 4.5rem;
+}
+.studio_card h3 ,
+.studio_card p{
+    padding-left: 1.5rem;
+    font-weight: 600;
+}
+.studio_card p{
+    color: grey;
+}
+.studio_card:hover {
+    transform: translateY(-5px);
+}
+
+.studio_img {
+    max-width: 330px;
+    width: 100%;
+    height: auto;   
+    border-radius: 2.5rem;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+}
+
+.studio_img_wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.studio_status {
+    position: absolute;
+    top: 2rem;
+    left: 3rem;
+    background-color: var(--white-color); 
+    color: black    ;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 0.5rem;
+    text-transform: uppercase;
+}
