@@ -80,25 +80,37 @@
 .studio_card p{
     padding-left: 1.5rem;
     font-weight: 600;
+    margin-top: 1rem;
 }
 .studio_card p{
     color: grey;
 }
-.studio_card:hover {
-    transform: translateY(-5px);
+.studio_img_wrapper:hover .studio_img {
+    transform: scale(1.05); 
 }
 .studio_img {
-    max-width: 330px;
     width: 100%;
     height: auto;   
     border-radius: 2.5rem;
-    margin-bottom: 1.5rem;
+    
     cursor: pointer;
+    overflow: hidden; 
+    transition: transform 0.3s ease;
 }
+.studio_img img{
+    width: 100%;
+    height: auto;
+    overflow: hidden; 
+    border-radius: 2.5rem;
 
+}
 .studio_img_wrapper {
     position: relative;
     width: 100%;
+    height: auto;
+    overflow: hidden; 
+    border-radius: 2.5rem;
+    margin: 0 auto;
 }
 
 .studio_status {
@@ -169,7 +181,7 @@
     width: 100%;
     border-radius: 2rem;
     display: block;
-  margin: 0 auto;
+    margin: 0 auto;
 }
 .newsletter-content-row .btn_style_1{
     border: 1px solid grey;
