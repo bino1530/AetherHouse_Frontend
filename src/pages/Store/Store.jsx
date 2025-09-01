@@ -1,55 +1,17 @@
+import { useState , useEffect } from "react";
 import "./store.css";
 const Store = () => {
-  const stores = [
-     {
-      id: 1,
-      image: "https://res.cloudinary.com/depbw3f5t/image/upload/v1756608404/stores/ksjssfl9ym0vjvhelp0j.webp",
-      name: "Aether House Shop",
-      city: "Vietnam",
-      desctription:
-        "Flagship store in Ho Chi Minh City. Open daily 9:00 - 21:00. Address: 123 Nguyen Trai, District 1.",
-    },
-    {
-      id: 2,
-      image: "https://res.cloudinary.com/depbw3f5t/image/upload/v1756547497/stores/kdp2g7nx8kgua05bethv.webp",
-      name: "Aether House Shop",
-      city: "Singapore",
-      desctription:
-        "Product experience space. Open 10:00 - 22:00. Address: 45 Orchard Road.",
-    },
-    {
-      id: 3,
-      image: "https://res.cloudinary.com/depbw3f5t/image/upload/v1756615258/stores/sqdfqtfk6nt1jblqn0yj.webp",
-      name: "Aether House Shop",
-      city: "Japan",
-      desctription:
-        "Showroom in Tokyo. Open 10:00 - 20:00. Address: 2-11-3 Meguro, Meguro City.",
-    },
-    {
-      id: 4,
-      image: "/try.webp",
-      name: "Aether House Shop",
-      city: "Japan",
-      desctription:
-        "Showroom in Tokyo. Open 10:00 - 20:00. Address: 2-11-3 Meguro, Meguro City.",
-    },
-    {
-      id: 5,
-      image: "/try.webp",
-      name: "Aether House Shop",
-      city: "Japan",
-      desctription:
-        "Showroom in Tokyo. Open 10:00 - 20:00. Address: 2-11-3 Meguro, Meguro City.",
-    },
-    {
-      id: 6,
-      image: "/try.webp",
-      name: "Aether House Shop",
-      city: "Japan",
-      desctription:
-        "Showroom in Tokyo. Open 10:00 - 20:00. Address: 2-11-3 Meguro, Meguro City.",
-    },
-  ];
+  const [stores , setStores] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/stores')
+    .then(res => res.json())
+    .then(data => {
+      setStores(data.stores)
+    })
+    .catch(err => console.error(err));
+  }, [])
+  
 
   return (
     <div className="margintop ">
@@ -63,10 +25,10 @@ const Store = () => {
         </div>
         <div className="store_row spacing ">
           {stores.map((store) => (
-            <div className="store_col" key={store.id}>
+            <div className="store_col" key={store._id}>
               <a href={`/store/${store.id}`}>
                 <div className="store_frame_img">
-                  <img src={store.image} alt={store.name} />
+                  <img src={store.images[0].url} alt={store.name} />
                 </div>
               </a>
 
