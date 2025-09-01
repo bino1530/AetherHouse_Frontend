@@ -212,6 +212,46 @@
   align-items: center;
   gap: 24px;
 }
+
+
+/* Trang Home */
+.home-header {
+  background: transparent;
+}
+.home-header .header_logo,
+.home-header .header_navcol1 ul li a,
+.home-header .header_icon {
+  color: var(--white-color);
+  fill: var(--white-color);
+}
+
+/* Hover Home */
+.home-header:hover {
+  background: var(--white-color);
+}
+.home-header:hover .header_logo,
+.home-header:hover .header_navcol1 ul li a,
+.home-header:hover .header_icon {
+  color: var(--black-color);
+  fill: var(--black-color);
+}
+
+/* Các trang khác (store, product...) */
+.inner-header {
+  background: var(--white-color);
+}
+.inner-header .header_logo,
+.inner-header .header_navcol1 ul li a,
+.inner-header .header_icon {
+  color: var(--black-color);
+  fill: var(--black-color);
+}
+
+
+
+
+
+
 @media screen and (max-width: 1260px) {
   .header_menu {
     display: none;

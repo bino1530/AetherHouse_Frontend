@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useLocation } from "react-router-dom";
 import "./Header.css";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const location = useLocation(); 
   const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
 
   return (
@@ -18,7 +19,7 @@ const Header = () => {
           <li>
             <Link to="/furniture">Furniture</Link>
           </li>
-          <li>
+          <li>  
             <Link to="/accessories">Accessories</Link>
           </li>
           <li>
@@ -29,7 +30,8 @@ const Header = () => {
           </li>
         </ul>
       </div>
-      <header className="header home-header spacing">
+      <header className={`header spacing ${location.pathname === "/" ? "home-header" : "inner-header"}`}>
+        <Link to="/">
         <div className="header_col1">
           <svg
             id="layer_1"
@@ -115,6 +117,7 @@ const Header = () => {
             </ul>
           </div>
         </div>
+        </Link>
 
         <div className="header_col2">
           <div className="header_search">

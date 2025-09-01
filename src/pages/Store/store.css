@@ -1,13 +1,15 @@
-/* @import url('../common/utils.css'); */
+.margintop{
+    margin-top: 12rem;
+}
 .link_page{
     font-size: 1.2rem;
     background-color: var(--gray1-color);
     color: var(--gray-color);
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
+    font-weight: 500;
+    
 }
-
-
 .store_title{
     font-size: 2rem;
     color: var(--black-color);
@@ -73,7 +75,18 @@
 
 .store_info--top{
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+}
+.store_info--col1{
+    justify-self: start;
+}
+.store_info--col2{
+    justify-self: end;
+}
+.btn_style_1{
+    margin: 0;
+    width: 15rem;
+    height:5rem;
 }
 .country{
     font-size: 1.6rem;
@@ -86,10 +99,7 @@
     line-height: 2.2rem;
     text-align: justify;
 }
-.usp{
-    padding: 8rem 0;
 
-}
 .usp-section{
     display: grid;
     grid-template-columns: repeat(1, minmax(0, 1fr));
@@ -120,7 +130,9 @@
     border-radius: 0 0 2rem 2rem  ;
 }
 
-
+.usp{
+    padding: 8rem 5rem;
+}
 .icon-usp{
     width: 32px; 
     height: 32px;
@@ -246,10 +258,7 @@
 
 
 
-    .usp{
-        padding: 8rem 0;
 
-    }
     .usp-section{
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -398,10 +407,6 @@
     }
 
 
-    .usp{
-        padding: 8rem 0;
-
-    }
     .usp-section{
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));

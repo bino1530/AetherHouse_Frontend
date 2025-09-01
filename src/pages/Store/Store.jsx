@@ -1,37 +1,96 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import "./store.css";
 const Store = () => {
+  const stores = [
+     {
+      id: 1,
+      image: "https://res.cloudinary.com/depbw3f5t/image/upload/v1756608404/stores/ksjssfl9ym0vjvhelp0j.webp",
+      name: "Aether House Shop",
+      city: "Vietnam",
+      desctription:
+        "Flagship store in Ho Chi Minh City. Open daily 9:00 - 21:00. Address: 123 Nguyen Trai, District 1.",
+    },
+    {
+      id: 2,
+      image: "https://res.cloudinary.com/depbw3f5t/image/upload/v1756547497/stores/kdp2g7nx8kgua05bethv.webp",
+      name: "Aether House Shop",
+      city: "Singapore",
+      desctription:
+        "Product experience space. Open 10:00 - 22:00. Address: 45 Orchard Road.",
+    },
+    {
+      id: 3,
+      image: "https://res.cloudinary.com/depbw3f5t/image/upload/v1756615258/stores/sqdfqtfk6nt1jblqn0yj.webp",
+      name: "Aether House Shop",
+      city: "Japan",
+      desctription:
+        "Showroom in Tokyo. Open 10:00 - 20:00. Address: 2-11-3 Meguro, Meguro City.",
+    },
+    {
+      id: 4,
+      image: "/try.webp",
+      name: "Aether House Shop",
+      city: "Japan",
+      desctription:
+        "Showroom in Tokyo. Open 10:00 - 20:00. Address: 2-11-3 Meguro, Meguro City.",
+    },
+    {
+      id: 5,
+      image: "/try.webp",
+      name: "Aether House Shop",
+      city: "Japan",
+      desctription:
+        "Showroom in Tokyo. Open 10:00 - 20:00. Address: 2-11-3 Meguro, Meguro City.",
+    },
+    {
+      id: 6,
+      image: "/try.webp",
+      name: "Aether House Shop",
+      city: "Japan",
+      desctription:
+        "Showroom in Tokyo. Open 10:00 - 20:00. Address: 2-11-3 Meguro, Meguro City.",
+    },
+  ];
+
   return (
-    <div>
-      <div className="link_page pad">
-        <p>Trang chủ / Dịch vụ khách hàng / tìm cửa hàng</p>
+    <div className="margintop ">
+      <div className="link_page pad ">
+        <p className="spacing">Home / Custom Service / Looking For a Store</p>
       </div>
 
-      <div className="store_main pad">
+      <div className="store_main pad  ">
         <div className="store_title">
-          <h1>Tìm cửa hàng</h1>
+          <h1>Looking For a Store</h1>
         </div>
-        <div className="store_row">
-          <div className="store_col">
-            {/* <a href="?controller=store&action=storedetail&id=<?=$store['store_id']?>">
-              <div className="store_frame_img"></div>
-            </a> */}
-            <div className="store_info">
-              <div className="store_info--top">
-                <div>
-                  <span className="name_store">Aether House Shop</span>
-                  <h2 className="country"></h2>
+        <div className="store_row spacing ">
+          {stores.map((store) => (
+            <div className="store_col" key={store.id}>
+              <a href={`/store/${store.id}`}>
+                <div className="store_frame_img">
+                  <img src={store.image} alt={store.name} />
                 </div>
-                {/* <a
-                  href="?controller=store&action=storedetail&id=<?=$store['store_id']?>"
-                  className="style_a"
-                >
-                  <span>Cửa hàng</span>
-                </a> */}
+              </a>
+
+              <div className="store_info">
+                <div className="store_info--top">
+                  <div className="store_info--col1">
+                    <span className="name_store">{store.name}</span>
+                    <h2 className="country">{store.city}</h2>
+                  </div>
+                  <div className="store_info--col2">
+                     <a href={`/store/${store.id}`} className="style_a">
+                    <button className="btn_style_1">
+                        <span>Store Page</span>
+                    </button>
+                  </a>
+                  </div>
+                </div>
+
+                <div className="store_info--bottom">
+                  <p>{store.desctription}</p>
+                </div>
               </div>
-              <div className="store_info--bottom"></div>
             </div>
-          </div>
+          ))}
         </div>
         <div className="usp">
           <section className="usp-section">
@@ -39,7 +98,7 @@ const Store = () => {
               <div className="usp-item-left">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="icon-usp light "
+                  className="icon-usp light"
                 >
                   <symbol
                     id="icon-light"
@@ -68,7 +127,7 @@ const Store = () => {
               <div className="usp-item-left">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="icon-usp shield "
+                  className="icon-usp shield"
                 >
                   <symbol
                     id="icon-shield"
@@ -94,7 +153,7 @@ const Store = () => {
               <div className="usp-item-left">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="icon-usp lock "
+                  className="icon-usp lock"
                 >
                   <symbol
                     id="icon-lock"
@@ -120,7 +179,7 @@ const Store = () => {
               <div className="usp-item-left">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="icon-usp package "
+                  className="icon-usp package"
                 >
                   <symbol
                     id="icon-package"
