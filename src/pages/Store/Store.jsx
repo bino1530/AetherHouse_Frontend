@@ -1,5 +1,7 @@
 import { useState , useEffect } from "react";
 import "./store.css";
+import {Link } from "react-router-dom";
+
 const Store = () => {
   const [stores , setStores] = useState([]);
   const [loading, setLoading] = useState(true); // trạng thái loading
@@ -21,11 +23,12 @@ const Store = () => {
   return (
     <div className="margintop ">
       <div className="link_page pad ">
-        <p className="spacing">Home / Custom Service / Looking For a Store</p>
+        <p className="spacing">
+          <Link to="/">Home</Link> / Custom Service / Looking For a Store</p>
       </div>
 
       <div className="store_main pad  ">
-        <div className="store_title">
+        <div className="store_title spacing">
           <h1>Looking For a Store</h1>
         </div>
         <div className="store_row spacing ">

@@ -443,3 +443,12 @@
         font-size: 1.8rem;
     }
 }
+@media (max-width:768px){
+    .usp{
+        padding: 5rem 2rem;
+    }
+    .store_info--top{
+        display: flex;
+        justify-content: space-between;
+    }
+}

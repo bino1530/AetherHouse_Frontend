@@ -43,12 +43,6 @@ ul{
  list-style: none   ;
 }
 
-
-
-
-
-
-
 .btn_style_1 {
     display: flex;
     justify-content: center;
@@ -192,4 +186,9 @@ ul{
 .spacing-top{
     display: block;
     margin: 4rem auto;
+}
+@media (max-width: 768px) {
+    .spacing {
+        padding: 0 2rem ;
+    }
 }
