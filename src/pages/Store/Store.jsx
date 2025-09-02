@@ -2,14 +2,19 @@ import { useState , useEffect } from "react";
 import "./store.css";
 const Store = () => {
   const [stores , setStores] = useState([]);
+  const [loading, setLoading] = useState(true); // trạng thái loading
 
   useEffect(() => {
     fetch('http://localhost:8000/api/stores')
     .then(res => res.json())
     .then(data => {
       setStores(data.stores)
+      setLoading(false)
     })
-    .catch(err => console.error(err));
+    .catch(err => {
+      console.error(err)
+      setLoading(false)
+    });
   }, [])
   
 
@@ -24,7 +29,12 @@ const Store = () => {
           <h1>Looking For a Store</h1>
         </div>
         <div className="store_row spacing ">
-          {stores.map((store) => (
+        {loading ? (
+            <p>⏳ Đang tải...</p>
+          ) : stores.length === 0 ? (
+            <p>⚡ Hiện chưa có cửa hàng nào. Đang cập nhật...</p>
+          ) : (
+          stores.map((store) => (
             <div className="store_col" key={store._id}>
               <a href={`/store/${store.id}`}>
                 <div className="store_frame_img">
@@ -52,7 +62,8 @@ const Store = () => {
                 </div>
               </div>
             </div>
-          ))}
+          ))
+          )}
         </div>
         <div className="usp">
           <section className="usp-section">
