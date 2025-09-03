@@ -4,7 +4,7 @@ import Header from './components/Header/Header.jsx'
 import Footer from './components/Footer/Footer.jsx'
 import Home from './pages/Home/Home.jsx'
 import Store from './pages/Store/Store.jsx'
-// import Products from './pages/Products/Products.jsx'
+import Products from './pages/Products/Products.jsx'
 function App() {
   return (
     <Router>
@@ -12,10 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/store" element={<Store />} />
-        <Route path="/store" element={<Store />} />
-        <Route path="/store" element={<Store />} />
-        {/* <Route path="/products/:categorySlug?" element={<Products />} /> */}
-
+        <Route path="/products/:categorySlug?" element={<Products />} />
       </Routes>
       <Footer />
     </Router>

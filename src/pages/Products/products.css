@@ -1,0 +1,19 @@
+.link_page{
+    margin-bottom: 2rem;
+}
+.link_page p{
+    margin: 0;
+}
+.title{
+    font-size: 4rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+}
+.desc_text{
+    margin: 0;
+    font-size: 2rem;
+    line-height: 1.5;
+    max-width: 80rem;
+    margin-bottom: 2rem;
+
+}

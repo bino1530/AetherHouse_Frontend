@@ -1,4 +1,5 @@
 import "./Home.css";
+import StudioProductCard from "../../components/StudioProductCard/StudioProductCard.jsx"; 
 const Home = () => {
   const products = [
     {
@@ -66,38 +67,14 @@ const Home = () => {
           </div>
         </div>
         <div className="row_studio_fav_product row">
-          {/* do cái product nó link với categories nên phải làm bước này cái ha */}
-          {products.map((product) => {
-            const productCat = productCategories.find(
-              (pc) => pc.productId === product.id
-            );
-            const categoryNames =
-              productCat?.categories_id.map(
-                (id) => categories.find((c) => c.id === id)?.name
-              ) || [];
-
-            return (
-              <div
-                key={product.id}
-                className="col_studio_fav_product_1 col-lg-3 col-sm-6 col-12"
-              >
-                <div className="studio_card">
-                  <div className="studio_img_wrapper">
-                    <img
-                      src={product.image_first}
-                      alt={product.name}
-                      className="studio_img"
-                    />
-                    <span className="studio_status">{product.status}</span>
-                  </div>
-                  <h3>{product.name}</h3>
-                  <p className="studio_categories">
-                    {categoryNames.join(", ")}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
+          {products.map((product) => (
+            <StudioProductCard
+              key={product.id}
+              product={product}
+              categories={categories}
+              productCategories={productCategories}
+            />
+          ))}
         </div>
         <button className="btn_style_2 hidden spacing-top">
           <span>Explore Now</span>
