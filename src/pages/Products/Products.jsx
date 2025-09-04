@@ -101,6 +101,7 @@ const DEMO_CATEGORIES = [
       "Pre-packed gift boxes and curated sets for any special occasion.",
   },
 ];
+
 //map tk product với tk cà té
 const DEMO_PRODUCT_CATEGORIES = [
   { productId: 1, categories_id: [1] },
@@ -109,6 +110,7 @@ const DEMO_PRODUCT_CATEGORIES = [
   { productId: 4, categories_id: [3] },
   { productId: 5, categories_id: [4] },
 ];
+
 const capitalize = (text) => text.charAt(0).toUpperCase() + text.slice(1);
 
 const flattenAllWithSlug = (productsObj) =>
@@ -119,7 +121,6 @@ const flattenAllWithSlug = (productsObj) =>
 const Products = () => {
   const { categorySlug } = useParams();
 
-  
   // dùng sờ lúc để map cate
   const products = categorySlug
     ? (DEMO_PRODUCTS[categorySlug] || []).map((p) => ({
@@ -128,14 +129,10 @@ const Products = () => {
       }))
     : flattenAllWithSlug(DEMO_PRODUCTS);
 
-
-    
   // lấy dữ liệu cà té để show ra
   const currentCategory = categorySlug
     ? DEMO_CATEGORIES.find((c) => c.slug === categorySlug)
     : null;
-
-
 
   // đặt title trang dựa trên cà té
   const pageTitle = capitalize(categorySlug || "All");
@@ -157,9 +154,11 @@ const Products = () => {
             : "Explore our full collection of featured products."}
         </p>
       </div>
-      
-      <hr className="spacing"/>
 
+      
+
+      <hr className="spacing" />
+      <div></div>
 
       <div className="products spacing">
         <div className="product_row row">
