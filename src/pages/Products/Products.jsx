@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./products.css";
 import ProductCard from "../../components/ProductCard/ProductCard.jsx";
+import FilterRow from "../../components/Filter/FilterRow.jsx";
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading]   = useState(true);
@@ -17,6 +18,7 @@ const Products = () => {
         }
         const data = await res.json();
         const list = Array.isArray(data?.products) ? data.products : [];
+        // chỉ hiển thị những thằng không ẩn
         setProducts(list.filter(p => !p.is_hidden));
         setError("");
       } catch (e) {
@@ -38,7 +40,7 @@ const Products = () => {
       </div>
 
       <h1 className="title spacing">All Products</h1>
-      
+      <FilterRow />
       <hr className="spacing" />
 
       <div className="products spacing">

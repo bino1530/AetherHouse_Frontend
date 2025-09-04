@@ -1,7 +1,14 @@
-import { useState } from "react";
-import "./FilterItem.css"; 
+// import { useState } from "react";
+import "./FilterItem.css";
 
-const FilterItem = ({ label, name, options, columns = 1, openDropdown, setOpenDropdown }) => {
+const FilterItem = ({
+  label,
+  name,
+  options,
+  columns = 1,
+  openDropdown,
+  setOpenDropdown,
+}) => {
   const isOpen = openDropdown === name;
 
   const toggle = () => {
@@ -9,24 +16,31 @@ const FilterItem = ({ label, name, options, columns = 1, openDropdown, setOpenDr
   };
 
   return (
-    <div className="filter-item">
-      <button className="filter-btn" onClick={toggle}>
+    <div className={`filter-item ${isOpen ? "is-open" : ""}`}>
+      <button
+        className="filter-btn"
+        onClick={toggle}
+        aria-expanded={isOpen}
+        aria-controls={`dd-${name}`}
+      >
         {label} <span className="caret" />
       </button>
-
-      {isOpen && (
-        <div className="dropdown">
-          <ul className={`menu grid-${columns}`}>
-            {options.map((text, i) => (
-              <li key={i}>
-                <label>
-                  <input type="checkbox" /> {text}
-                </label>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+      <div
+        id={`dd-${name}`}
+        className={`dropdown ${isOpen ? "show" : ""}`}
+        role="menu"
+        aria-hidden={!isOpen}
+      >
+        <ul className={`menu grid-${columns}`}>
+          {options.map((text, i) => (
+            <li key={i}>
+              <label>
+                <input type="checkbox" /> {text}
+              </label>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

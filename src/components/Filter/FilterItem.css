@@ -12,41 +12,70 @@
   left: 0;
   z-index: 10;
 }
-
+.filter-item.is-open .filter-btn {
+  background: #f6f6f6;
+  box-shadow: 0 4px 14px rgba(0,0,0,.06);
+}
 .filter-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   font: 600 16px/1.2 Inter, system-ui, Arial;
   color: #111;
+  border: 0px;
   background: #fff;
-  border: 1px solid #e9e9e9;
   border-radius: 999px;
   padding: 10px 14px;
   cursor: pointer;
+  transition: background .2s ease, box-shadow .2s ease, transform .2s ease;
 }
 
-.caret {
-  width: 8px;
-  height: 8px;
-  border-right: 2px solid currentColor;
-  border-bottom: 2px solid currentColor;
-  transform: rotate(45deg);
-  opacity: 0.7;
-  margin-left: 2px;
-}
+/* caret xoay khi mở */
+.caret { transition: transform .28s ease; }
+.filter-item.is-open .caret { transform: rotate(-135deg); }
 
+/* drop trượt xuống/lên */
 .dropdown {
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
+  z-index: 10;
   background: #fff;
-  border: 1px solid #e9e9e9;
   border-radius: 12px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 28px rgba(0,0,0,.08);
   padding: 16px;
   min-width: 260px;
-  z-index: 10;
+  overflow: hidden;                 /* quan trọng ở đây á bạn là để clip khi thu */
+
+  /* trạng thái đóng */
+  max-height: 0;                    /* thu lên */
+  opacity: 0;
+  transform-origin: top;
+  transform: translateY(-6px) scaleY(.96);
+  pointer-events: none;
+  visibility: hidden;
+
+  transition:
+    max-height .32s ease,
+    opacity .22s ease,
+    transform .32s cubic-bezier(.2,.7,.2,1),
+    visibility 0s linear .32s;      /* ẩn sau khi anima xong */
+  will-change: transform, opacity, max-height;
+}
+
+.dropdown.show {
+  /* trạng thái mở */
+  max-height: 480px;                
+  opacity: 1;
+  transform: translateY(0) scaleY(1);
+  pointer-events: auto;
+  visibility: visible;
+
+  transition:
+    max-height .34s ease,
+    opacity .24s ease,
+    transform .34s cubic-bezier(.2,.7,.2,1),
+    visibility 0s;                  /* hiện ngay */
 }
 
 .menu {
