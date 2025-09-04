@@ -2,12 +2,15 @@
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
 }
-
-.filter-item {
-  position: relative;
+.filter-item { position: relative; }
+.filter-item > .dropdown {
+  position: absolute !important;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 10;
 }
 
 .filter-btn {

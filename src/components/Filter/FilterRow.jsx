@@ -1,12 +1,12 @@
 import { useState } from "react";
 import FilterItem from "./FilterItem.jsx";
-import "./Filter.css"; 
+import "./FilterItem.jsx"; 
 
 const FilterRow = () => {
   const [openDropdown, setOpenDropdown] = useState(null);
 
   return (
-    <div className="filter-row">
+    <div className="filter-row spacing">
       <FilterItem
         label="Price"
         name="price"
