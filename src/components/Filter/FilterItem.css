@@ -45,10 +45,10 @@
   box-shadow: 0 12px 28px rgba(0,0,0,.08);
   padding: 16px;
   min-width: 260px;
-  overflow: hidden;                 /* quan trọng ở đây á bạn là để clip khi thu */
+  overflow: hidden;                 
 
-  /* trạng thái đóng */
-  max-height: 0;                    /* thu lên */
+  /* đóng cái drop bờ down */
+  max-height: 0;                   
   opacity: 0;
   transform-origin: top;
   transform: translateY(-6px) scaleY(.96);
@@ -64,7 +64,7 @@
 }
 
 .dropdown.show {
-  /* trạng thái mở */
+  /* mở cái dropdown */
   max-height: 480px;                
   opacity: 1;
   transform: translateY(0) scaleY(1);
@@ -75,7 +75,7 @@
     max-height .34s ease,
     opacity .24s ease,
     transform .34s cubic-bezier(.2,.7,.2,1),
-    visibility 0s;                  /* hiện ngay */
+    visibility 0s;                 
 }
 
 .menu {
