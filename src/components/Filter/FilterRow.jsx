@@ -1,6 +1,6 @@
 import { useState } from "react";
 import FilterItem from "./FilterItem.jsx";
-import "./FilterItem.jsx"; 
+import "./FilterItem.css"; 
 
 const FilterRow = () => {
   const [openDropdown, setOpenDropdown] = useState(null);

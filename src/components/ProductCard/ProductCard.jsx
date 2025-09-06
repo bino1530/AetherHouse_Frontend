@@ -6,7 +6,6 @@ const ProductCard = ({ product }) => {
     Array.isArray(product?.images) && product.images[0]
       ? product.images[0]
       : "/placeholder.png";
-
   const status =
     typeof product?.status === "string"
       ? product.status

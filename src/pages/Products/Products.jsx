@@ -38,15 +38,19 @@ const Products = () => {
           <Link to="/">Home</Link> / <Link to="/products">Products</Link>
         </p>
       </div>
-
       <h1 className="title spacing">All Products</h1>
       <FilterRow />
       <hr className="spacing" />
 
       <div className="products spacing">
-        {loading && <p>Loading...</p>}
+      {loading && (
+          <div className="d-flex justify-content-center py-4">
+            <div className="spinner-border" role="status" aria-label="Đang tải">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        )}
         {error && !loading && <p style={{ color: "red" }}>{error}</p>}
-
         {!loading && !error && (
           <div className="product_row row">
             {products.map((product) => (

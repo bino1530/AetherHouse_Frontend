@@ -7,35 +7,35 @@ const Footer = () => {
                 <div className="footer_content spacing">
                     <div className="footer_content__top">
                         <div className="footer_content__top-sologan col__top-left">
-                            <p>Aether House Thương hiệu tiên phong trong thiết kế và phong cách sống hiện đại.</p>
+                            <p>Aether House — a pioneer in modern design and lifestyle.</p>
                         </div>
                         <div className="footer_content__top-menu col__top-right">
                             <div className="footer_menu">
                                 <div className="footer_menu-row">
                                     <div className="footer_menu-col">
-                                        <h4 className="footer__title">Dịch vụ khách hàng <span className="toggle-icon">+</span></h4>
+                                        <h4 className="footer__title"> Customer Service <span className="toggle-icon">+</span></h4>
                                         <ul className="footer__list">
-                                            <li className="footer__list-item">Trung tâm trợ giúp & Câu hỏi thường gặp</li>
-                                            <li className="footer__list-item">Giao hàng & Trả hàng</li>
-                                            <li className="footer__list-item"><a href="?controller=store" className="footer__list-item">Tìm cửa hàng</a></li>
-                                            <li className="footer__list-item">Liên hệ với chúng tôi</li>
+                                            <li className="footer__list-item">Help Center & FAQs</li>
+                                            <li className="footer__list-item">Shipping & Returns</li>
+                                            <li className="footer__list-item"><a href="?controller=store" className="footer__list-item">Find a Store</a></li>
+                                            <li className="footer__list-item">Contact Us</li>
                                         </ul>
                                     </div>
                                     <div className="footer_menu-col">
-                                        <h4 className="footer__title">Hợp pháp <span className="toggle-icon">+</span></h4>
+                                        <h4 className="footer__title">Legal <span className="toggle-icon">+</span></h4>
                                         <ul className="footer__list">
-                                            <li className="footer__list-item">Điều khoản</li>
-                                            <li className="footer__list-item">Chính sách bảo mật</li>
+                                            <li className="footer__list-item">Terms</li>
+                                            <li className="footer__list-item">Privacy Policy</li>
                                         </ul>
                                     </div>
                                     <div className="footer_menu-col">
-                                        <h4 className="footer__title">Dịch vụ kinh doanh <span className="toggle-icon">+</span></h4>
+                                        <h4 className="footer__title">Business Services <span className="toggle-icon">+</span></h4>
                                         <ul className="footer__list">
-                                            <li className="footer__list-item">Tài nguyên</li>
+                                            <li className="footer__list-item">Resources</li>
                                         </ul>
                                     </div>
                                     <div className="footer_menu-col">
-                                        <h4 className="footer__title">Xã hội <span className="toggle-icon">+</span></h4>
+                                        <h4 className="footer__title">Social <span className="toggle-icon">+</span></h4>
                                         <ul className="footer__list">
                                             <li className="footer__list-item">Instagram</li>
                                             <li className="footer__list-item">Facebook</li>
