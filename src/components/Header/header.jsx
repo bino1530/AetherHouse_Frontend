@@ -1,33 +1,26 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { CATEGORIES } from "../../data/categories.jsx";
 import "./Header.css";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
+  const ROOTS = Array.isArray(CATEGORIES)
+    ? CATEGORIES
+        .filter(c => c.parent === null)
+        .sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
+    : [];
 
   return (
     <div>
       <div className={`mobile_nav ${isMenuOpen ? "active" : ""}`}>
         <ul>
-          <li>
-            <Link to="/whatsnew">What's New</Link>
-          </li>
-          <li>
-            <Link to="/products/lighting">Lighting</Link>
-          </li>
-          <li>
-            <Link to="/products/furniture">Furniture</Link>
-          </li>
-          <li>
-            <Link to="/products/accessories">Accessories</Link>
-          </li>
-          <li>
-            <Link to="/products/gifts">Gifts</Link>
-          </li>
-          <li>
-            <Link to="/products/explore">Explore</Link>
-          </li>
+          {ROOTS.map((root) => (
+            <li key={root.slug}>
+              <Link to={`/products/${root.slug}`}>{root.name}</Link>
+            </li>
+          ))}
         </ul>
       </div>
       <header
@@ -35,8 +28,8 @@ const Header = () => {
           location.pathname === "/" ? "home-header" : "inner-header"
         }`}
       >
-        <Link to="/">
-          <div className="header_col1">
+        <div className="header_col1">
+          <Link to="/">
             <svg
               id="layer_1"
               className="header_logo"
@@ -98,30 +91,17 @@ const Header = () => {
               <circle className="cls-1" cx="45.97" cy="36.62" r="5.4" />
               <circle className="cls-1" cx="211.45" cy="99.07" r="5.4" />
             </svg>
-            <div className="header_navcol1">
-              <ul>
-                <li>
-                  <Link to="/whatsnew">What's New</Link>
+          </Link>
+          <div className="header_navcol1">
+            <ul className="mainnav">
+              {ROOTS.map((root) => (
+                <li key={root.slug}>
+                  <Link to={`/products/${root.slug}`}>{root.name}</Link>
                 </li>
-                <li>
-                  <Link to="/products/lighting">Lighting</Link>
-                </li>
-                <li>
-                  <Link to="/products/furniture">Furniture</Link>
-                </li>
-                <li>
-                  <Link to="/products/accessories">Accessories</Link>
-                </li>
-                <li>
-                  <Link to="/products/gifts">Gifts</Link>
-                </li>
-                <li>
-                  <Link to="/products/explore">Explore</Link>
-                </li>
-              </ul>
-            </div>
+              ))}
+            </ul>
           </div>
-        </Link>
+        </div>
 
         <div className="header_col2">
           <div className="header_search">
