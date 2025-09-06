@@ -13,6 +13,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/store" element={<Store />} />
         <Route path="/products/:categorySlug?" element={<Products />} />
+        {/* push ne uyen */}
       </Routes>
       <Footer />
     </Router>
