@@ -6,8 +6,7 @@ import FilterRow from "../../components/Filter/FilterRow.jsx";
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading]   = useState(true);
-  const [error, setError]       = useState("");
-
+  const [error, setError]       = useState(""); 
   useEffect(() => {
     const fetchProducts = async () => {
       try {

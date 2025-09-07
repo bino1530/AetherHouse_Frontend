@@ -131,7 +131,7 @@ const Home = () => {
             </button>
           </div>
       </div>
-      <Usp />
+      <Usp /> 
       {/* <div className="usp">
           <section className="usp-section">
             <div className="usp-item">

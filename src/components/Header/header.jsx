@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { CATEGORIES } from "../../data/categories.jsx";
 import "./Header.css";
+import NavItem from "./navItem.jsx";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
@@ -11,7 +12,7 @@ const Header = () => {
         .filter(c => c.parent === null)
         .sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
     : [];
-
+console.log("ROOTS: ", ROOTS);
   return (
     <div>
       <div className={`mobile_nav ${isMenuOpen ? "active" : ""}`}>
@@ -96,8 +97,8 @@ const Header = () => {
             <ul className="mainnav">
               {ROOTS.map((root) => (
                 <li key={root.slug}>
-                  <Link to={`/products/${root.slug}`}>{root.name}</Link>
-                </li>
+                  <NavItem root={root} />
+            </li>
               ))}
             </ul>
           </div>
