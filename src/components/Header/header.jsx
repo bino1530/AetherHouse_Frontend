@@ -149,7 +149,8 @@ const Header = () => {
                 />
               </svg>
             </Link>
-            <svg xmlns="http://www.w3.org/2000/svg" className="header_icon">
+            <Link to="/login">
+             <svg xmlns="http://www.w3.org/2000/svg" className="header_icon">
               <symbol
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -163,6 +164,8 @@ const Header = () => {
               </symbol>
               <use href="#icon-account"></use>
             </svg>
+            </Link>
+           
 
             <svg
               xmlns="http://www.w3.org/2000/svg"
