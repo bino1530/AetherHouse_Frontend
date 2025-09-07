@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect ,useState , useMemo} from "react";
 import { Link, useLocation } from "react-router-dom";
 import { CATEGORIES } from "../../data/categories.jsx";
 import "./Header.css";
@@ -7,12 +7,40 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
-  const ROOTS = Array.isArray(CATEGORIES)
-    ? CATEGORIES
-        .filter(c => c.parent === null)
-        .sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
-    : [];
-console.log("ROOTS: ", ROOTS);
+
+  const [menu, setMenu] = useState([]);       
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState(null);
+  useEffect(() => {
+    setLoading(true);
+    fetch("http://localhost:3000/api/categories/menu")
+      .then((res) => {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then((json) => {
+        const list = Array.isArray(json?.data) ? json.data : Array.isArray(json) ? json : [];
+        setMenu(list);
+      })
+      .catch((e) => {
+        console.error(e);
+        setErr(String(e?.message || e));
+      })
+      .finally(() => setLoading(false));
+  }, []);
+  const ROOTS = useMemo(
+    () => menu.map((it) => it.parent).filter(Boolean),
+    [menu]
+  );
+
+  const menuBySlug = useMemo(() => {
+    const map = {};
+    for (const item of menu) {
+      const slug = item?.parent?.slug;
+      if (slug) map[slug] = { children: item.children || [], rooms: item.rooms || [] };
+    }
+    return map;
+  }, [menu]);
   return (
     <div>
       <div className={`mobile_nav ${isMenuOpen ? "active" : ""}`}>
@@ -95,15 +123,16 @@ console.log("ROOTS: ", ROOTS);
           </Link>
           <div className="header_navcol1">
             <ul className="mainnav">
-              {ROOTS.map((root) => (
+              {loading && <li className="muted">Loading...</li>}
+              {!loading && err && <li className="muted">Menu error</li>}
+              {!loading && !err && ROOTS.map((root) => (
                 <li key={root.slug}>
-                  <NavItem root={root} />
-            </li>
+                  <NavItem root={root} menuBySlug={menuBySlug} />
+                </li>
               ))}
             </ul>
           </div>
         </div>
-
         <div className="header_col2">
           <div className="header_search">
             <input type="text" placeholder="Search..." />
