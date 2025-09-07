@@ -19,7 +19,7 @@
   padding-right: 20px; 
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333;
-  /* line-height: 1.7; */
+  
 }
 
 .about-container h1 {
@@ -54,11 +54,11 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 50px;   /* thêm khoảng cách rộng hơn giữa ảnh và text */
+  gap: 6rem;  
 }
 
 .interview-image img {
-  width: 650px;        /* ✅ ảnh bự hơn */
+  width: 650px;       
   height: auto;
   border-radius: 16px; /* bo góc nhẹ */
   object-fit: cover;
@@ -70,7 +70,6 @@
   color: #000;
   margin-bottom: 25px;
   line-height: 1.6;
-  max-width: 520px;
 }
 .interview-actions {
   display: flex;
