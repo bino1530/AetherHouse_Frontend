@@ -73,7 +73,7 @@ const NavItem = ({ root, menuBySlug }) => {
               </div>
 
               <div className="dropdown__col">
-                <Link to={`/products/${root.slug}`} className="view-all" onClick={() => setOpen(false)}>
+                <Link to={`/${root.slug}`} className="view-all" onClick={() => setOpen(false)}>
                   View all {root.name}
                 </Link>
               </div>
