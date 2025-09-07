@@ -17,7 +17,7 @@ const Login = () => {
   };
 
   return (
-    <div className="signup-container  style={{ backgroundImage: `url(${bgImage})` }} margintop">
+    <div className="signup-container  style={{ backgroundImage: `url(${bgImage})` }}">
       <div className="signup-box">
         {/* Logo */}
         <img className="logo" src="./logo.webp" alt="" />
