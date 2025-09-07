@@ -1,0 +1,95 @@
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+
+  /* thêm hình nền */
+  background-image: url("background_2.webp");
+  background-size: cover;      /* hình phủ full màn hình */
+  background-position: center; /* canh giữa hình */
+  background-repeat: no-repeat;
+
+  font-family: 'Poppins', sans-serif;
+}
+/* Hộp sign up */
+.signup-box {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 400px;
+  
+}
+
+.logo {
+  width: 120px;   
+  height: auto;     
+  display: block;   
+  margin: 0 auto 20px auto; 
+}
+
+
+/* Tiêu đề */
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+/* Form */
+.form input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.form input:focus {
+  border-color: #6d28d9;
+}
+
+/* Nút */
+.form button {
+  width: 100%;
+  padding: 12px;
+  background: #6d28d9;
+  color: white;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.3s;
+}
+
+.form button:hover {
+  background: #5b21b6;
+}
+
+/* Chính sách */
+.policy {
+  margin-top: 20px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.policy a {
+  color: #6d28d9;
+  text-decoration: none;
+}
+
+.policy a:hover {
+  text-decoration: underline;
+}

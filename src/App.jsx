@@ -1,20 +1,38 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css'
-import Header from './components/Header/Header.jsx'
-import Footer from './components/Footer/Footer.jsx'
+import MainLayout from './Layouts/MainLayout.jsx';
+import AdminLayout from './Layouts/AdminLayout.jsx';
+
 import Home from './pages/Home/Home.jsx'
 import Store from './pages/Store/Store.jsx'
 import Products from './pages/Products/Products.jsx'
+import Explore from './pages/Explore/Explore.jsx';
+import Login from './pages/Login/Login.jsx';
+import Admin from './pages/Admin/Admin.jsx';
+import Sign from './pages/Sign/Sign.jsx';
 function App() {
   return (
     <Router>
-      <Header />
+      
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/store" element={<Store />} />
-        <Route path="/products/:categorySlug?" element={<Products />} />
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
+        
+          <Route path="/store" element={<Store />} />
+          <Route path="/products/:categorySlug?" element={<Products />} />
+          <Route path="/explore" element={<Explore />} />
+          
+        </Route>
+
+
+
+        <Route element={<AdminLayout />}>
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/sign" element={<Sign />} />
+        </Route>
       </Routes>
-      <Footer />
+      
     </Router>
   )
 }

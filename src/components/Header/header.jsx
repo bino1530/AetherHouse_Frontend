@@ -129,10 +129,26 @@ const Header = () => {
                 <li key={root.slug}>
                   <NavItem root={root} menuBySlug={menuBySlug} />
                 </li>
-              ))}
-            </ul>
+                <li>
+                  <Link to="/products/lighting">Lighting</Link>
+                </li>
+                <li>
+                  <Link to="/products/furniture">Furniture</Link>
+                </li>
+                <li>
+                  <Link to="/products/accessories">Accessories</Link>
+                </li>
+                <li>
+                  <Link to="/products/gifts">Gifts</Link>
+                </li>
+                <li>
+                  <Link to="/products/explore">Explore</Link>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
+        </Link>
+
         <div className="header_col2">
           <div className="header_search">
             <input type="text" placeholder="Search..." />
@@ -151,6 +167,7 @@ const Header = () => {
                 />
               </svg>
             </Link>
+            <Link to="/login">
             <svg xmlns="http://www.w3.org/2000/svg" className="header_icon">
               <symbol
                 fill="none"
@@ -165,6 +182,8 @@ const Header = () => {
               </symbol>
               <use href="#icon-account"></use>
             </svg>
+            </Link>
+            
 
             <svg
               xmlns="http://www.w3.org/2000/svg"
