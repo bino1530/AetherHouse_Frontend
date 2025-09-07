@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "./Login.css";
+import "./Sign.css";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -24,11 +24,18 @@ const Login = () => {
         <img className="logo" src="./logo.webp" alt="" />
 
         {/* Tiêu đề */}
-        <h2 className="title">Login</h2>
-        <p className="subtitle">Choose how you'd to login</p>
+        <h2 className="title">Sign up</h2>
+        <p className="subtitle">Choose how you'd to sign in</p>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="form">
+            <input
+            type="full name"
+            name="full name"
+            placeholder="full name"
+            required
+           
+          />
           <input
             type="email"
             name="email"
@@ -45,13 +52,13 @@ const Login = () => {
             pattern="[0-9]{8}"
             title="Password phải gồm đúng 8 chữ số"
           />
-          <button type="submit">Login</button>
+          <button type="submit">Sign Up</button>
         </form>
 
         {/* Chính sách */}
         <p className="policy">
           By signing up, you agree to our{" "}
-          <Link to="/sign">Sign In</Link>
+          <Link to="/login">Login</Link>
         </p>
       </div>
     </div>

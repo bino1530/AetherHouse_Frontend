@@ -9,6 +9,7 @@ import Products from './pages/Products/Products.jsx'
 import Explore from './pages/Explore/Explore.jsx';
 import Login from './pages/Login/Login.jsx';
 import Admin from './pages/Admin/Admin.jsx';
+import Sign from './pages/Sign/Sign.jsx';
 function App() {
   return (
     <Router>
@@ -28,6 +29,7 @@ function App() {
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<Admin />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/sign" element={<Sign />} />
         </Route>
       </Routes>
       
