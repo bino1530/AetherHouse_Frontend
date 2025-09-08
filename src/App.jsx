@@ -33,6 +33,10 @@ function App() {
         </Route>
       </Routes>
     </Router>
+<<<<<<< Updated upstream
   );
+=======
+  )
+>>>>>>> Stashed changes
 }
 export default App;
