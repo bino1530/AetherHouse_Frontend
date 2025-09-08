@@ -24,7 +24,13 @@ export default function Products() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState("");
+  useEffect(() => {
+    setRootName(rootSlug ? toTitle(rootSlug) : "Products");
+  }, [rootSlug]);
 
+  useEffect(() => {
+    setChildName(slug ? toTitle(slug) : "");
+  }, [slug]);
   // Xác định slug là category hay room (nếu có slug)
   useEffect(() => {
     if (!slug) { setMode(rootSlug ? "root" : "all"); setChildName(""); return; }
@@ -42,12 +48,11 @@ export default function Products() {
         if (!entry) { setMode("unknown"); return; }
 
         // Tên root/child “đẹp”
-        if (!state?.rootName && entry.parent?.name) setRootName(entry.parent.name);
+        if (entry.parent?.name) setRootName(entry.parent.name);
         const foundRoom = entry.rooms?.find(r => r.slug === slug);
         const foundCat  = entry.children?.find(c => c.slug === slug);
-        if (!state?.roomName && (foundRoom?.name || foundCat?.name)) {
-          setChildName(foundRoom?.name || foundCat?.name);
-        }
+        if (foundRoom?.name) setChildName(foundRoom.name);
+        else if (foundCat?.name) setChildName(foundCat.name);
 
         setMode(foundCat ? "category" : (foundRoom ? "room" : "unknown"));
       })
@@ -100,7 +105,7 @@ export default function Products() {
 
   const heading = useMemo(() => {
     if (mode === "root") return rootName;
-    if (mode === "category" || mode === "room") return `${rootName} / ${childName}`;
+    if (mode === "category" || mode === "room") return `${childName}`;
     if (mode === "unknown") return `${toTitle(rootSlug || "Products")} / ${toTitle(slug || "")}`;
     return "All Products";
   }, [mode, rootName, childName, rootSlug, slug]);
