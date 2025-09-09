@@ -217,7 +217,7 @@ const Header = () => {
           </div>
         </div>
         <Cart isOpen={isCartOpen} toggleCart={toggleCart} items={cartItems} />
-      </header>
+        </header>
     </div>
   );
 };
