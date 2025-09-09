@@ -17,6 +17,7 @@ const Header = () => {
     document.body.style.overflow = isCartOpen ? "hidden" : "";
     return () => (document.body.style.overflow = "");
   }, [isCartOpen]);
+  
   useEffect(() => {
     setLoading(true);
     fetch("http://localhost:3000/api/categories/menu")
