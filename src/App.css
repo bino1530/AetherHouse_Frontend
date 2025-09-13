@@ -187,6 +187,9 @@ ul{
     display: block;
     margin: 4rem auto;
 }
+.margintop{
+margin-top: 10rem;
+}
 @media (max-width: 768px) {
     .spacing {
         padding: 0 2rem ;

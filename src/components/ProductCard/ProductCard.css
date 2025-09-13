@@ -5,7 +5,7 @@
   font-size: 4.5rem;
   font-weight: 500;
 }
-.studio_fav p { 
+.studio_fav p {
   font-size: 1.6rem;
   margin: 0;
 }
@@ -31,7 +31,6 @@
   border-radius: 0.5rem;
   transition: transform 0.2s;
   margin-top: 4.5rem;
-  
 }
 .studio_card h3,
 .studio_card p {
@@ -42,8 +41,8 @@
 .studio_card p {
   color: grey;
 }
-
-.studio_img_wrapper{
+/* Wrapper ảnh + layering rõ ràng */
+.studio_img_wrapper {
   position: relative;
   width: 100%;
   height: 50rem;
@@ -51,27 +50,56 @@
   border-radius: 2.5rem;
 }
 
-.studio_img{
-  position: absolute;        /* <— chồng */
-  inset: 0;                  /* top/right/bottom/left:0 */
+/* Ảnh: z-index để hover nằm trên main */
+.studio_img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
   display: block;
-  transition: opacity .35s ease, transform .35s ease;
+  transition: opacity 0.35s ease, transform 0.35s ease;
   will-change: opacity, transform;
+  z-index: 1; /* nền */
+}
+.studio_img--hover {
+  opacity: 0;
+  z-index: 2; /* trên main */
 }
 
-.studio_img--hover{
-  opacity: 0;             
+.studio_status {
+  position: absolute;
+  top: 2rem;
+  left: 3rem;
+  z-index: 3;
+  padding: 0.6rem 1rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #111;
+  background: var(--white-color);
+  border: 0.1rem solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.8rem;
+  box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.06);
+  pointer-events: none; /* ⬅️ không chắn hover ảnh */
 }
 
-.studio_card:hover .studio_img--hover{
+/* Hover effect giữ nguyên */
+.studio_card:hover .studio_img--hover {
   opacity: 1;
   transform: scale(1.02);
 }
-.studio_card:hover .studio_img--main{
+.studio_card:hover .studio_img--main {
+  opacity: 0;
+  transform: scale(1.02);
+}
+.studio_card:hover .studio_img--hover {
+  opacity: 1;
+  transform: scale(1.02);
+}
+.studio_card:hover .studio_img--main {
   opacity: 0;
   transform: scale(1.02);
 }
@@ -110,7 +138,6 @@
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--black-color);
-
 }
 
 @media screen and (max-width: 1060px) {

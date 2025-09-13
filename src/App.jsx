@@ -18,15 +18,16 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
-
-          <Route path="/store" element={<Store />} />
-          {/* View all theo root, ví dụ /lighting */}
           <Route path="/:rootSlug" element={<Products />} />
-
-          {/* Room hoặc Category: /:rootSlug/:slug (bedroom hoặc pendant-lights) */}
           <Route path="/:rootSlug/:slug" element={<Products />} />
+
+          <Route
+            path="/:rootSlug/:slug/:productSlug"
+            element={<ProductDetails />}
+          />
+          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/store" element={<Store />} />
           <Route path="/explore" element={<Explore />} />
-          <Route path="/product/:slug" element={<ProductDetails />} />
         </Route>
 
         <Route element={<AdminLayout />}>
@@ -36,7 +37,6 @@ function App() {
         </Route>
       </Routes>
     </Router>
-
   );
 }
 export default App;

@@ -1,13 +1,11 @@
-// src/pages/Products/Products.jsx
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import "./products.css";
 import ProductCard from "../../components/ProductCard/ProductCard.jsx";
 import FilterRow from "../../components/Filter/FilterRow.jsx";
 
-const toTitle = (s="") => s.split("-").map(w => (w[0]?.toUpperCase()||"") + w.slice(1)).join(" ");
-
-
+const toTitle = (s="") =>
+  s.split("-").map(w => (w[0]?.toUpperCase()||"") + w.slice(1)).join(" ");
 
 const sortByCategoryThenName = (a,b) => {
   const aCat = (a?.category_id?.name || a?.category?.name || "").toLowerCase();
@@ -17,12 +15,12 @@ const sortByCategoryThenName = (a,b) => {
 };
 
 export default function Products() {
-  const { rootSlug, slug } = useParams(); 
+  const { rootSlug, slug } = useParams();
   const mode = useMemo(() => (slug ? "category" : rootSlug ? "root" : "all"), [rootSlug, slug]);
 
-  const url = useMemo(() => {
-    if (mode === "category") return `/api/products/${encodeURIComponent(rootSlug)}/${encodeURIComponent(slug)}`;
-    if (mode === "root")     return `/api/products/${encodeURIComponent(rootSlug)}`;
+  const path = useMemo(() => {
+    if (mode === "category") return `/api/products/by-cate/${rootSlug}/${slug}`;
+    if (mode === "root")     return `/api/products/by-cate/${rootSlug}`;
     return `/api/products`;
   }, [mode, rootSlug, slug]);
 
@@ -30,43 +28,26 @@ export default function Products() {
   const [loading,  setLoading]  = useState(true);
   const [error,    setError]    = useState("");
 
-  const [apiRootName,  setApiRootName]  = useState("");
-  const [apiChildName, setApiChildName] = useState("");
-
   useEffect(() => {
     const ac = new AbortController();
     setLoading(true); setError(""); setProducts([]);
-    setApiRootName(""); setApiChildName("");
 
-    fetch(url, { signal: ac.signal })
+    fetch(path, { signal: ac.signal })
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
       .then(data => {
         const list = Array.isArray(data?.products) ? data.products : [];
         setProducts(list.filter(p => !p.is_hidden).sort(sortByCategoryThenName));
-        // ưu tiên tên từ API nếu trả về
-        if (data?.parent?.name)   setApiRootName(data.parent.name);
-        if (data?.category?.name) setApiChildName(data.category.name);
       })
-      .catch(e => { if (e.name !== "AbortError") setError("No Products"); })
+      .catch(e => { if (e.name !== "AbortError") setError("Không lấy được danh sách sản phẩm."); })
       .finally(() => setLoading(false));
 
     return () => ac.abort();
-  }, [url]);
+  }, [path]);
 
-  // Tên hiển thị (fallback nếu API không có)
-  const rootName  = useMemo(
-    () => (mode === "all" ? "Products" : apiRootName || toTitle(rootSlug)),
-    [mode, apiRootName, rootSlug]
-  );
-  const childName = useMemo(() => {
-    if (mode !== "category") return "";
-    return (
-      apiChildName ||
-      products[0]?.category_id?.name ||
-      products[0]?.category?.name ||
-      toTitle(slug)
-    );
-  }, [mode, apiChildName, products, slug]);
+  const rootName  = mode === "all" ? "Products" : toTitle(rootSlug);
+  const childName = mode === "category"
+    ? (products[0]?.category_id?.name || products[0]?.category?.name || toTitle(slug))
+    : "";
 
   const breadcrumb = (
     <p className="spacing">
@@ -78,7 +59,6 @@ export default function Products() {
       {mode === "all" && <span>Products</span>}
     </p>
   );
-
   const heading = mode === "category" ? childName : (mode === "root" ? rootName : "All Products");
 
   return (
@@ -102,7 +82,14 @@ export default function Products() {
 
         {!loading && !error && (
           <div className="product_row row">
-            {products.map(p => <ProductCard key={p._id} product={p} />)}
+            {products.map(p => {
+              const inferredRoot =
+                rootSlug ||
+                p?.category_id?.parent?.slug ||
+                p?.category?.parent?.slug ||
+                "";
+              return <ProductCard key={p._id} product={p} rootSlug={inferredRoot} />;
+            })}
             {products.length === 0 && <p>No Products.</p>}
           </div>
         )}

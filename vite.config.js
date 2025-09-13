@@ -9,9 +9,6 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:3000', // backend
         changeOrigin: true,
-        secure: false,
-        // rewrite là không cần nếu bạn đã gọi fetch('/api/...'):
-        // rewrite: (path) => path,
       },
     },
   },
