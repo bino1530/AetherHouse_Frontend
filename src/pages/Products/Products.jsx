@@ -1,11 +1,14 @@
 // src/pages/Products/Products.jsx
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import "./products.css";
 import ProductCard from "../../components/ProductCard/ProductCard.jsx";
 import FilterRow from "../../components/Filter/FilterRow.jsx";
 
-const toTitle = (s="") => s.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+const toTitle = (s="") => s.split("-").map(w => (w[0]?.toUpperCase()||"") + w.slice(1)).join(" ");
+
+
+
 const sortByCategoryThenName = (a,b) => {
   const aCat = (a?.category_id?.name || a?.category?.name || "").toLowerCase();
   const bCat = (b?.category_id?.name || b?.category?.name || "").toLowerCase();
@@ -14,101 +17,69 @@ const sortByCategoryThenName = (a,b) => {
 };
 
 export default function Products() {
-  const { rootSlug, slug } = useParams(); // hỗ trợ /:rootSlug và /:rootSlug/:slug
-  const { state } = useLocation() || {};
+  const { rootSlug, slug } = useParams(); 
+  const mode = useMemo(() => (slug ? "category" : rootSlug ? "root" : "all"), [rootSlug, slug]);
 
-  const [mode, setMode] = useState(slug ? "loading" : (rootSlug ? "root" : "all")); // all|root|category|room|loading|unknown
-  const [rootName, setRootName] = useState(rootSlug ? toTitle(rootSlug) : "Products");
-  const [childName, setChildName] = useState(slug ? toTitle(slug) : "");
-
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading]   = useState(true);
-  const [error, setError]       = useState("");
-  useEffect(() => {
-    setRootName(rootSlug ? toTitle(rootSlug) : "Products");
-  }, [rootSlug]);
-
-  useEffect(() => {
-    setChildName(slug ? toTitle(slug) : "");
-  }, [slug]);
-  // Xác định slug là category hay room (nếu có slug)
-  useEffect(() => {
-    if (!slug) { setMode(rootSlug ? "root" : "all"); setChildName(""); return; }
-
-    let aborted = false;
-    setMode("loading");
-
-    fetch("http://localhost:3000/api/categories/menu")
-      .then(res => { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
-      .then(json => {
-        if (aborted) return;
-        const list = Array.isArray(json?.data) ? json.data : Array.isArray(json) ? json : [];
-        const entry = list.find(it => it?.parent?.slug === rootSlug);
-
-        if (!entry) { setMode("unknown"); return; }
-
-        // Tên root/child “đẹp”
-        if (entry.parent?.name) setRootName(entry.parent.name);
-        const foundRoom = entry.rooms?.find(r => r.slug === slug);
-        const foundCat  = entry.children?.find(c => c.slug === slug);
-        if (foundRoom?.name) setChildName(foundRoom.name);
-        else if (foundCat?.name) setChildName(foundCat.name);
-
-        setMode(foundCat ? "category" : (foundRoom ? "room" : "unknown"));
-      })
-      .catch(() => setMode("unknown"));
-
-    return () => { aborted = true; };
-  }, [rootSlug, slug, state?.rootName, state?.roomName]);
-
-  // Fetch products theo mode (KHÔNG dùng API_BASE)
-  useEffect(() => {
-    let aborted = false;
-
-    const run = async () => {
-      if (mode === "loading") return; // đợi phân loại
-      setLoading(true); setError("");
-
-      try {
-        let url = "http://localhost:3000/api/products";
-        if (mode === "root")      url += `?root=${encodeURIComponent(rootSlug)}`;
-        else if (mode === "category") url += `?root=${encodeURIComponent(rootSlug)}&category=${encodeURIComponent(slug)}`;
-        else if (mode === "room")     url += `?root=${encodeURIComponent(rootSlug)}&room=${encodeURIComponent(slug)}`;
-        else if (mode === "unknown")  url += `?root=${encodeURIComponent(rootSlug)}&category=${encodeURIComponent(slug)}`; // fallback
-        // mode === 'all' => không query
-
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status} - ${await res.text()}`);
-        const data = await res.json();
-        const list = Array.isArray(data?.products) ? data.products : [];
-        const visible = list.filter(p => !p.is_hidden).sort(sortByCategoryThenName);
-
-        if (!aborted) setProducts(visible);
-      } catch (e) {
-        if (!aborted) setError("Không lấy được danh sách sản phẩm.");
-      } finally {
-        if (!aborted) setLoading(false);
-      }
-    };
-
-    run();
-    return () => { aborted = true; };
+  const url = useMemo(() => {
+    if (mode === "category") return `/api/products/${encodeURIComponent(rootSlug)}/${encodeURIComponent(slug)}`;
+    if (mode === "root")     return `/api/products/${encodeURIComponent(rootSlug)}`;
+    return `/api/products`;
   }, [mode, rootSlug, slug]);
 
-  // Breadcrumb + tiêu đề
-  const breadcrumb = useMemo(() => {
-    if (mode === "root") return (<p className="spacing"><Link to="/">Home</Link> / <span>{rootName}</span></p>);
-    if (mode === "category" || mode === "room")
-      return (<p className="spacing"><Link to="/">Home</Link> / <Link to={`/${rootSlug}`}>{rootName}</Link> / <span>{childName}</span></p>);
-    return (<p className="spacing"><Link to="/">Home</Link> / <span>Products</span></p>);
-  }, [mode, rootName, childName, rootSlug]);
+  const [products, setProducts] = useState([]);
+  const [loading,  setLoading]  = useState(true);
+  const [error,    setError]    = useState("");
 
-  const heading = useMemo(() => {
-    if (mode === "root") return rootName;
-    if (mode === "category" || mode === "room") return `${childName}`;
-    if (mode === "unknown") return `${toTitle(rootSlug || "Products")} / ${toTitle(slug || "")}`;
-    return "All Products";
-  }, [mode, rootName, childName, rootSlug, slug]);
+  const [apiRootName,  setApiRootName]  = useState("");
+  const [apiChildName, setApiChildName] = useState("");
+
+  useEffect(() => {
+    const ac = new AbortController();
+    setLoading(true); setError(""); setProducts([]);
+    setApiRootName(""); setApiChildName("");
+
+    fetch(url, { signal: ac.signal })
+      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then(data => {
+        const list = Array.isArray(data?.products) ? data.products : [];
+        setProducts(list.filter(p => !p.is_hidden).sort(sortByCategoryThenName));
+        // ưu tiên tên từ API nếu trả về
+        if (data?.parent?.name)   setApiRootName(data.parent.name);
+        if (data?.category?.name) setApiChildName(data.category.name);
+      })
+      .catch(e => { if (e.name !== "AbortError") setError("No Products"); })
+      .finally(() => setLoading(false));
+
+    return () => ac.abort();
+  }, [url]);
+
+  // Tên hiển thị (fallback nếu API không có)
+  const rootName  = useMemo(
+    () => (mode === "all" ? "Products" : apiRootName || toTitle(rootSlug)),
+    [mode, apiRootName, rootSlug]
+  );
+  const childName = useMemo(() => {
+    if (mode !== "category") return "";
+    return (
+      apiChildName ||
+      products[0]?.category_id?.name ||
+      products[0]?.category?.name ||
+      toTitle(slug)
+    );
+  }, [mode, apiChildName, products, slug]);
+
+  const breadcrumb = (
+    <p className="spacing">
+      <Link to="/">Home</Link> /{" "}
+      {mode === "root" && <span>{rootName}</span>}
+      {mode === "category" && <>
+        <Link to={`/${rootSlug}`}>{rootName}</Link> / <span>{childName}</span>
+      </>}
+      {mode === "all" && <span>Products</span>}
+    </p>
+  );
+
+  const heading = mode === "category" ? childName : (mode === "root" ? rootName : "All Products");
 
   return (
     <div className="margintop">

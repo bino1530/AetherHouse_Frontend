@@ -1,4 +1,3 @@
-// src/components/nav/NavItem.jsx
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./navItem.css";
@@ -12,29 +11,19 @@ const NavItem = ({ root, menuBySlug }) => {
     () => menuBySlug?.[root.slug]?.children || [],
     [menuBySlug, root.slug]
   );
-  const rooms = useMemo(
-    () => menuBySlug?.[root.slug]?.rooms || [],
-    [menuBySlug, root.slug]
-  );
 
-  // Click ngoài để đóng
   useEffect(() => {
     const onOutside = (e) => {
-      if (wrapRef.current && !wrapRef.current.contains(e.target)) {
-        setOpen(false);
-      }
+      if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false);
     };
     document.addEventListener("pointerdown", onOutside);
     return () => document.removeEventListener("pointerdown", onOutside);
   }, []);
 
-  // Chuyển route thì đóng
   useEffect(() => { setOpen(false); }, [location.pathname]);
 
-  // Mở/đóng menu
   const handleRootClick = () => setOpen(v => !v);
-
-  const hasMenu = (cats?.length || 0) + (rooms?.length || 0) > 0;
+  const hasMenu = (cats?.length || 0) > 0;
 
   return (
     <div className={`navitem ${open ? "open" : ""}`} ref={wrapRef}>
@@ -47,6 +36,7 @@ const NavItem = ({ root, menuBySlug }) => {
       >
         {root.name}
       </button>
+
       <div
         className={`navitem__backdrop ${open ? "show" : ""}`}
         onClick={() => setOpen(false)}
@@ -74,27 +64,6 @@ const NavItem = ({ root, menuBySlug }) => {
             </div>
 
             <div className="dropdown__col">
-              <h4>Shop by Room</h4>
-              <ul>
-                {rooms.length ? (
-                  rooms.map((room) => (
-                    <li key={room.slug}>
-                      <Link
-                        to={`/${root.slug}/${room.slug}`}
-                        state={{ rootName: root.name, roomName: room.name }}
-                        onClick={() => setOpen(false)}
-                      >
-                        {room.name}
-                      </Link>
-                    </li>
-                  ))
-                ) : (
-                  <li className="muted">No items</li>
-                )}
-              </ul>
-            </div>
-
-            <div className="dropdown__col">
               <Link to={`/${root.slug}`} className="view-all" onClick={() => setOpen(false)}>
                 View all {root.name}
               </Link>
@@ -103,7 +72,7 @@ const NavItem = ({ root, menuBySlug }) => {
 
           {!hasMenu && (
             <div className="muted" style={{ marginTop: 8 }}>
-              * Root này hiện không có danh mục/phòng — vẫn có thể “View all”.
+              * Root này hiện không có danh mục — vẫn có thể “View all”.
             </div>
           )}
         </div>

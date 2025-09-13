@@ -6,10 +6,12 @@ import AdminLayout from "./Layouts/AdminLayout.jsx";
 import Home from "./pages/Home/Home.jsx";
 import Store from "./pages/Store/Store.jsx";
 import Products from "./pages/Products/Products.jsx";
+import ProductDetails from "./pages/ProductDetail/ProductDetail.jsx";
 import Explore from "./pages/Explore/Explore.jsx";
 import Login from "./pages/Login/Login.jsx";
 import Admin from "./pages/Admin/Admin.jsx";
 import Sign from "./pages/Sign/Sign.jsx";
+
 function App() {
   return (
     <Router>
@@ -24,6 +26,7 @@ function App() {
           {/* Room hoặc Category: /:rootSlug/:slug (bedroom hoặc pendant-lights) */}
           <Route path="/:rootSlug/:slug" element={<Products />} />
           <Route path="/explore" element={<Explore />} />
+          <Route path="/product/:slug" element={<ProductDetails />} />
         </Route>
 
         <Route element={<AdminLayout />}>
