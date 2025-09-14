@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom";
 
-function AdminLayout() {
+function Dashboard() {
   return (
     <>
       <Outlet />
     </>
-  );
+  );   
 }
 
-export default AdminLayout;
+export default Dashboard;

@@ -7,7 +7,7 @@ const Store = () => {
   const [loading, setLoading] = useState(true); // trạng thái loading
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/stores')
+    fetch('http://localhost:3000/api/stores')
     .then(res => res.json())
     .then(data => {
       setStores(data.stores)

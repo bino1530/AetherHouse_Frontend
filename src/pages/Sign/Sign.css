@@ -1,3 +1,5 @@
+
+
 .signup-container {
   display: flex;
   justify-content: center;
@@ -12,81 +14,83 @@
 
   font-family: 'Poppins', sans-serif;
 }
+
 /* Hộp sign up */
 .signup-box {
-  background: white;
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  background: var(--white-color);
+  padding: 4rem; /* 40px */
+  border-radius: 1.6rem; /* 16px */
+  box-shadow: 0 0.4rem 1.2rem rgba(0,0,0,0.1); /* 0 4px 12px */
   width: 100%;
-  max-width: 400px;
-  
+  max-width: 40rem; /* 400px */
 }
 
 .logo {
-  width: 120px;   
+  width: 12rem;   /* 120px */
   height: auto;     
   display: block;   
-  margin: 0 auto 20px auto; 
+  margin: 0 auto 2rem auto; /* 20px */
 }
-
 
 /* Tiêu đề */
 .title {
-  font-size: 20px;
+  font-size: 2rem; /* 20px */
   font-weight: 600;
-  margin-bottom: 5px;
+  margin-bottom: 0.5rem; /* 5px */
+  color: var(--black-color);
 }
 
 .subtitle {
-  font-size: 14px;
-  color: #6b7280;
-  margin-bottom: 20px;
+  font-size: 1.4rem; /* 14px */
+  color: var(--text-color);
+  margin-bottom: 2rem; /* 20px */
 }
 
 /* Form */
 .form input {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: 1.2rem; /* 12px */
+  margin-bottom: 1.5rem; /* 15px */
+  border: 0.1rem solid var(--gray-color); /* 1px */
+  border-radius: 0.8rem; /* 8px */
+  font-size: 1.4rem; /* 14px */
   outline: none;
   transition: border 0.2s;
+  background: var(--white-color);
+  color: var(--black-color);
 }
 
 .form input:focus {
-  border-color: #6d28d9;
+  border-color: var(--orange-color);
 }
 
 /* Nút */
 .form button {
   width: 100%;
-  padding: 12px;
-  background: #6d28d9;
-  color: white;
+  padding: 1.2rem; /* 12px */
+  background: var(--orange-color);
+  color: var(--white-color);
   font-weight: 500;
   border: none;
-  border-radius: 8px;
+  border-radius: 0.8rem; /* 8px */
   cursor: pointer;
-  font-size: 15px;
+  font-size: 1.5rem; /* 15px */
   transition: background 0.3s;
 }
 
 .form button:hover {
-  background: #5b21b6;
+  background: #c44a1a; /* hơi tối hơn màu cam gốc */
 }
 
 /* Chính sách */
 .policy {
-  margin-top: 20px;
-  font-size: 13px;
-  color: #6b7280;
+  margin-top: 2rem; /* 20px */
+  font-size: 1.3rem; /* 13px */
+  color: var(--text-color);
 }
 
 .policy a {
-  color: #6d28d9;
+  color: var(--orange-color);
   text-decoration: none;
 }
 

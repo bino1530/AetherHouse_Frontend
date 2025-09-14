@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import MainLayout from "./Layouts/MainLayout.jsx";
-import AdminLayout from "./Layouts/AdminLayout.jsx";
+import Dashboard from "./Layouts/Dashboard.jsx";
 
 import Home from "./pages/Home/Home.jsx";
 import Store from "./pages/Store/Store.jsx";
@@ -11,6 +11,7 @@ import Explore from "./pages/Explore/Explore.jsx";
 import Login from "./pages/Login/Login.jsx";
 import Admin from "./pages/Admin/Admin.jsx";
 import Sign from "./pages/Sign/Sign.jsx";
+import OrdersPage from "./pages/OrdersPage/OrdersPage.jsx";
 
 function App() {
   return (
@@ -29,10 +30,11 @@ function App() {
           <Route path="/product/:slug" element={<ProductDetails />} />
         </Route>
 
-        <Route element={<AdminLayout />}>
-          <Route path="/admin" element={<Admin />} />
+        <Route element={<Dashboard />}>
+         
           <Route path="/login" element={<Login />} />
           <Route path="/sign" element={<Sign />} />
+          <Route path="/orderspage" element={<OrdersPage />} />
         </Route>
       </Routes>
     </Router>

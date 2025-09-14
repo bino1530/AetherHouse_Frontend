@@ -8,14 +8,14 @@ import "./Explore.css";
 const Explore = () => {
   return (
     <div>
-      {/* Breadcrumb */}
+      {/* Breadcrumb */} #đường   dẫn trang hiển thị trang home/about us
       <div className="link_page pad margintop">
         <p className="spacing">
           <Link to="/">Home</Link> / About Us
         </p>
       </div>
 
-      {/* Giới thiệu thương hiệu */}
+      {/* Giới thiệu thương hiệu */} #Chứa thông tin về Tom Dixon, lịch sử, giải thưởng, triết lý thiết kế.Giới thiệu thương hiệu
       <div className="about-container">
         <h1>About Us</h1>
         <p className="intro">
@@ -46,8 +46,8 @@ const Explore = () => {
         </p>
       </div>
 
-      {/* Interview section */}
-      <div className="interview-container">
+      {/* Interview section */} #Section phỏng vấn (Interview) Hiển thị ảnh + trích dẫn + button + logo.Button: có thể dẫn tới bài phỏng vấn chi tiết.
+      <div className="interview-container"> 
         <div className="interview-image">
           <img src="/explore.webp" alt="Interview" />
 
@@ -72,7 +72,7 @@ const Explore = () => {
  </div>
 
 
-      {/* Interior Architecture Section */}
+      {/* Interior Architecture Section */} #Giới thiệu Design Research Studio.Bao gồm ảnh + nội dung + button + logo.
 <div className="drs-container">
   <div className="drs-image">
     <img src="/explore1.webp" alt="DRS" />
@@ -91,14 +91,11 @@ const Explore = () => {
   </div>
 </div>
 
+#Công dụng của Usp là gì điều khoản đảm bảo khách hàng
 <Usp />
-<div>
-  
+<div> 
 </div>
-
-
-
-      
+    
     </div>
   );
 };
