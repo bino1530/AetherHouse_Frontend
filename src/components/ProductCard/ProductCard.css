@@ -83,7 +83,7 @@
   border: 0.1rem solid rgba(0, 0, 0, 0.1);
   border-radius: 0.8rem;
   box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.06);
-  pointer-events: none; /* ⬅️ không chắn hover ảnh */
+  pointer-events: none; 
 }
 
 /* Hover effect giữ nguyên */
