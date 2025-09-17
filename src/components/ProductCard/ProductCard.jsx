@@ -4,7 +4,6 @@ import "./ProductCard.css";
 const getUrl = (img) =>
   (typeof img === "string" ? img : img?.url) || "/placeholder.png";
 
-// 👉 Tính status đầy đủ (có Pre-Order, Sale) + fallback theo is_hidden/quantity
 const deriveStatus = (p = {}) => {
   const norm = (v) => String(v ?? "").trim().toLowerCase();
 

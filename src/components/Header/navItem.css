@@ -65,7 +65,7 @@
 .navitem__dropdown {
   position: fixed;
   left: 0;
-  top: var(--header-h, 96px);   /* ngay dưới header */
+  top: var(--header-h, 96px);   
   width: 100vw;
   background: rgb(246, 246, 246);
   border-bottom-left-radius: 1.2rem;

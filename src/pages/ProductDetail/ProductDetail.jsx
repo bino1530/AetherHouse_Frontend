@@ -46,7 +46,6 @@ export default function ProductDetail() {
     setLoading(true);
     setError("");
     setProduct(null);
-
     (async () => {
       try {
         let id = idFromState;
@@ -57,7 +56,6 @@ export default function ProductDetail() {
           id = list.find((p) => p?.slug === productSlug)?._id;
           if (!id) throw new Error(`not-found slug=${productSlug}`);
         }
-
         const detailUrl = `/api/products/by-id/${id}`;
         const json = await fetchJSON(detailUrl, ac.signal);
         const p = json?.product || json;
@@ -203,12 +201,9 @@ export default function ProductDetail() {
                 ${Number(product.price || 0).toLocaleString()}
               </div>
               <button className="btn btn_primary" type="button">
-                Add To Bag
+                Add To Cart
               </button>
             </div>
-            <p className="pd_finance">
-              Pay later with <strong>Klarna</strong> <a href="#">Learn more</a>
-            </p>
           </div>
         </div>
       </div>

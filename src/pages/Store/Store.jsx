@@ -4,10 +4,10 @@ import {Link } from "react-router-dom";
 import Usp from "../../components/usp/usp.jsx"
 const Store = () => {
   const [stores , setStores] = useState([]);
-  const [loading, setLoading] = useState(true); // trạng thái loading
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/stores')
+    fetch('http://localhost:3000/api/stores')
     .then(res => res.json())
     .then(data => {
       setStores(data.stores)

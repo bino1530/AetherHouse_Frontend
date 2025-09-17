@@ -7,17 +7,30 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
-  const location = useLocation();
-  const handleMenuToggle = () => setIsMenuOpen(!isMenuOpen);
-  const toggleCart = () => setIsCartOpen((v) => !v);
   const [menu, setMenu] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(null);
+  const [mobilePath, setMobilePath] = useState([]);
+
   useEffect(() => {
     document.body.style.overflow = isCartOpen ? "hidden" : "";
     return () => (document.body.style.overflow = "");
   }, [isCartOpen]);
-  
+  const location = useLocation();
+
+  const handleMenuToggle = () => {
+    const next = !isMenuOpen;
+    setIsMenuOpen(next);
+    if (!next) setMobilePath([]);
+  };
+  const toggleCart = () => setIsCartOpen((v) => !v);
+
+  useEffect(() => {
+    const lock = isCartOpen || isMenuOpen;
+    document.body.style.overflow = lock ? "hidden" : "";
+    return () => (document.body.style.overflow = "");
+  }, [isCartOpen, isMenuOpen]);
+
   useEffect(() => {
     setLoading(true);
     fetch("http://localhost:3000/api/categories/menu")
@@ -53,21 +66,129 @@ const Header = () => {
     }
     return map;
   }, [menu]);
+
+  // --- MOBILE helpers ---
+  const currentRootSlug = mobilePath[0] || null;
+  const currentRoot = ROOTS.find((r) => r.slug === currentRootSlug) || null;
+  const mobileCats = useMemo(
+    () => (currentRootSlug ? menuBySlug[currentRootSlug]?.children || [] : []),
+    [menuBySlug, currentRootSlug]
+  );
+
+  const enterRoot = (rootSlug) => setMobilePath([rootSlug]);
+  const goBack = () => setMobilePath([]);
+
+  // Đóng menu khi đổi route
+  useEffect(() => {
+    setIsMenuOpen(false);
+    setMobilePath([]);
+  }, [location.pathname]);
+
   return (
     <div>
-      <div className={`mobile_nav ${isMenuOpen ? "active" : ""}`}>
-        <ul>
-          {ROOTS.map((root) => (
-            <li key={root.slug}>
-              <Link to={`/products/${root.slug}`}>{root.name}</Link>
-            </li>
-          ))}
-        </ul>
+      <div
+        className={`mobile_nav ${isMenuOpen ? "active" : ""} depth-${
+          mobilePath.length
+        }`}
+      >
+        <div className="mobile_panels">
+          <div
+            className="mobile_panel"
+            role="menu"
+            aria-label="Main categories"
+          >
+            <ul className="mobile_list">
+              {ROOTS.map((root) => (
+                <li key={root.slug} className="mobile_item">
+                  <button
+                    type="button"
+                    className="mobile_item_btn"
+                    onClick={() => enterRoot(root.slug)}
+                    aria-haspopup="true"
+                    aria-expanded={
+                      mobilePath.length === 1 && currentRootSlug === root.slug
+                    }
+                  >
+                    <span>{root.name}</span>
+                    <span className="mobile_caret">›</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mobile_panel" role="menu" aria-label="Sub categories">
+            <div className="mobile_panel_header">
+              <button
+                type="button"
+                className="mobile_back"
+                onClick={goBack}
+                aria-label="Back"
+              >
+                ←
+              </button>
+              <span className="mobile_panel_title">
+                {currentRoot?.name || "Categories"}
+              </span>
+            </div>
+
+            <ul className="mobile_list">
+              {currentRootSlug && mobileCats.length > 0 ? (
+                <>
+                  {mobileCats.map((cat) => (
+                    <li key={cat.slug} className="mobile_item">
+                      <Link
+                        to={`/products/${currentRootSlug}/${cat.slug}`}
+                        className="mobile_item_link"
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          setMobilePath([]);
+                        }}
+                      >
+                        {cat.name}
+                      </Link>
+                    </li>
+                  ))}
+                  <li className="mobile_item view_all">
+                    <Link
+                      to={`/products/${currentRootSlug}`}
+                      className="mobile_item_link strong"
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setMobilePath([]);
+                      }}
+                    >
+                      View all {currentRoot?.name}
+                    </Link>
+                  </li>
+                </>
+              ) : currentRootSlug ? (
+                <>
+                  <li className="mobile_item muted">No items</li>
+                  <li className="mobile_item view_all">
+                    <Link
+                      to={`/products/${currentRootSlug}`}
+                      className="mobile_item_link strong"
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setMobilePath([]);
+                      }}
+                    >
+                      View all {currentRoot?.name}
+                    </Link>
+                  </li>
+                </>
+              ) : (
+                <li className="mobile_item muted">Choose a category</li>
+              )}
+            </ul>
+          </div>
+        </div>
       </div>
       <header
         className={`header spacing ${
           location.pathname === "/" ? "home-header" : "inner-header"
-        }`}
+        } ${isMenuOpen ? "menu-open" : ""}`}
       >
         <div className="header_col1">
           <Link to="/">
@@ -218,7 +339,12 @@ const Header = () => {
           </div>
         </div>
         <Cart isOpen={isCartOpen} toggleCart={toggleCart} items={cartItems} />
-        </header>
+      </header>
+      <div
+        className={`navitem__backdrop_mobile ${isMenuOpen ? "show" : ""}`}
+        onClick={() => setIsMenuOpen(false)}
+        aria-hidden={!isMenuOpen}
+      />
     </div>
   );
 };

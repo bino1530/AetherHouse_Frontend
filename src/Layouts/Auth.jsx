@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 
-function AdminLayout() {
+function Auth() {
   return (
     <>
       <Outlet />
@@ -8,4 +8,4 @@ function AdminLayout() {
   );
 }
 
-export default AdminLayout;
+export default Auth;

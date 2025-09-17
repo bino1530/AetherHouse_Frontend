@@ -43,7 +43,7 @@ const Login = () => {
             placeholder="Password (8 digits)"
             required
             pattern="[0-9]{8}"
-            title="Password phải gồm đúng 8 chữ số"
+            title="Password phải trên 8 chữ số"
           />
           <button type="submit">Login</button>
         </form>
