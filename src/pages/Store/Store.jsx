@@ -41,7 +41,7 @@ const Store = () => {
             <div className="store_col" key={store._id}>
               <a href={`/store/${store.id}`}>
                 <div className="store_frame_img">
-                  <img src={store.images[0].url} alt={store.name} />
+                  <img src={store.images.url} alt={store.name} />
                 </div>
               </a>
 
