@@ -30,7 +30,7 @@ const SignUp = () => {
       setLoading(true);
       setMessage("");
 
-      const res = await axios.post("http://localhost:3000/api/users/registerUser", {
+      const res = await axios.post("http://localhost:3000/api/auth/registerUser", {
         name: formData.name,
         email: formData.email,
         password: formData.password,
@@ -41,7 +41,6 @@ const SignUp = () => {
     } catch (error) {
       console.error("Chi tiết lỗi:", error.response?.data || error.message);
 
-      // Lấy message chi tiết từ backend nếu có
       const backendMsg = error.response?.data?.message || error.response?.data || error.message;
 
       setMessage("❌ Có lỗi xảy ra: " + backendMsg);
@@ -83,9 +82,9 @@ const SignUp = () => {
           <input
             type="password"
             name="password"
-            placeholder="Password (ít nhất 8 ký tự)"
+            placeholder="Password (ít nhất 6 ký tự)"
             required
-            minLength="8"
+            minLength="6"
             value={formData.password}
             onChange={handleChange}
           />
@@ -94,7 +93,7 @@ const SignUp = () => {
             name="confirmPassword"
             placeholder="Confirm Password"
             required
-            minLength="8"
+            minLength="6"
             value={formData.confirmPassword}
             onChange={handleChange}
           />

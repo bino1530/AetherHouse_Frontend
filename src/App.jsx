@@ -27,7 +27,6 @@ function App() {
           <Route path="/store" element={<Store />} />
           <Route path="/explore" element={<Explore />} />
         </Route>
-
         <Route element={<Auth />}>
           <Route path="/login" element={<Login />} />
           <Route path="/sign" element={<Sign />} /> 

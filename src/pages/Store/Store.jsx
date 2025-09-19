@@ -61,7 +61,7 @@ const Store = () => {
                 </div>
 
                 <div className="store_info--bottom">
-                  <p>{store.desctription}</p>
+                  <p>{store.description}</p>
                 </div>
               </div>
             </div>
