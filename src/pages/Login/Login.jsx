@@ -1,31 +1,71 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../lib/axios";
 import "./Login.css";
 
-const Login = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+const MIN_PASS = 6;
+
+export default function Login() {
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState({ error: "", success: "" });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    if (msg.error || msg.success) setMsg({ error: "", success: "" });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Sign Up Data:", formData);
+    setMsg({ error: "", success: "" });
+
+    const email = form.email.trim();
+    const password = form.password;
+
+    if (!email) return setMsg({ error: "Vui lòng nhập email", success: "" });
+    if (password.length < MIN_PASS)
+      return setMsg({
+        error: `Mật khẩu phải ≥ ${MIN_PASS} ký tự`,
+        success: "",
+      });
+
+    try {
+      setLoading(true);
+      const { data } = await api.post("/auth/login", { email, password });
+
+      if (data?.accessToken) localStorage.setItem("token", data.accessToken);
+      localStorage.setItem("user", JSON.stringify(data));
+      setMsg({ error: "", success: "Đăng nhập thành công!" });
+      setTimeout(() => navigate("/userprofile", { replace: true }), 300);
+    } catch (err) {
+      const errorText =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        "Đăng nhập thất bại. Vui lòng thử lại.";
+      setMsg({ error: errorText, success: "" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="signup-container  style={{ backgroundImage: `url(${bgImage})` }}">
+    <div
+      className="signup-container"
+      style={{
+        backgroundImage:
+          "url(https://res.cloudinary.com/depbw3f5t/image/upload/v1757577575/background_2_efgu4s.webp)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <div className="signup-box">
         {/* Logo */}
-        <img className="logo" src="./logo.webp" alt="" />
+        <img className="logo" src="./logo.webp" alt="Logo" />
 
         {/* Tiêu đề */}
         <h2 className="title">Login</h2>
-        <p className="subtitle">Choose how you'd to login</p>
+        <p className="subtitle">Welcome back! Please log in.</p>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="form">
@@ -33,29 +73,33 @@ const Login = () => {
             type="email"
             name="email"
             placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
             required
-            pattern="[^@]+@[^@]+\.[a-zA-Z]{2,6}"
-            title="Email phải chứa ký tự @"
           />
+
           <input
             type="password"
             name="password"
-            placeholder="Password (8 digits)"
+            placeholder={`Password (≥ ${MIN_PASS} ký tự)`}
+            value={form.password}
+            onChange={handleChange}
             required
-            pattern="[0-9]{8}"
-            title="Password phải trên 8 chữ số"
           />
-          <button type="submit">Login</button>
+
+          {msg.success && <p className="success">{msg.success}</p>}
+          {msg.error && <p className="error">{msg.error}</p>}
+
+          <button type="submit" disabled={loading}>
+            {loading ? "Processing..." : "Login"}
+          </button>
         </form>
 
-        {/* Chính sách */}
+        {/* Liên kết */}
         <p className="policy">
-          By signing up, you agree to our{" "}
-          <Link to="/sign">Sign In</Link>
+          Don’t have an account? <Link to="/signup">Sign Up</Link>
         </p>
       </div>
     </div>
   );
-};
-
-export default Login;
+}

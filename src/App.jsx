@@ -10,6 +10,7 @@ import ProductDetails from "./pages/ProductDetail/ProductDetail.jsx";
 import Explore from "./pages/Explore/Explore.jsx";
 import Login from "./pages/Login/Login.jsx";
 import Sign from "./pages/Sign/Sign.jsx";
+import UserProfile from "./pages/UserProfile/UserProfile.jsx"
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/store" element={<Store />} />
           <Route path="/explore" element={<Explore />} />
+          <Route path="/userprofile" element={<UserProfile />} />
         </Route>
         <Route element={<Auth />}>
           <Route path="/login" element={<Login />} />

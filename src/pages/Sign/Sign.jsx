@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { Link , useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Sign.css";
 
@@ -13,6 +13,16 @@ const SignUp = () => {
 
   const [message, setMessage] = useState(""); 
   const [loading, setLoading] = useState(false); 
+
+
+const navigate = useNavigate();
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,7 +40,7 @@ const SignUp = () => {
       setLoading(true);
       setMessage("");
 
-      const res = await axios.post("http://localhost:3000/api/auth/registerUser", {
+      const res = await axios.post("api/auth/registerUser", {
         name: formData.name,
         email: formData.email,
         password: formData.password,
@@ -38,6 +48,10 @@ const SignUp = () => {
 
       setMessage("✅ Đăng ký thành công!");
       console.log("Kết quả:", res.data);
+
+       timerRef.current = setTimeout(() => {
+        navigate("/login");
+      }, 3000);
     } catch (error) {
       console.error("Chi tiết lỗi:", error.response?.data || error.message);
 
