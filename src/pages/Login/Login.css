@@ -93,3 +93,51 @@
 .policy a:hover {
   text-decoration: underline;
 }
+
+.success{
+  color: green;
+  text-align: right;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.error{
+  color: red;
+  text-align: right;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.btn-login {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  min-height: 44px;
+}
+
+.btn-login.is-loading {
+  pointer-events: none;
+  opacity: .9;
+}
+
+.btn-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+/* spinner */
+.logo-spinner {
+  width: 20px;
+  height: 20px;
+  animation: spin 0.9s linear infinite;
+}
+
+/* track và arc để dễ nhìn trên mọi nền */
+.spinner-track { opacity: .2; }
+.spinner-arc { opacity: 1; }
+
+/* quay */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
