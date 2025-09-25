@@ -4,12 +4,13 @@ import MainLayout from "./Layouts/MainLayout.jsx";
 import Auth from "./Layouts/Auth.jsx";
 import Home from "./pages/Home/Home.jsx";
 import Store from "./pages/Store/Store.jsx";
+import StoreDetail from "./pages/StoreDetail/StoreDetail.jsx";
 import Products from "./pages/Products/Products.jsx";
 import ProductDetails from "./pages/ProductDetail/ProductDetail.jsx";
 import Explore from "./pages/Explore/Explore.jsx";
 import Login from "./pages/Login/Login.jsx";
 import SignUp from "./pages/Sign/Sign.jsx";
-import UserProfile from "./pages/UserProfile/UserProfile.jsx"
+import UserProfile from "./pages/UserProfile/UserProfile.jsx";
 
 function App() {
   return (
@@ -24,12 +25,14 @@ function App() {
             element={<ProductDetails />}
           />
           <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/store" element={<Store />} />
+          <Route path="/store/:storeId/:city" element={<StoreDetail />} />
           <Route path="/explore" element={<Explore />} />
         </Route>
         <Route element={<Auth />}>
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} /> 
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/userprofile" element={<UserProfile />} />
         </Route>
       </Routes>
