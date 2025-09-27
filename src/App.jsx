@@ -11,7 +11,7 @@ import Explore from "./pages/Explore/Explore.jsx";
 import Login from "./pages/Login/Login.jsx";
 import SignUp from "./pages/Sign/Sign.jsx";
 import UserProfile from "./pages/UserProfile/UserProfile.jsx";
-
+import CheckoutPage from "./pages/checkout/Checkout.jsx";
 function App() {
   return (
     <Router>
@@ -27,8 +27,9 @@ function App() {
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/store" element={<Store />} />
-          <Route path="/store/:storeId/:city" element={<StoreDetail />} />
+          <Route path="/store/:slug" element={<StoreDetail />} />
           <Route path="/explore" element={<Explore />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
         </Route>
         <Route element={<Auth />}>
           <Route path="/login" element={<Login />} />

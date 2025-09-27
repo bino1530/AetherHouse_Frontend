@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import "./ProductDetail.css";
-
+import { addToCartLocal } from "../../lib/cartStore.jsx";
 const deriveStatus = (p = {}) => {
   const norm = (v) =>
     String(v ?? "")
@@ -43,19 +43,19 @@ export default function ProductDetail() {
 
   useEffect(() => {
     const ac = new AbortController();
-    setLoading(true);
-    setError("");
-    setProduct(null);
     (async () => {
       try {
+        setLoading(true);
+        setError("");
+        setProduct(null);
         let id = idFromState;
         if (!id) {
           const listUrl = `/api/products/by-cate/${rootSlug}/${categorySlug}`;
           const data = await fetchJSON(listUrl, ac.signal);
-          const list = Array.isArray(data?.products) ? data.products : [];
-          id = list.find((p) => p?.slug === productSlug)?._id;
+          id = (data?.products || []).find((p) => p?.slug === productSlug)?._id;
           if (!id) throw new Error(`not-found slug=${productSlug}`);
         }
+
         const detailUrl = `/api/products/by-id/${id}`;
         const json = await fetchJSON(detailUrl, ac.signal);
         const p = json?.product || json;
@@ -64,14 +64,14 @@ export default function ProductDetail() {
         setProduct(p);
         document.title = `${p.name} – AetherHouse`;
       } catch (e) {
-        if (e.name === "AbortError") return;
-        console.error("[ProductDetail]", e);
-        setError("Không tìm thấy sản phẩm.");
+        if (e.name !== "AbortError") {
+          console.error("[ProductDetail]", e);
+          setError("Không tìm thấy sản phẩm.");
+        }
       } finally {
         if (!ac.signal.aborted) setLoading(false);
       }
     })();
-
     return () => ac.abort();
   }, [rootSlug, categorySlug, productSlug, idFromState]);
 
@@ -120,17 +120,12 @@ export default function ProductDetail() {
 
         <div className="pd_info spacing">
           <div className="pd_info_title">
-            <h1 className="pd_title">
-              {product.name}
-            </h1>
-            <span className="studio_status--inline">
-                {st.text}
-            </span>
+            <h1 className="pd_title">{product.name}</h1>
+            <span className="studio_status--inline">{st.text}</span>
           </div>
 
           {cateName && <p className="pd_cate">{cateName}</p>}
 
-          {/* mô tả */}
           {product.description && (
             <div className="pd_desc">
               {String(product.description)
@@ -141,7 +136,6 @@ export default function ProductDetail() {
             </div>
           )}
 
-          {/* kích thước: tĩnh trước đã */}
           <div className="pd_metrics">
             <dl className="pd_dims">
               <div>
@@ -184,11 +178,10 @@ export default function ProductDetail() {
 
           <hr className="pd_divider" />
 
-          {/* warranty line */}
           <p className="pd_warranty">
             <span className="ico_shield" aria-hidden="true"></span>
             Ultimate peace of mind. An additional 1-year warranty when purchased
-            from TomDixon.net
+            from AetherHouse.
           </p>
 
           {/* purchase card */}
@@ -200,8 +193,14 @@ export default function ProductDetail() {
               <div className="pd_price">
                 ${Number(product.price || 0).toLocaleString()}
               </div>
-              <button className="btn btn_primary" type="button">
-                Add To Cart
+              <button
+                className="btn_style_3"
+                type="button"
+                onClick={() => {
+                  addToCartLocal(product);
+                }}
+              >
+                <span>Add To Cart</span>
               </button>
             </div>
           </div>

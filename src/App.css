@@ -115,7 +115,7 @@ ul{
     height: 100%;
     background-color: var(--black-color);
     transition: left 0.3s ease-in-out;
-    z-index: 0; /* nằm dưới chữ */
+    z-index: 0; 
 }
 
 .btn_style_2:hover::after {

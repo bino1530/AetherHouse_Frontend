@@ -1,23 +1,52 @@
-
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55); /* tăng độ tối */
+  z-index: 0;
+}
 /* Banner */
 .store-detail-banner {
   position: relative;
-  height: 60vh;
+  height: 100vh;
   background-size: cover;
   background-position: center;
-  display: flex;
-  align-items: flex-end;
-  color: white;
   overflow: hidden;
   margin-bottom: 2rem;
+  display: flex;
+  align-items: flex-end; /* đẩy chữ xuống dưới */
+}
+.store-detail-banner-content {
+  position: relative;
+  z-index: 1;
+  padding: 3rem;
+  color: white;
+  max-width: 100%;
+  left: 5rem;
+  bottom: 5rem;
 }
 
-.store-detail-banner::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+.store-detail-title {
+  font-size: 4.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  color: white;
 }
+
+.store-detail-desc {
+  font-size: 1.5rem;
+  max-width: 800px;
+  padding: 10px 0;
+  color: white;
+}
+
+/* Nút */
+.btn_style_1 {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
 
 .store-detail-banner-content {
   position: relative;
@@ -26,7 +55,7 @@
 }
 
 .store-detail-banner-content h1 {
-  font-size: 2.5rem;
+  font-size: 4.5rem;
   margin-bottom: 0.5rem;
 }
 
@@ -35,28 +64,11 @@
   line-height: 1.5;
 }
 
-/* Button style */
-.store-detail-btn {
-  padding: 0.8rem 1.5rem;
-  border-radius: 50px;
-  border: none;
-  background: #fff;
-  color: #000;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: all 0.3s;
-}
 
-
-.store-detail-btn:hover {
-  background: #000;
-  color: #fff;
-}
 
 /* Info section */
 .store-info {
   background: #fff;
-  padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.05);
   margin-bottom: 3rem;
@@ -80,18 +92,8 @@
 .store-info .contact a:hover {
   text-decoration: underline;
 }
-.store-detail-page {
-  font-family: 'Poppins', Arial, sans-serif;
-  color: #333;
-  max-width: 2000px;
-}
 
-.store-detail-page img {
-  width: 100%;
-  max-height: 900px;
-  object-fit: cover;
-  margin-bottom: 1.5rem;
-}
+
 .store-info h2 {
   padding: 5px;
   color: black;
@@ -104,55 +106,6 @@
 
 
 
-/* StoreCard.css */
-.store-card {
-  display: flex;
-  background-color: #000; /* giống background hình */
-  color: #fff;
-  overflow: hidden;
-  margin: 20px 0;
-  padding: 30px;
-}
-
-.store-card-image img {
-  width: 80%;
-  object-fit: cover;
-  border-radius:32px;
-}
-
-.store-card-content {
-  padding: 30px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.store-card-content h2 {
-  font-size: 3rem;
-}
-
-.store-card-content p {
-  margin-bottom: 10px;
-}
-
-.store-card-content button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: transparent;
-  border: 1px solid #fff;
-  color: #fff;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.store-card-content button:hover {
-  background-color: #fff;
-  color: #000;
-}
-
-
-/* ------------------- Responsive ------------------- */
 
 /* Tablet */
 @media (max-width: 1024px) {
@@ -194,15 +147,12 @@
     font-size: 1.2rem;
   }
 
-  .store-card-content button {
-    padding: 8px 16px;
-  }
 }
 
 /* Mobile */
 @media (max-width: 768px) {
   .store-detail-banner {
-    height: 40vh;
+    height: 100vh;
   }
 
   .store-detail-banner-content h1 {
@@ -218,7 +168,7 @@
   }
 
   .store-info p {
-    font-size: 1rem;
+font-size: 1rem;
   }
 
   .store-card {
@@ -239,8 +189,4 @@
     font-size: 1rem;
   }
 
-  .store-card-content button {
-    padding: 6px 12px;
-    font-size: 0.9rem;
-  }
 }

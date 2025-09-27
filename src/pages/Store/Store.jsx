@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-
-import "./store.css";
 import { Link } from "react-router-dom";
 import Usp from "../../components/usp/usp.jsx";
+import "./store.css";
+
 const Store = () => {
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/stores")
+    fetch("http://localhost:8000/api/stores") // ⚠️ backend port 8000
       .then((res) => res.json())
       .then((data) => {
         setStores(data.stores);
@@ -28,11 +28,11 @@ const Store = () => {
         </p>
       </div>
 
-      <div className="store_main pad  ">
+      <div className="store_main pad">
         <div className="store_title spacing">
           <h1>Looking For a Store</h1>
         </div>
-        <div className="store_row spacing ">
+        <div className="store_row spacing">
           {loading ? (
             <p>⏳ Đang tải...</p>
           ) : stores.length === 0 ? (
@@ -40,11 +40,19 @@ const Store = () => {
           ) : (
             stores.map((store) => (
               <div className="store_col" key={store._id}>
-                <Link to={`/store/${store._id}/${store.city}`}>
-                  <div className="store_frame_img">
-                    <img src={store.images.url} alt={store.name} />
-                  </div>
-                </Link>
+                {/* Link chỉ dùng slug */}
+               {store.slug ? (
+  <Link to={`/store/${store.slug}`}>
+    <div className="store_frame_img">
+      <img src={store.images.url} alt={store.name} />
+    </div>
+  </Link>
+) : (
+  <div className="store_frame_img">
+    <img src={store.images.url} alt={store.name} />
+  </div>
+)}
+
                 <div className="store_info">
                   <div className="store_info--top">
                     <div className="store_info--col1">
@@ -52,17 +60,13 @@ const Store = () => {
                       <h2 className="country">{store.city}</h2>
                     </div>
                     <div className="store_info--col2">
-                      <Link
-                        to={`/store/${store._id}/${store.city}`}
-                        className="style_a"
-                      >
+                      <Link to={`/store/${store.slug}`} className="style_a">
                         <button className="btn_style_1">
                           <span>Store Page</span>
                         </button>
                       </Link>
                     </div>
                   </div>
-
                   <div className="store_info--bottom">
                     <p>{store.description}</p>
                   </div>
