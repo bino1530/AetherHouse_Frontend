@@ -168,39 +168,6 @@ const closeNameModal = () => {
 
 
 
-// PASSWORD
-const handleSavePassword = async () => {
-  setPwErr("");
-  setPwOk("");
-
-  if (!pwNew || pwNew.length < 6) return setPwErr("Mật khẩu mới tối thiểu 6 ký tự.");
-  if (pwNew !== pwConfirm) return setPwErr("Xác nhận mật khẩu không khớp.");
-
-  try {
-    setSavingPw(true);
-    await api.put(`/users/${user._id}/password`, {
-      currentPassword,     // bắt buộc khi tự đổi
-      newPassword: pwNew,
-    });
-    setPwOk("Password Change Success.");
-    // clear fields
-    setCurrentPassword("");
-    setPwNew("");
-    setPwConfirm("");
-  } catch (err) {
-    setPwErr(err?.response?.data?.error || err?.response?.data?.message || "Change Password Failed.");
-  } finally {
-    setSavingPw(false);
-  }
-};
-
-
-
-
-
-
-
-
 
 
 
@@ -501,54 +468,6 @@ const handleSavePassword = async () => {
                   </div>
                 </div>
 
-                <div className="ua-card">
-                  <p className="ua-name"><strong>Change Password</strong></p>
-
-                  <div className="ua-field">
-                    <label className="ua-name">Current Password</label>
-                    <input
-                      type="password"
-                      className="ua-input"
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                      placeholder="Type Current Password"
-                    />
-                  </div>
-
-                  <div className="ua-field">
-                    <label className="ua-name">New Password</label>
-                    <input
-                      type="password"
-                      className="ua-input"
-                      value={pwNew}
-                      onChange={(e) => setPwNew(e.target.value)}
-                      placeholder="Type New Password"
-                    />
-                  </div>
-
-                  <div className="ua-field">
-                    <label className="ua-name">Confirm New Password</label>
-                    <input
-                      type="password"
-                      className="ua-input"
-                      value={pwConfirm}
-                      onChange={(e) => setPwConfirm(e.target.value)}
-                      placeholder="Type Confirm New Password"
-                    />
-                  </div>
-
-                  {pwErr && <p className="ua-error" style={{ marginTop: 6 }}>{pwErr}</p>}
-                  {pwOk && <p className="ua-ok" style={{ marginTop: 6 }}>{pwOk}</p>}
-
-                  <button
-                    className="ua-btn ua-btn-primary"
-                    onClick={handleSavePassword}
-                    disabled={savingPw}
-                    style={{ marginTop: 8 }}
-                  >
-                    {savingPw ? "Saving..." : "Update Password"}
-                  </button>
-                </div>
 
 
 

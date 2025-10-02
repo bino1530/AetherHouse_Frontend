@@ -1,66 +1,49 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import "./Sign.css";
+import React, { useState } from "react";
+import { Link, useNavigate , useLocation } from "react-router-dom";
+import api from "../../lib/axios";
+import "./Login.css";
 
-const SignUp = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  const [message, setMessage] = useState("");
+const Verify = () => {
+  const navigate  = useNavigate();
+  const location = useLocation();
+  const savedEmail = location.state?.Email;
+  const [otp , SetOtp] = useState('');
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
-  const navigate = useNavigate();
-  const timerRef = useRef(null);
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, []);
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleRegister = async(e) => {
     e.preventDefault();
-
-    if (formData.password !== formData.confirmPassword) {
-      setMessage("❌ Password doesnt match!");
-      return;
-    }
-
+  
+    setError("");
+    setMessage("");
     try {
-      setLoading(true);
-      setMessage("");
+    
 
-      const res = await axios.post("api/auth/registerUser", {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-      });
+      const res = await api.post("/auth/verifyUser" , {email:savedEmail , otp});
+      const { accessToken, user } = res.data || {};
 
-      setMessage("✅ Sign up success!");
-      console.log("Kết quả:", res.data);
+    if (accessToken) {
+      localStorage.setItem("token", accessToken);
+      localStorage.setItem("token_expiry", String(Date.now() + 60 * 60 * 1000));
+      localStorage.setItem("user", JSON.stringify(user));
+    }
+      await new Promise((r) => setTimeout(r, 2000));
+      navigate("/userprofile", { replace: true });
 
-      timerRef.current = setTimeout(() => {
-        navigate("/login");
-      }, 3000);
-    } catch (error) {
-      console.error("Chi tiết lỗi:", error.response?.data || error.message);
-
-      const backendMsg =
-        error.response?.data?.message || error.response?.data || error.message;
-
-      setMessage("❌ Something went wrong: " + backendMsg);
+    } catch (err) {
+     console.log(err)
+       const msg =
+        err?.response?.data?.error ||
+        err?.response?.data?.message ||
+        err?.message ||
+        "Verification failed. Please try again.";
+      setError(msg);
     } finally {
       setLoading(false);
     }
+
+    
   };
 
   return (
@@ -132,62 +115,30 @@ const SignUp = () => {
         </Link>
 
         {/* Tiêu đề */}
-        <h2 className="title">Sign up</h2>
-        <p className="subtitle">Create your account</p>
+        <h2 className="title">Enter Code</h2>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="form">
-          <input
-            type="text"
-            name="name"
-            placeholder="Full name"
-            required
-            value={formData.name}
-            onChange={handleChange}
+        {/* >>> NEW: Hiển thị lỗi nếu có */}
+
+        {/* Form (giữ nguyên) */}
+        <form onSubmit={handleRegister} className="form">
+           <input 
+            type="text" 
+            placeholder="OTP Code" 
+            required 
+            onChange={(e) => SetOtp(e.target.value)}
           />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            required
-            pattern="[^@]+@[^@]+\.[a-zA-Z]{2,63}"
-            title="Email must be valid (with @ and valid domain)"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password (at least 6 characters)"
-            required
-            minLength="6"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            required
-            minLength="6"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-          />
+        {error && <div className="auth-alert error" role="alert">{error}</div>}
+
           <button type="submit" disabled={loading}>
-            {loading ? "Đang xử lý..." : "Sign Up"}
+            {loading ? "Processing..." : "Sign Up"}
           </button>
         </form>
 
         {/* Thông báo */}
         {message && <p className="message">{message}</p>}
-
-        {/* Link Login */}
-        <p className="policy">
-          Already have an account? <Link to="/login">Login</Link>
-        </p>
       </div>
     </div>
   );
 };
 
-export default SignUp;
+export default Verify;

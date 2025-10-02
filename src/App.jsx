@@ -9,9 +9,9 @@ import Products from "./pages/Products/Products.jsx";
 import ProductDetails from "./pages/ProductDetail/ProductDetail.jsx";
 import Explore from "./pages/Explore/Explore.jsx";
 import Login from "./pages/Login/Login.jsx";
-import SignUp from "./pages/Sign/Sign.jsx";
 import UserProfile from "./pages/UserProfile/UserProfile.jsx";
 import CheckoutPage from "./pages/checkout/Checkout.jsx";
+import Verify from "./pages/Login/Verify.jsx";
 function App() {
   return (
     <Router>
@@ -33,7 +33,7 @@ function App() {
         </Route>
         <Route element={<Auth />}>
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/verify" element={<Verify />} />
           <Route path="/userprofile" element={<UserProfile />} />
         </Route>
       </Routes>

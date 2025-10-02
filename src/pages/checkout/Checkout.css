@@ -41,12 +41,13 @@
 
 .co_express {
   display: flex;
-  gap: 1rem;
+  justify-content: center;
+  gap: 5rem;
 }
 .btn_chip {
   border: 0;
   border-radius: 1.2rem;
-  padding: 1.2rem 1.6rem;
+  padding: 1.3rem 6rem;
   font-weight: 800;
   cursor: pointer;
   background: #6c4cff;
@@ -131,7 +132,6 @@
   width: 6rem;
   height: 6rem;
   border-radius: 1.2rem;
-  overflow: hidden;
   border: 0.1rem solid #eee;
   background: #fff;
 }
@@ -142,19 +142,20 @@
 }
 .co_qtypill {
   position: absolute;
-  top: -0.6rem;
+  top: -0.8rem;
   left: -0.6rem;
   min-width: 2.2rem;
   height: 2.2rem;
   border-radius: 1.1rem;
   background: #111;
-  color: #fff;
+  color: var(--white-color);
   font-weight: 800;
   font-size: 1.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.18);
+  
 }
 
 .co_meta {

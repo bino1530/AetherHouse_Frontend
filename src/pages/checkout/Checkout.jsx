@@ -70,7 +70,7 @@ export default function CheckoutPage() {
           <div className="co_section">
             <h3 className="co_label">Express checkout</h3>
             <div className="co_express">
-              <button className="btn_chip">shop</button>
+              <button className="btn_chip">Shop</button>
               <button className="btn_chip">PayPal</button>
               <button className="btn_chip dark">G Pay</button>
             </div>
