@@ -2,10 +2,12 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
+
 .pd_galleryGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
+
 
 .pd_img {
   width: 100%;
@@ -18,22 +20,26 @@
 .pd_info p {
   margin: 0 0;
 }
-.pd_info_title{
+
+.pd_info_title {
   display: flex;
   justify-content: space-between;
 }
+
 .pd_title {
-  font-size: 3.2rem; 
+  font-size: 3.2rem;
   line-height: 1.15;
   font-weight: 700;
   letter-spacing: -0.01em;
-  margin: 0 0 0.8rem 0; 
+  margin: 0 0 0.8rem 0;
   justify-self: left;
 }
+
 .pd_badge {
   display: inline-block;
   margin-left: 1rem;
-  padding: 0.4rem 0.8rem; /* 4px 8px */
+  padding: 0.4rem 0.8rem;
+  /* 4px 8px */
   font-size: 1.2rem;
   border-radius: 1.2rem;
   background: #ff7a33;
@@ -43,16 +49,19 @@
 
 .pd_cate {
   font-size: 1.6rem;
-  color: #6b7280; /* gray-500 */
+  color: #6b7280;
+  /* gray-500 */
   margin: 0 0 1.6rem 0;
 }
 
 .pd_desc {
   font-size: 1.6rem;
   line-height: 1.7;
-  color: #111827; /* gray-900 */
+  color: #111827;
+  /* gray-900 */
   margin-bottom: 2.4rem;
 }
+
 .pd_desc p {
   margin: 0 0 1.2rem 0;
 }
@@ -64,20 +73,25 @@
   gap: 1.6rem;
   margin-bottom: 2rem;
 }
+
 .pd_dims {
   display: grid;
   grid-template-columns: repeat(3, max-content);
-  gap: 1.6rem 2.4rem; /* row/col gaps */
+  gap: 1.6rem 2.4rem;
+  /* row/col gaps */
   margin: 0;
 }
-.pd_dims > div {
+
+.pd_dims>div {
   display: grid;
   gap: 0.4rem;
 }
+
 .pd_dims dt {
   font-size: 1.3rem;
   color: #6b7280;
 }
+
 .pd_dims dd {
   margin: 0;
   font-size: 1.5rem;
@@ -89,7 +103,7 @@
 .pd_info_title span {
   display: inline-flex;
   align-items: center;
-  background: #f48200; 
+  background: #f48200;
   padding: 0.3rem 3rem;
   font-size: 1.2rem;
   font-weight: 700;
@@ -105,6 +119,7 @@
   border-radius: 0.8rem;
   overflow: hidden;
 }
+
 .pd_units .unit {
   padding: 0.6rem 0.8rem;
   font-size: 1.2rem;
@@ -113,6 +128,7 @@
   border: 0;
   cursor: pointer;
 }
+
 .pd_units .unit.is-active {
   background: #f3f4f6;
   font-weight: 600;
@@ -131,15 +147,33 @@
   gap: 1.2rem;
   font-size: 1.5rem;
 }
+
 .pd_variant .swatch {
   width: 1.6rem;
   height: 1.6rem;
   border-radius: 50%;
-  box-shadow: 0 0 0 0.2rem #fff, 0 0 0 0.1rem #d1d5db; /* ring nhẹ */
+  box-shadow: 0 0 0 0.2rem #fff, 0 0 0 0.1rem #d1d5db;
+  /* ring nhẹ */
 }
+
+.variant_colors {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+}
+
 .variant_label {
   font-weight: 600;
 }
+
 .more_colors {
   margin-left: auto;
   background: none;
@@ -149,14 +183,169 @@
   color: #111827;
 }
 
+/* Popup xổ ra bên phải */
+.color_panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 750px;
+  max-width: 90%;
+  height: 100vh;
+  background: #f8f8f8;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  border-radius: 40px 0 0 40px;
+  box-shadow: -10px 0 25px rgba(0, 0, 0, 0.1);
+  animation: slideInRight 0.4s ease forwards;
+}
+
+/* Header */
+.panel_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 28px;
+  border-bottom: 1px solid #ddd;
+}
+
+.panel_header h3 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.close_btn {
+  border: none;
+  background: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+/* Nội dung chọn màu */
+.panel_section {
+  padding: 24px 28px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.panel_section h4 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+}
+
+/* Lưới màu */
+.color_grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.color_card {
+  position: relative;
+  width: 120px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: #fff;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.color_card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.color_card.active {
+  border-color: #111;
+}
+
+.color_square {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.color_info {
+  margin-top: 10px;
+}
+
+.color_name {
+  font-weight: 500;
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.color_price {
+  font-size: 1.3rem;
+  color: #666;
+  margin: 0;
+}
+
+.color_selected {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #111;
+  color: #fff;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+/* Footer */
+.panel_footer {
+  border-top: 1px solid #ddd;
+  padding: 20px 28px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn_confirm {
+  background: #111;
+  color: #fff;
+  padding: 10px 26px;
+  border-radius: 30px;
+  font-size: 1.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn_confirm:hover {
+  background: #000;
+  transform: translateY(-1px);
+}
+
+/* Animation */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
 /* warranty line */
 .pd_warranty {
   display: flex;
   align-items: center;
   gap: 0.8rem;
   font-size: 1.4rem;
-  color: #374151; /* gray-700 */
+  color: #374151;
+  /* gray-700 */
 }
+
 .ico_shield::before {
   content: "🛡️";
   font-size: 1.6rem;
@@ -171,23 +360,27 @@
   border-radius: 1.2rem;
   background: #fafafa;
 }
+
 .pd_eta {
   font-size: 1.4rem;
   color: #6b7280;
   margin: 0 0 1.4rem 0;
 }
+
 .pd_priceRow {
   display: flex;
   align-items: center;
   gap: 1.2rem;
   margin-bottom: 1.2rem;
 }
+
 .pd_price {
   font-size: 2.6rem;
   font-weight: 700;
   letter-spacing: -0.01em;
   margin-right: auto;
 }
+
 .btn {
   appearance: none;
   border: 0;
@@ -197,10 +390,12 @@
   font-size: 1.6rem;
   font-weight: 600;
 }
+
 .btn_primary {
   background: #111;
   color: #fff;
 }
+
 .btn_primary:hover {
   filter: brightness(0.9);
 }
@@ -210,6 +405,7 @@
   color: #6b7280;
   margin: 0;
 }
+
 .pd_finance a {
   color: inherit;
   text-decoration: underline;

@@ -38,8 +38,13 @@ export default function ProductDetail() {
   const idFromState = useLocation()?.state?.id;
 
   const [product, setProduct] = useState(null);
+  const [showColors, setShowColors] = useState(false);
+  const [variants, setVariants] = useState([]); // thêm state variant
+  const [selectedVariant, setSelectedVariant] = useState(null); // variant đang chọn
+  const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
 
   useEffect(() => {
     const ac = new AbortController();
@@ -62,6 +67,19 @@ export default function ProductDetail() {
         if (!p?._id) throw new Error("bad-payload");
 
         setProduct(p);
+
+        const variantUrl = `/api/variants/by-product/${p._id}`;
+        const variantData = await fetchJSON(variantUrl, ac.signal);
+        const variantList = variantData?.variant?.Variation || [];
+        setVariants(variantList);
+
+        // ✅ chọn variant mặc định là màu "Cooper" (nếu có)
+        const defaultVar =
+          variantList.find(v => v.color?.toLowerCase() === "copper") || variantList[0];
+
+        setSelectedVariant(defaultVar);
+        setSelectedImage(defaultVar?.images?.[0] || p?.images?.[0]?.url || "");
+
         document.title = `${p.name} – AetherHouse`;
       } catch (e) {
         if (e.name !== "AbortError") {
@@ -105,11 +123,15 @@ export default function ProductDetail() {
       <div className="pd_grids ">
         <div className="pd_gallery">
           <div className="pd_galleryGrid">
-            {imgs.map((im, i) => (
+            {/* Nếu variant được chọn có ảnh riêng thì ưu tiên hiển thị ảnh đó */}
+            {(selectedVariant?.images && selectedVariant.images.length > 0
+              ? selectedVariant.images
+              : imgs
+            ).map((im, i) => (
               <img
                 key={i}
-                src={im?.url || "/placeholder.png"}
-                alt={`${product.name} ${i + 1}`}
+                src={im?.url || im || "/placeholder.png"}
+                alt={`${product.name} - ${selectedVariant?.color || "default"}`}
                 loading="lazy"
                 onError={handleImgErr}
                 className="pd_img"
@@ -163,19 +185,84 @@ export default function ProductDetail() {
 
           <hr className="pd_divider" />
 
-          {/* màu sắc (tĩnh) */}
+          {/* variant */}
           <div className="pd_variant">
-            <span
-              className="swatch"
-              style={{ backgroundColor: "#b87333" }}
-              aria-hidden="true"
-            ></span>
-            <span className="variant_label">Copper</span>
-            <button className="more_colors" type="button">
-              9 More Colours ▸
-            </button>
-          </div>
+            {/* Hiển thị tất cả màu (chỉ xem, không click) */}
+            <div className="variant_colors">
+              {variants.map((v) => (
+                <span
+                  key={v._id}
+                  className="swatch"
+                  style={{ backgroundColor: v.hex || "#ccc" }}
+                  aria-label={v.color}
+                  title={v.color}
+                ></span>
+              ))}
+            </div>
 
+            <button
+              className="more_colors"
+              type="button"
+              onClick={() => setShowColors((s) => !s)}
+            >
+              {variants.length - 1} More Colours ▸
+            </button>
+
+            {/* Giữ nguyên popup */}
+            {showColors && (
+              <>
+                <div className="overlay" onClick={() => setShowColors(false)}></div>
+                <div className="color_panel slide_in_right">
+                  <div className="panel_header">
+                    <h3>Product Configuration</h3>
+                    <button
+                      className="close_btn"
+                      onClick={() => setShowColors(false)}
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  <div className="panel_section">
+                    <h4>Select Colour</h4>
+                    <div className="color_grid">
+                      {variants.map((v) => (
+                        <div
+                          key={v._id}
+                          className={`color_card ${selectedVariant?._id === v._id ? "active" : ""}`}
+                          onClick={() => {
+                            setSelectedVariant(v);
+                            setSelectedImage(v.images?.[0] || "");
+                          }}
+                        >
+                          <div
+                            className="color_square"
+                            style={{ backgroundColor: v.hex || "#ccc" }}
+                          ></div>
+                          <div className="color_info">
+                            <p className="color_name">{v.color}</p>
+                            {v.price && <p className="color_price">£{v.price}</p>}
+                          </div>
+                          {selectedVariant?._id === v._id && (
+                            <div className="color_selected">✔</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="panel_footer">
+                    <button
+                      className="btn_confirm"
+                      onClick={() => setShowColors(false)}
+                    >
+                      Confirm Selection
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
           <hr className="pd_divider" />
 
           <p className="pd_warranty">
