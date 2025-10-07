@@ -8,7 +8,7 @@ const Store = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/stores") // ⚠️ backend port 8000
+    fetch("http://localhost:3000/api/stores")
       .then((res) => res.json())
       .then((data) => {
         setStores(data.stores);
