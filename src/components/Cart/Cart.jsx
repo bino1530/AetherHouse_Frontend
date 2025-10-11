@@ -61,9 +61,8 @@ const [loadingCheckout, setLoadingCheckout] = useState(false);
                 <img src={item.image} alt={item.name} />
                 <div className="cart_info">
                   <p className="cart_name">
-                    <strong>{item.name}</strong>{" "}
+                    <strong>{item.name}</strong>
                   </p>
-                  <small className="cart_desc">{item.desc}</small>
                   <p className="cart_price">
                     £{Number(item.price).toLocaleString()}
                   </p>

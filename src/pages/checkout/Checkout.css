@@ -2,9 +2,7 @@
   max-width: 120rem;
   margin: 0 auto;
 }
-.pad {
-  padding: 2rem;
-}
+
 .margintop {
   margin-top: 10rem;
 }
@@ -13,6 +11,7 @@
   display: grid;
   grid-template-columns: 1.4fr 1fr;
   gap: 4rem;
+  margin-bottom: 5rem;
 }
 @media (max-width: 90rem) {
   .co_grid {
@@ -100,10 +99,13 @@
 
 .co_actions {
   margin-top: 1rem;
+
 }
-.continue_btn {
+.continue_btn{
   width: 100%;
 }
+
+
 
 .co_right {
   background: #fafafa;

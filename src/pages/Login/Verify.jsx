@@ -20,7 +20,7 @@ const Verify = () => {
     try {
     
 
-      const res = await api.post("/auth/verifyUser" , {email:savedEmail , otp});
+      const res = await api.post("/auth/verify" , {email:savedEmail , otp});
       const { accessToken, user } = res.data || {};
 
     if (accessToken) {

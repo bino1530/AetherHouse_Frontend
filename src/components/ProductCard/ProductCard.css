@@ -140,6 +140,10 @@
   color: var(--black-color);
 }
 
+
+
+
+
 @media screen and (max-width: 1060px) {
   .row_studio_fav_content {
     grid-template-columns: 1fr;

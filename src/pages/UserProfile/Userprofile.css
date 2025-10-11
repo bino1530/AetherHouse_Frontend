@@ -393,6 +393,39 @@ body {
   margin-left: 1rem;
 }
 
+.ua-muted {
+  background: #fafafa;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 16px 20px;
+  line-height: 1.6;
+  font-size: 15px;
+  color: #333;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+  transition: all 0.2s ease;
+}
+
+.ua-muted:hover {
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  border-color: #dcdcdc;
+}
+
+.ua-muted div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.ua-muted div::before {
+  content: "•";
+  color: #888;
+  font-size: 18px;
+  line-height: 1;
+}
+
+
 /* Mobile (<768px) */
 @media (max-width: 767px) {
   .od-header-inner {

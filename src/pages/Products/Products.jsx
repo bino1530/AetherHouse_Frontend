@@ -4,67 +4,80 @@ import "./products.css";
 import ProductCard from "../../components/ProductCard/ProductCard.jsx";
 import FilterRow from "../../components/Filter/FilterRow.jsx";
 
-const toTitle = (s="") =>
-  s.split("-").map(w => (w[0]?.toUpperCase()||"") + w.slice(1)).join(" ");
+const toTitle = (s = "") => s.split("-").map(w => (w[0]?.toUpperCase() || "") + w.slice(1)).join(" ");
 
-const sortByCategoryThenName = (a,b) => {
-  const aCat = (a?.category_id?.name || a?.category?.name || "").toLowerCase();
-  const bCat = (b?.category_id?.name || b?.category?.name || "").toLowerCase();
-  if (aCat !== bCat) return aCat.localeCompare(bCat);
-  return (a?.name || "").localeCompare(b?.name || "");
-};
+
+
+
+const byCateThenName = (a, b) =>
+  ((a?.category_id?.name || a?.category?.name || "").toLowerCase())
+    .localeCompare((b?.category_id?.name || b?.category?.name || "").toLowerCase())
+  || (a?.name || "").localeCompare(b?.name || "");
+
+
+
+  
 
 export default function Products() {
   const { rootSlug, slug } = useParams();
-  const mode = useMemo(() => (slug ? "category" : rootSlug ? "root" : "all"), [rootSlug, slug]);
+  const mode = slug ? "category" : rootSlug ? "root" : "all";
+  const path = useMemo(() => (
+    mode === "category" ? `/api/products/by-cate/${rootSlug}/${slug}` :
+    mode === "root"     ? `/api/products/by-cate/${rootSlug}`:`/api/products`
+  ), [mode, rootSlug, slug]);
 
-  const path = useMemo(() => {
-    if (mode === "category") return `/api/products/by-cate/${rootSlug}/${slug}`;
-    if (mode === "root")     return `/api/products/by-cate/${rootSlug}`;
-    return `/api/products`;
-  }, [mode, rootSlug, slug]);
 
-  const [products, setProducts] = useState([]);
-  const [loading,  setLoading]  = useState(true);
-  const [error,    setError]    = useState("");
+  const [state, setState] = useState({ items: [], loading: true, error: "" });
+
+
+
 
   useEffect(() => {
     const ac = new AbortController();
-    setLoading(true); setError(""); setProducts([]);
-
-    fetch(path, { signal: ac.signal })
-      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
-      .then(data => {
-        const list = Array.isArray(data?.products) ? data.products : [];
-        setProducts(list.filter(p => !p.is_hidden).sort(sortByCategoryThenName));
-      })
-      .catch(e => { if (e.name !== "AbortError") setError("Không lấy được danh sách sản phẩm."); })
-      .finally(() => setLoading(false));
+    setState({ items: [], loading: true, error: "" });
+    (async () => {
+      try {
+        const r = await fetch(path, { signal: ac.signal });
+        if (!r.ok) throw new Error();
+        const data = await r.json();
+        const items = (data?.products || []).filter(p => !p.is_hidden).sort(byCateThenName);
+        setState({ items, loading: false, error: "" });
+      } catch (e) {
+        if (e.name !== "AbortError") setState({error: "lỗi" });
+      }
+    })();
 
     return () => ac.abort();
   }, [path]);
 
+
+
+
+  const { items, loading, error } = state;
   const rootName  = mode === "all" ? "Products" : toTitle(rootSlug);
   const childName = mode === "category"
-    ? (products[0]?.category_id?.name || products[0]?.category?.name || toTitle(slug))
+    ? (items[0]?.category_id?.name || items[0]?.category?.name || toTitle(slug))
     : "";
 
-  const breadcrumb = (
-    <p className="spacing">
-      <Link to="/">Home</Link> /{" "}
-      {mode === "root" && <span>{rootName}</span>}
-      {mode === "category" && <>
-        <Link to={`/${rootSlug}`}>{rootName}</Link> / <span>{childName}</span>
-      </>}
-      {mode === "all" && <span>Products</span>}
-    </p>
-  );
-  const heading = mode === "category" ? childName : (mode === "root" ? rootName : "All Products");
+
+
 
   return (
     <div className="margintop">
-      <div className="link_page pad">{breadcrumb}</div>
-      <h1 className="title spacing">{heading}</h1>
+      <div className="link_page pad spacing">
+        <Link to="/">Home</Link> /{" "}
+        {mode === "all" && <span>Products</span>}
+        {mode === "root" && <span>{rootName}</span>}
+        {mode === "category" && (
+          <>
+            <Link to={`/${rootSlug}`}>{rootName}</Link> / <span>{childName}</span>
+          </>
+        )}
+      </div>
+
+      <h1 className="title spacing">
+        {mode === "category" ? childName : mode === "root" ? rootName : "All Products"}
+      </h1>
 
       <FilterRow />
       <hr className="spacing" />
@@ -78,19 +91,18 @@ export default function Products() {
           </div>
         )}
 
-        {error && !loading && <p style={{ color: "red" }}>{error}</p>}
+        {!loading && error && <p style={{ color: "red" }}>{error}</p>}
 
         {!loading && !error && (
           <div className="product_row row">
-            {products.map(p => {
-              const inferredRoot =
-                rootSlug ||
-                p?.category_id?.parent?.slug ||
-                p?.category?.parent?.slug ||
-                "";
-              return <ProductCard key={p._id} product={p} rootSlug={inferredRoot} />;
-            })}
-            {products.length === 0 && <p>No Products.</p>}
+            {items.length === 0 && <p>No Products.</p>}
+            {items.map(p => (
+              <ProductCard
+                key={p._id}
+                product={p}
+                rootSlug={rootSlug || p?.category_id?.parent?.slug || p?.category?.parent?.slug || ""}
+              />
+            ))}
           </div>
         )}
       </div>

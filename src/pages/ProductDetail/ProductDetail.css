@@ -1,6 +1,17 @@
-.pd_grids {
+
+.overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 100000;  
+}
+
+
+.pd_grids{
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;         
 }
 
 .pd_galleryGrid {
@@ -16,7 +27,11 @@
   display: block;
   background: var(--white-color);
 }
-
+.pd_info{
+   position: sticky;
+  top: calc(var(--header-h, 6rem) + 1rem);
+  align-self: start;
+}
 .pd_info p {
   margin: 0 0;
 }
@@ -183,16 +198,15 @@
   color: #111827;
 }
 
-/* Popup xổ ra bên phải */
 .color_panel {
   position: fixed;
-  top: 0;
+  top:0;
   right: 0;
-  width: 750px;
+  width: 900px;
   max-width: 90%;
   height: 100vh;
   background: #f8f8f8;
-  z-index: 10000;
+  z-index: 100001;
   display: flex;
   flex-direction: column;
   border-radius: 40px 0 0 40px;
@@ -415,5 +429,12 @@
   .pd_galleryGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.2rem;
+  }
+}
+@media (max-width: 756px) {
+  .pd_grids {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 3rem;
+    
   }
 }

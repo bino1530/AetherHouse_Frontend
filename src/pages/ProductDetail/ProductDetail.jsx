@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import "./ProductDetail.css";
 import { addToCartLocal } from "../../lib/cartStore.jsx";
+import Usp from "../../components/usp/usp.jsx";
 const deriveStatus = (p = {}) => {
   const norm = (v) =>
     String(v ?? "")
@@ -39,12 +40,22 @@ export default function ProductDetail() {
 
   const [product, setProduct] = useState(null);
   const [showColors, setShowColors] = useState(false);
-  const [variants, setVariants] = useState([]); // thêm state variant
-  const [selectedVariant, setSelectedVariant] = useState(null); // variant đang chọn
+  const [variants, setVariants] = useState([]); 
+  const [pendingVariant, setPendingVariant] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState(null); 
   const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+
+useEffect(() => {
+  if (showColors) setPendingVariant(selectedVariant);
+}, [showColors, selectedVariant]);
+
+useEffect(() => {
+  document.body.style.overflow = showColors ? "hidden" : "";
+  return () => (document.body.style.overflow = "");
+}, [showColors]);
 
   useEffect(() => {
     const ac = new AbortController();
@@ -73,7 +84,6 @@ export default function ProductDetail() {
         const variantList = variantData?.variant?.Variation || [];
         setVariants(variantList);
 
-        // ✅ chọn variant mặc định là màu "Cooper" (nếu có)
         const defaultVar =
           variantList.find(v => v.color?.toLowerCase() === "copper") || variantList[0];
 
@@ -120,10 +130,9 @@ export default function ProductDetail() {
         <span>{product.name}</span>
       </p>
 
-      <div className="pd_grids ">
+      <div className="pd_grids">
         <div className="pd_gallery">
           <div className="pd_galleryGrid">
-            {/* Nếu variant được chọn có ảnh riêng thì ưu tiên hiển thị ảnh đó */}
             {(selectedVariant?.images && selectedVariant.images.length > 0
               ? selectedVariant.images
               : imgs
@@ -158,30 +167,7 @@ export default function ProductDetail() {
             </div>
           )}
 
-          <div className="pd_metrics">
-            <dl className="pd_dims">
-              <div>
-                <dt>Width</dt>
-                <dd>19.0</dd>
-              </div>
-              <div>
-                <dt>Height</dt>
-                <dd>28.0</dd>
-              </div>
-              <div>
-                <dt>Length</dt>
-                <dd>19.0</dd>
-              </div>
-            </dl>
-            <div className="pd_units" role="tablist" aria-label="Units">
-              <button className="unit is-active" type="button">
-                CM
-              </button>
-              <button className="unit" type="button">
-                IN
-              </button>
-            </div>
-          </div>
+          
 
           <hr className="pd_divider" />
 
@@ -205,63 +191,11 @@ export default function ProductDetail() {
               type="button"
               onClick={() => setShowColors((s) => !s)}
             >
-              {variants.length - 1} More Colours ▸
+              {variants.length} More Colours ▸
             </button>
 
             {/* Giữ nguyên popup */}
-            {showColors && (
-              <>
-                <div className="overlay" onClick={() => setShowColors(false)}></div>
-                <div className="color_panel slide_in_right">
-                  <div className="panel_header">
-                    <h3>Product Configuration</h3>
-                    <button
-                      className="close_btn"
-                      onClick={() => setShowColors(false)}
-                    >
-                      ✕
-                    </button>
-                  </div>
-
-                  <div className="panel_section">
-                    <h4>Select Colour</h4>
-                    <div className="color_grid">
-                      {variants.map((v) => (
-                        <div
-                          key={v._id}
-                          className={`color_card ${selectedVariant?._id === v._id ? "active" : ""}`}
-                          onClick={() => {
-                            setSelectedVariant(v);
-                            setSelectedImage(v.images?.[0] || "");
-                          }}
-                        >
-                          <div
-                            className="color_square"
-                            style={{ backgroundColor: v.hex || "#ccc" }}
-                          ></div>
-                          <div className="color_info">
-                            <p className="color_name">{v.color}</p>
-                            {v.price && <p className="color_price">£{v.price}</p>}
-                          </div>
-                          {selectedVariant?._id === v._id && (
-                            <div className="color_selected">✔</div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="panel_footer">
-                    <button
-                      className="btn_confirm"
-                      onClick={() => setShowColors(false)}
-                    >
-                      Confirm Selection
-                    </button>
-                  </div>
-                </div>
-              </>
-            )}
+            
           </div>
           <hr className="pd_divider" />
 
@@ -284,7 +218,7 @@ export default function ProductDetail() {
                 className="btn_style_3"
                 type="button"
                 onClick={() => {
-                  addToCartLocal(product);
+                  addToCartLocal(product, selectedVariant); 
                 }}
               >
                 <span>Add To Cart</span>
@@ -293,6 +227,64 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
+      {showColors && (
+              <>
+                <div className="overlay" onClick={() => setShowColors(false)} />
+
+                <div
+                  className="color_panel slide_in_right"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="panel_title"
+                >
+                  <div className="panel_header">
+                    <h3 id="panel_title">Product Configuration</h3>
+                    <button className="close_btn" onClick={() => setShowColors(false)}>✕</button>
+                  </div>
+
+                  <div className="panel_section">
+                    <h4>Select Colour</h4>
+                    <div className="color_grid">
+                      {variants.map((v) => (
+                        <div
+                          key={v._id}
+                          className={`color_card ${selectedVariant?._id === v._id ? "active" : ""}`}
+                          onClick={() => {
+                            setPendingVariant(v);
+                            setSelectedImage(v.images?.[0] || "");
+                          }}
+                        >
+                          <div className="color_square" style={{ backgroundColor: v.hex || "#ccc" }} />
+                          <div className="color_info">
+                            <p className="color_name">{v.color}</p>
+                            {v.price && <p className="color_price">£{v.price}</p>}
+                          </div>
+                          {pendingVariant?._id === v._id && (
+                            <div className="color_selected">✔</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="panel_footer">
+                    <button
+                      className="btn_style_3"
+                      onClick={() => {
+                        if (!pendingVariant) return;
+                        setSelectedVariant(pendingVariant);
+                        setSelectedImage(pendingVariant.images?.[0] || "");
+                        setShowColors(false);
+                      }}
+                    >
+                      <span>Confirm Selection</span>
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+      <Usp />
+              
     </div>
   );
 }

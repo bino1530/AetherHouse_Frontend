@@ -12,13 +12,20 @@ const Header = () => {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(null);
   const [mobilePath, setMobilePath] = useState([]);
-const bagCount = useCartBadge();
+  const bagCount = useCartBadge();
 
   useEffect(() => {
     document.body.style.overflow = isCartOpen ? "hidden" : "";
     return () => (document.body.style.overflow = "");
   }, [isCartOpen]);
   const location = useLocation();
+
+useEffect(() => {
+  const openCart = () => setIsCartOpen(true); // hoặc gọi toggleCart(true)
+  window.addEventListener("cart:open", openCart);
+
+  return () => window.removeEventListener("cart:open", openCart);
+}, []);
 
   const [user, setUser] = useState(null);
   useEffect(() => {
@@ -90,7 +97,6 @@ const bagCount = useCartBadge();
     return map;
   }, [menu]);
 
-  // --- MOBILE helpers ---
   const currentRootSlug = mobilePath[0] || null;
   const currentRoot = ROOTS.find((r) => r.slug === currentRootSlug) || null;
   const mobileCats = useMemo(
@@ -101,7 +107,6 @@ const bagCount = useCartBadge();
   const enterRoot = (rootSlug) => setMobilePath([rootSlug]);
   const goBack = () => setMobilePath([]);
 
-  // Đóng menu khi đổi route
   useEffect(() => {
     setIsMenuOpen(false);
     setMobilePath([]);

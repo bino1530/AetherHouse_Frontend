@@ -30,12 +30,13 @@ function App() {
           
           <Route path="/store/:slug" element={<StoreDetail />} />
           <Route path="/explore" element={<Explore />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
         </Route>
         <Route element={<Auth />}>
           <Route path="/login" element={<Login />} />
           <Route path="/verify" element={<Verify />} />
           <Route path="/userprofile" element={<UserProfile />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+
         </Route>
       </Routes>
     </Router>

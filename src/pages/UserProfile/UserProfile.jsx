@@ -29,56 +29,48 @@ export default function UserProfile() {
   const [nameErr, setNameErr] = useState("");
   const [showNameModal, setShowNameModal] = useState(false);
 
-  // Password change
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [pwNew, setPwNew] = useState("");
-  const [pwConfirm, setPwConfirm] = useState("");
-  const [savingPw, setSavingPw] = useState(false);
-  const [pwErr, setPwErr] = useState("");
-  const [pwOk, setPwOk] = useState("");
+
+  
+useEffect(() => {
+  const cached = JSON.parse(localStorage.getItem("user") || "null");
+  const id = cached?._id;
+  const hasToken = !!localStorage.getItem("token");
+  if (!hasToken || !id) return navigate("/login", { replace: true });
+
+  api.get(`/users/${id}`)
+    .then(({ data }) => {
+      const user = data?.user ?? cached;
+      setUser(user);
+      setAddress(data?.addresses || []); 
+      localStorage.setItem("user", JSON.stringify(user));
+    })
+    .catch((err) => {
+            console.error("Lỗi khi lấy user:", err); 
+    });
+}, [navigate]);
+
+
+
+
+
+
+
+
+
 
 
 
   
-useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return navigate("/login", { replace: true });
-    const raw = localStorage.getItem("user");
-    const cached = raw ? JSON.parse(raw) : null;
-    const id = cached?._id;
-    if (!id) return navigate("/login", { replace: true });
-
-    (async () => {
-      try {
-        const { data } = await api.get(`/users/${id}`);
-        const fresh = data?.user || cached;
-        setUser(fresh);
-        localStorage.setItem("user", JSON.stringify(fresh));
-      } catch (err) {
-        const code = err?.response?.status;
-        if (code === 401 || code === 403) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
-          return navigate("/login", { replace: true });
-        }
-        setUser(cached || null);
-      }
-    })();
-  }, [navigate]);
-
-  const avatarUrl = user?.avatar?.url || "";
-
-
-
-
-
-
-
-
 // AVATAR
+
+
   const handleOpenPicker = () => {
     fileInputRef.current?.click();
   };
+
+
+
+
   const handlePickAvatar = (e) => {
     const files = Array.from(e.target.files || []);
     setAvatarErr("");
@@ -90,6 +82,9 @@ useEffect(() => {
       setAvatarPreview("");
     }
   };
+
+
+
   const handleSaveAvatar = async () => {
     const first = avatarFiles[0];
     if (!first || !user?._id) return setAvatarErr("Chưa chọn file.");
@@ -114,6 +109,7 @@ useEffect(() => {
       setSavingAvatar(false);
     }
   };
+  const avatarUrl = user?.avatar?.url || "";
 
 
 
@@ -142,30 +138,73 @@ const closeNameModal = () => {
   setNameErr("");
 };
 
-  const handleSaveName = async () => {
-    if (!newName?.trim()) return setNameErr("Name không được để trống.");
-    if (!user?._id) return setNameErr("Không tìm thấy user.");
-    try {
-      setSavingName(true);
-      setNameErr("");
-      await api.put(`/users/${user._id}/name`, { name: newName.trim() });
-      const current = JSON.parse(localStorage.getItem("user") || "{}");
-      localStorage.setItem(
-        "user",
-        JSON.stringify({ ...current, name: newName.trim() })
-      );
-      setShowNameModal(false);
-    } catch (err) {
-      setNameErr(err?.response?.data?.error || "Cập nhật name thất bại.");
-    } finally {
-      window.location.reload();
-      setSavingName(false);
-    }
-  };
+const handleSaveName = async () => {
+
+  try {
+    setSavingName(true);
+    await api.put(`/users/${user._id}/infor`, { name: newName.trim(), email: user.email });
+    const updatedUser = { ...JSON.parse(localStorage.getItem("user") || "{}"), name: newName.trim() };
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+    setShowNameModal(false);
+    window.location.reload();
+  } catch (err) {
+    setNameErr(err?.response?.data?.error || "Cập nhật name thất bại.");
+  } finally {
+    setSavingName(false);
+  }
+};
 
 
 
+// Email
+  const [addressList, setAddress] = useState([]);
+  const [addressValue , setAddressValue] = useState('');
+  const [wardValue , SetWardValue] = useState('');
+  const [countryValue , SetCountryValue] = useState('');
+  const [phoneValue , SetPhoneValue] = useState('');
+  const [cityValue , SetCityValue] = useState('');
+  const [loading , SetLoading] = useState(false);
+  const [showAddressModal, setShowAddressModal] = useState(false);
 
+
+const handleSaveAddress = async () => {
+  try {
+    SetLoading(true);
+    const id = JSON.parse(localStorage.getItem("user")||"{}")?._id;
+    const payload = {
+      name: user?.name,
+      address: addressValue,
+      city: cityValue,
+      ward: wardValue,
+      country: countryValue,
+      phone: phoneValue,
+      user_id: id,
+    };
+
+    if (addressList.length === 0) {
+      await api.post("/address", payload);                
+    } else {
+      await api.put(`/address/${addressList[0]._id}/upaddress`, payload); 
+    }    const { data } = await api.get(`/users/${id}`);
+    setAddress(data?.addresses || []);
+    setShowAddressModal(false);
+  } catch (e) {
+    alert("Lưu address thất bại!");
+  } finally {
+    SetLoading(false);
+  }
+};
+
+
+const openAddressModal = () => {
+  const a = addressList[0]; 
+  setAddressValue(a?.address || "");
+  SetWardValue(a?.ward || "");
+  SetCountryValue(a?.country || "");
+  SetPhoneValue(a?.phone || "");
+  SetCityValue(a?.city || "");
+  setShowAddressModal(true);
+};
 
 
 
@@ -180,14 +219,21 @@ const closeNameModal = () => {
 
 
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login", { replace: true });
-  };
+const handleLogout = () => {
+  const token = localStorage.getItem("token");
+  const p = token ? api.post("/auth/logout") : Promise.resolve();
+
+  p.catch(err => console.error("Logout failed:", err))
+   .finally(() => {
+     localStorage.removeItem("token");
+     localStorage.removeItem("user");
+     localStorage.removeItem("token_expiry");
+     window.location.href = "/";
+   });
+};
 
   useEffect(() => {
-    function onDocClick(e) {
+    function onDocClick(e) { 
       if (!dropdownRef.current) return;
       if (!dropdownRef.current.contains(e.target)) setOpen(false);
     }
@@ -476,13 +522,26 @@ const closeNameModal = () => {
 
                 <div className="ua-card">
                   <p className="ua-card-title">
-                    Addresses <button className="ua-btn">+ Add</button>
+                    Address
+                    <button className="ua-btn" onClick={openAddressModal}>
+                      {addressList.length ? "Edit" : "+ Add"}
+                    </button>
                   </p>
 
-                  <p className="ua-muted">
-                    You haven’t added any addresses yet.
-                  </p>
+                  {addressList.length ? (
+                    <div className="ua-muted">
+                      <div>Address: {addressList[0].address}</div>
+                      <div>Ward: {addressList[0].ward}</div>
+                      <div>City: {addressList[0].city}</div>
+                      <div>Country: {addressList[0].country}</div>
+                      <div>Phone: {addressList[0].phone}</div>
+                    </div>
+                  ) : (
+                    <p className="ua-muted">You haven’t added any addresses yet.</p>
+                  )}
                 </div>
+
+                
               </section>
             </>
           )}
@@ -576,6 +635,38 @@ const closeNameModal = () => {
           </div>
         </div>
       )}
+
+
+
+
+
+
+      {/* address modal */}
+      {showAddressModal && (
+                  <div className="ua-modal-backdrop" onClick={e=>e.target===e.currentTarget&&setShowAddressModal(false)}>
+                    <div className="ua-modal">
+                      <div className="ua-modal-header">
+                        <h3>{addressList.length ? "Edit address" : "Add address"}</h3>
+                        <button className="ua-modal-x" onClick={()=>setShowAddressModal(false)}>×</button>
+                      </div>
+
+                      <div className="ua-modal-body grid">
+                        <input className="ua-input" placeholder="Address" value={addressValue} onChange={e=>setAddressValue(e.target.value)}/>
+                        <input className="ua-input" placeholder="Ward" value={wardValue} onChange={e=>SetWardValue(e.target.value)}/>
+                        <input className="ua-input" placeholder="City" value={cityValue} onChange={e=>SetCityValue(e.target.value)}/>
+                        <input className="ua-input" placeholder="Country" value={countryValue} onChange={e=>SetCountryValue(e.target.value)}/>
+                        <input className="ua-input" placeholder="Phone" value={phoneValue} onChange={e=>SetPhoneValue(e.target.value)}/>
+                      </div>
+
+                      <div className="ua-modal-footer">
+                        <button className="ua-btn" onClick={()=>setShowAddressModal(false)} disabled={loading}>Cancel</button>
+                        <button className="ua-btn ua-btn-primary" onClick={handleSaveAddress} disabled={loading}>
+                          {loading ? "Saving..." : "Save"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
     </div>
   );
 }

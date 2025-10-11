@@ -9,7 +9,7 @@ const StoreDetail = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/stores/slug/${slug}`)
+    fetch(`http://localhost:3000/api/stores/slug/${slug}`)
       .then((res) => res.json())
       .then((data) => {
         setStore(data.store);
