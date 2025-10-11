@@ -82,7 +82,7 @@ const Wrapper = disabled ? "div" : Link;
 
         <div className="studio_info_wrapper">
           <div className="studio_info_content">
-            <h3>{product?.name}</h3>
+            <h1>{product?.name}</h1>
             {(product?.category_id?.name || product?.category?.name) && (
               <p className="studio_category">
                 {product?.category_id?.name || product?.category?.name}

@@ -36,12 +36,10 @@ const StoreDetail = () => {
         {/* 🟢 Banner hiển thị title + description */}
         <div
           className="store-detail-banner"
-          style={{ backgroundImage: `url(${store.images.url})` }}
+          style={{ backgroundImage: `url(${store?.images?.url || "/placeholder.jpg"})` }}
         >
-          {/* Overlay làm tối nền */}
-          <div className="overlay"></div>
-
-          {/* Content chữ nằm dưới */}
+          <div className="store-detail-overlay" />
+          
           <div className="store-detail-banner-content spacing">
             <h1 className="store-detail-title">{store.city}</h1>
             <p className="store-detail-desc">{store.description}</p>

@@ -5,10 +5,10 @@
 .link_page p {
   margin: 0;
 }
-.title {
-  font-size: 4rem;
+.title-product {
+  font-size: 3rem;
   font-weight: 600;
-  margin-bottom: 2rem;
+  padding-top: 2rem;
 }
 .desc_text {
   margin: 0;

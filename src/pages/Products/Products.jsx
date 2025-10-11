@@ -64,7 +64,13 @@ export default function Products() {
 
   return (
     <div className="margintop">
-      <div className="link_page pad spacing">
+      
+      <h1 className="title-product spacing">
+        {mode === "category" ? childName : mode === "root" ? rootName : "All Products"}
+      </h1>
+
+      <hr className="spacing" />
+<div className="link_page pad spacing">
         <Link to="/">Home</Link> /{" "}
         {mode === "all" && <span>Products</span>}
         {mode === "root" && <span>{rootName}</span>}
@@ -74,13 +80,7 @@ export default function Products() {
           </>
         )}
       </div>
-
-      <h1 className="title spacing">
-        {mode === "category" ? childName : mode === "root" ? rootName : "All Products"}
-      </h1>
-
       <FilterRow />
-      <hr className="spacing" />
 
       <div className="products spacing">
         {loading && (
