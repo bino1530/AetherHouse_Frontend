@@ -1,9 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import FilterItem from "./FilterItem.jsx";
-import "./FilterItem.css"; 
+import "./FilterItem.css";
 
-const FilterRow = () => {
+const FilterRow = ({ onColorChange = () => {} }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
+
+  // Colour
+  const [colorOptions, setColorOptions] = useState([]);
+  const [loadingColors, setLoadingColors] = useState(false);
+  const [selectedColors, setSelectedColors] = useState([]);
+
+  useEffect(() => {
+    let ignore = false;
+    (async () => {
+      try {
+        setLoadingColors(true);
+        // Ưu tiên endpoint nhẹ: /api/variants/colors
+        const res = await axios.get("/api/variants/colors");
+        const colors = res.data?.colors || []; // [{label,value,count}]
+        if (!ignore) setColorOptions(colors);
+      } catch (e) {
+        console.error("fetch colors failed", e);
+        // fallback: nếu chưa có endpoint, vẫn để rỗng
+      } finally {
+        if (!ignore) setLoadingColors(false);
+      }
+    })();
+    return () => { ignore = true; };
+  }, []);
+
+  // bắn ra ngoài khi chọn màu đổi
+  useEffect(() => {
+    onColorChange(selectedColors);
+  }, [selectedColors, onColorChange]);
 
   return (
     <div className="filter-row spacing">
@@ -16,49 +46,23 @@ const FilterRow = () => {
           "Under 1,000,000",
           "1,000,000 – 3,000,000",
           "3,000,000 – 5,000,000",
-          "5,000,000+"
+          "5,000,000+",
         ]}
       />
 
-      <FilterItem
-        label="Room"
-        name="room"
-        openDropdown={openDropdown}
-        setOpenDropdown={setOpenDropdown}
-        columns={2}
-        options={[
-          "Living Room",
-          "Bedroom",
-          "Dining",
-          "Kitchen",
-          "Office",
-          "Outdoor"
-        ]}
-      />
 
       <FilterItem
-        label="Colour"
+        label={loadingColors ? "Colour (loading…)" : "Colour"}
         name="colour"
         openDropdown={openDropdown}
         setOpenDropdown={setOpenDropdown}
         columns={3}
-        options={[
-          "Black", "White", "Gold",
-          "Silver", "Bronze", "Copper"
-        ]}
+        options={colorOptions}          // [{label,value,count}]
+        selected={selectedColors}       // mảng value đang chọn
+        onChange={setSelectedColors}    // cập nhật chọn
       />
 
-      <FilterItem
-        label="Material"
-        name="material"
-        openDropdown={openDropdown}
-        setOpenDropdown={setOpenDropdown}
-        columns={2}
-        options={[
-          "Metal", "Glass", "Wood",
-          "Fabric", "Ceramic", "Plastic"
-        ]}
-      />
+      
     </div>
   );
 };

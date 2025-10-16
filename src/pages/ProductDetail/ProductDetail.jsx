@@ -478,15 +478,7 @@ export default function ProductDetail() {
               ))}
             </div>
 
-            <div className="current_color">
-              {selectedVariant?.color ? (
-                <p>
-                  Colour: <b>{selectedVariant.color}</b>
-                </p>
-              ) : (
-                <p>No colour selected</p>
-              )}
-            </div>
+
           </div>
 
           <hr className="pd_divider" />

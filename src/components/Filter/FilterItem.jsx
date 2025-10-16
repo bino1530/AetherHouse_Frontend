@@ -1,4 +1,3 @@
-// import { useState } from "react";
 import "./FilterItem.css";
 
 const FilterItem = ({
@@ -8,11 +7,17 @@ const FilterItem = ({
   columns = 1,
   openDropdown,
   setOpenDropdown,
+  selected = [],
+  onChange = () => {},
 }) => {
   const isOpen = openDropdown === name;
 
-  const toggle = () => {
-    setOpenDropdown(isOpen ? null : name);
+  const toggle = () => setOpenDropdown(isOpen ? null : name);
+
+  const onToggleOption = (val) => {
+    const has = selected.includes(val);
+    const next = has ? selected.filter(v => v !== val) : [...selected, val];
+    onChange(next);
   };
 
   return (
@@ -25,6 +30,7 @@ const FilterItem = ({
       >
         {label} <span className="caret" />
       </button>
+
       <div
         id={`dd-${name}`}
         className={`dropdown ${isOpen ? "show" : ""}`}
@@ -32,13 +38,24 @@ const FilterItem = ({
         aria-hidden={!isOpen}
       >
         <ul className={`menu grid-${columns}`}>
-          {options.map((text, i) => (
-            <li key={i}>
-              <label>
-                <input type="checkbox" /> {text}
-              </label>
-            </li>
-          ))}
+          {options.map((opt, i) => {
+            const value = typeof opt === "string" ? opt : (opt.value ?? opt.label);
+            const text  = typeof opt === "string" ? opt : (opt.label ?? opt.value);
+            const count = typeof opt === "object" ? opt.count : undefined;
+
+            return (
+              <li key={value || i}>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={selected.includes(value)}
+                    onChange={() => onToggleOption(value)}
+                  />{" "}
+                  {text}{typeof count === "number" ? ` (${count})` : ""}
+                </label>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </div>
