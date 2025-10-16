@@ -63,6 +63,18 @@ const [loadingCheckout, setLoadingCheckout] = useState(false);
                   <p className="cart_name">
                     <strong>{item.name}</strong>
                   </p>
+                  {item?.variant?.color && (
+  <p className="cart_variant">
+    {/* swatch màu (nếu có hex) */}
+    <span
+      className="cart_variant__swatch"
+      style={{ backgroundColor: item.variant.hex || "#ccc" }}
+      aria-label={item.variant.color}
+      title={item.variant.color}
+    />
+    <span className="cart_variant__label">{item.variant.color}</span>
+  </p>
+)}
                   <p className="cart_price">
                     £{Number(item.price).toLocaleString()}
                   </p>
