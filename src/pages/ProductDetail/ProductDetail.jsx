@@ -445,13 +445,12 @@ export default function ProductDetail() {
           {cateName && <p className="pd_cate">{cateName}</p>}
 
           {product.description && (
-            <div className="pd_desc">
-              {String(product.description)
-                .split("\n")
-                .map((line, i) => (
-                  <p key={i}>{line}</p>
-                ))}
-            </div>
+            <div
+              className="pd_desc"
+              dangerouslySetInnerHTML={{
+                __html: product.description
+              }}
+            />
           )}
 
           <hr className="pd_divider" />
