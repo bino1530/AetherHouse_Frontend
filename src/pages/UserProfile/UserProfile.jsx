@@ -1,13 +1,40 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import "./UserProfile.css";
 import api from "../../lib/axios";
 
 export default function UserProfile() {
+  const VALID_TABS = new Set(["shop", "account", "orders"]);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const initialTab = (() => {
+    const q = (searchParams.get("tab") || "").toLowerCase();
+    return VALID_TABS.has(q) ? q : "account";
+  })();
+
+  // ⬇️ PHẢI đặt ngay sau initialTab
+  const [tab, setTab] = useState(initialTab);
+
+  useEffect(() => {
+    const q = (searchParams.get("tab") || "").toLowerCase();
+    if (VALID_TABS.has(q) && q !== tab) setTab(q);
+  }, [searchParams, tab]);
+
+  const goTab = (t) => {
+    if (!VALID_TABS.has(t)) t = "account";
+    if (t !== tab) setTab(t);
+    const next = new URLSearchParams(searchParams);
+    next.set("tab", t);
+    setSearchParams(next, { replace: true });
+  };
+
+
+
+
+
+
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [tab, setTab] = useState("account");
   const dropdownRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -67,9 +94,6 @@ useEffect(() => {
   const handleOpenPicker = () => {
     fileInputRef.current?.click();
   };
-
-
-
 
   const handlePickAvatar = (e) => {
     const files = Array.from(e.target.files || []);
@@ -156,7 +180,6 @@ const handleSaveName = async () => {
 
 
 
-// Email
   const [addressList, setAddress] = useState([]);
   const [addressValue , setAddressValue] = useState('');
   const [wardValue , SetWardValue] = useState('');
@@ -165,12 +188,14 @@ const handleSaveName = async () => {
   const [cityValue , SetCityValue] = useState('');
   const [loading , SetLoading] = useState(false);
   const [showAddressModal, setShowAddressModal] = useState(false);
+  const id = JSON.parse(localStorage.getItem("user")||"{}")?._id;
+  console.log(id)
 
 
 const handleSaveAddress = async () => {
   try {
     SetLoading(true);
-    const id = JSON.parse(localStorage.getItem("user")||"{}")?._id;
+    console.log(id)
     const payload = {
       name: user?.name,
       address: addressValue,
@@ -182,14 +207,14 @@ const handleSaveAddress = async () => {
     };
 
     if (addressList.length === 0) {
-      await api.post("/address", payload);                
-    } else {
-      await api.put(`/address/${addressList[0]._id}/upaddress`, payload); 
-    }    const { data } = await api.get(`/users/${id}`);
+  await api.post("/address", payload);
+} else {
+  await api.put(`/address/${addressList[0]._id}/upaddress`, payload);
+}   const { data } = await api.get(`/users/${id}`);
     setAddress(data?.addresses || []);
     setShowAddressModal(false);
-  } catch (e) {
-    alert("Lưu address thất bại!");
+  } catch (err) {
+    alert("Lưu address thất bại!",err);
   } finally {
     SetLoading(false);
   }
@@ -205,6 +230,70 @@ const openAddressModal = () => {
   SetCityValue(a?.city || "");
   setShowAddressModal(true);
 };
+
+
+// ==== ORDERS (history) ====
+const [orders, setOrders] = useState([]);
+const [oLoading, setOLoading] = useState(false);
+const [oErr, setOErr] = useState("");
+// optional: phân trang (nếu BE có)
+const [oPage, setOPage] = useState(1);
+const O_LIMIT = 10;
+
+const fetchOrders = async (page = 1) => {
+  try {
+    setOLoading(true);
+    setOErr("");
+    // nếu BE hỗ trợ phân trang ?page=&limit=, giữ params; nếu không BE sẽ bỏ qua
+    const { data } = await api.get("/orders/me/list", {
+      params: { page, limit: O_LIMIT },
+    });
+    // data có thể là { orders: [], meta: {} } hoặc [] thuần
+    const list = Array.isArray(data) ? data : (data?.orders || []);
+    setOrders(list);
+    // nếu có meta có thể set tiếp:
+    // setOMeta(data?.meta || null);
+  } catch (err) {
+    console.error("[Orders] getMyOrders error:", {
+      url: err?.config?.url,
+      method: err?.config?.method,
+      status: err?.response?.status,
+      data: err?.response?.data,
+    });
+    setOErr(err?.response?.data?.message || err?.message || "Không tải được đơn hàng.");
+    setOrders([]);
+  } finally {
+    setOLoading(false);
+  }
+};
+
+// auto fetch khi chuyển sang tab "orders"
+useEffect(() => {
+  if (tab === "orders") {
+    fetchOrders(oPage);
+  }
+}, [tab, oPage]);
+
+
+
+const money = (n = 0) => `$${Number(n || 0).toLocaleString()}`;
+const fmtDate = (s) => {
+  try {
+    return new Date(s).toLocaleString();
+  } catch {
+    return s || "";
+  }
+};
+const shortId = (id = "") => (id.length > 8 ? `${id.slice(0, 6)}…` : id);
+
+
+
+
+
+
+
+
+
 
 
 
@@ -242,6 +331,7 @@ const handleLogout = () => {
   }, [open]);
 
 
+localStorage.setItem("address_updated", "1");
 
 
 
@@ -323,26 +413,26 @@ const handleLogout = () => {
             </Link>
             <nav className="od-nav">
               <button
-                type="button"
-                className={`od-nav-link ${tab === "shop" ? "active" : ""}`}
-                onClick={() => setTab("shop")}
-              >
-                Shop
-              </button>
-              <button
-                type="button"
-                className={`od-nav-link ${tab === "account" ? "active" : ""}`}
-                onClick={() => setTab("account")}
-              >
-                Your Account
-              </button>
-              <button
-                type="button"
-                className={`od-nav-link ${tab === "orders" ? "active" : ""}`}
-                onClick={() => setTab("orders")}
-              >
-                Orders
-              </button>
+  type="button"
+  className={`od-nav-link ${tab === "shop" ? "active" : ""}`}
+  onClick={() => goTab("shop")}
+>
+  Shop
+</button>
+<button
+  type="button"
+  className={`od-nav-link ${tab === "account" ? "active" : ""}`}
+  onClick={() => goTab("account")}
+>
+  Your Account
+</button>
+<button
+  type="button"
+  className={`od-nav-link ${tab === "orders" ? "active" : ""}`}
+  onClick={() => goTab("orders")}
+>
+  Orders
+</button>
             </nav>
           </div>
 
@@ -378,18 +468,69 @@ const handleLogout = () => {
       <main className="od-main">
         <div className="od-container">
           {tab === "orders" && (
-            <>
-              <h2 className="od-title">Orders</h2>
-              <div className="od-empty-card">
-                <div className="od-empty-inner">
-                  <strong className="od-empty-head">No orders yet.</strong>
-                  <p className="od-empty-sub">
-                    Visit the store to place an order.
-                  </p>
-                </div>
-              </div>
-            </>
-          )}
+  <>
+    <h2 className="od-title">Orders</h2>
+
+    {oLoading && (
+      <div className="od-empty-card"><div className="od-empty-inner">
+        <strong className="od-empty-head">Loading…</strong>
+        <p className="od-empty-sub">Đang tải lịch sử mua hàng.</p>
+      </div></div>
+    )}
+
+    {oErr && !oLoading && (
+      <div className="od-empty-card od-error"><div className="od-empty-inner">
+        <strong className="od-empty-head">Oops</strong>
+        <p className="od-empty-sub">{oErr}</p>
+        <button className="ua-btn" onClick={() => fetchOrders(oPage)}>Thử lại</button>
+      </div></div>
+    )}
+
+    {!oLoading && !oErr && orders.length === 0 && (
+      <div className="od-empty-card">
+        <div className="od-empty-inner">
+          <strong className="od-empty-head">No orders yet.</strong>
+          <p className="od-empty-sub">Visit the store to place an order.</p>
+          <Link to="/" className="ua-btn ua-btn-primary" style={{marginTop: 8}}>Go to shop</Link>
+        </div>
+      </div>
+    )}
+
+    {!oLoading && !oErr && orders.length > 0 && (
+      <div className="od-orders-list">
+        {orders.map((o) => (
+          <Link
+            to={`/ordersuccess/${o?._id}`}
+            key={o?._id}
+            className="od-order-row"
+            title="Xem chi tiết đơn"
+          >
+            <div className="od-order-col od-order-main">
+              <div className="od-order-id">#{shortId(o?._id)}</div>
+              <div className="od-order-date">{fmtDate(o?.createdAt)}</div>
+            </div>
+
+            <div className="od-order-col od-order-mid">
+              <span className={`od-badge od-badge--${o?.status || "pending"}`}>
+                {o?.status || "pending"}
+              </span>
+              {o?.voucher_id && (
+                <span className="od-chip">Voucher</span>
+              )}
+            </div>
+
+            <div className="od-order-col od-order-right">
+              <div className="od-order-total">{money(o?.total_amount)}</div>
+              <div className="od-order-cta">View</div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    )}
+
+
+  </>
+)}
           {tab === "account" && (
             <>
               <h1 className="od-title">Your Account</h1>

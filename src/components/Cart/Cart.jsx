@@ -7,7 +7,7 @@ const CART_KEY = "ah_cart_v1";
 
 const Cart = ({ isOpen, toggleCart }) => {
   const [items, setItems] = useState([]);
-const [loadingCheckout, setLoadingCheckout] = useState(false);
+  const [loadingCheckout, setLoadingCheckout] = useState(false);
   const [pending, setPending] = useState({});
   const navigate = useNavigate();
 
@@ -64,17 +64,19 @@ const [loadingCheckout, setLoadingCheckout] = useState(false);
                     <strong>{item.name}</strong>
                   </p>
                   {item?.variant?.color && (
-  <p className="cart_variant">
-    {/* swatch màu (nếu có hex) */}
-    <span
-      className="cart_variant__swatch"
-      style={{ backgroundColor: item.variant.hex || "#ccc" }}
-      aria-label={item.variant.color}
-      title={item.variant.color}
-    />
-    <span className="cart_variant__label">{item.variant.color}</span>
-  </p>
-)}
+                    <p className="cart_variant">
+                      {/* swatch màu (nếu có hex) */}
+                      <span
+                        className="cart_variant__swatch"
+                        style={{ backgroundColor: item.variant.hex || "#ccc" }}
+                        aria-label={item.variant.color}
+                        title={item.variant.color}
+                      />
+                      <span className="cart_variant__label">
+                        {item.variant.color}
+                      </span>
+                    </p>
+                  )}
                   <p className="cart_price">
                     £{Number(item.price).toLocaleString()}
                   </p>
@@ -126,14 +128,14 @@ const [loadingCheckout, setLoadingCheckout] = useState(false);
             <button
               className="btn_style_3 checkout_btn"
               onClick={() => {
-            if (loadingCheckout) return;
-            setLoadingCheckout(true); // 👈 bật loading
-            setTimeout(() => {
-              setLoadingCheckout(false);
-              toggleCart(); // đóng giỏ
-              navigate("/checkout"); // chuyển trang
-            }, 1000); // chờ 1s
-          }}
+                if (loadingCheckout) return;
+                setLoadingCheckout(true); // 👈 bật loading
+                setTimeout(() => {
+                  setLoadingCheckout(false);
+                  toggleCart(); // đóng giỏ
+                  navigate("/checkout"); // chuyển trang
+                }, 1000); // chờ 1s
+              }}
             >
               <span>{loadingCheckout ? "Loading..." : "Checkout"}</span>
             </button>

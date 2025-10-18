@@ -104,6 +104,74 @@
   margin-right: 10px;
   accent-color: #111;
 }
+.sortrow{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/* Pagination – clean, rounded, subtle */
+.pagination {
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.pagination .page-item {
+  --pg-h: 40px;
+}
+
+.pagination .page-link {
+  min-width: 40px;
+  height: var(--pg-h);
+  padding: 0 .9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: #fff;
+  color: #222;
+  line-height: var(--pg-h);
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  transition: transform .12s ease, box-shadow .12s ease, background .12s, color .12s;
+}
+
+.pagination .page-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,.08);
+  background: #f8f9fa;
+}
+
+.pagination .page-item.active .page-link {
+  border-color: #222;
+  background: #222;
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(0,0,0,.18);
+}
+
+.pagination .page-item.disabled .page-link,
+.pagination .page-item.disabled .page-link:hover {
+  background: #f2f2f2;
+  color: #9aa0a6;
+  border-color: rgba(0,0,0,.06);
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+}
+
+/* icon arrows nhỏ gọn */
+.pagination .page-link svg,
+.pagination .page-link i {
+  vertical-align: -2px;
+}
+
+/* Nhỏ hơn trên mobile */
+@media (max-width: 576px) {
+  .pagination .page-link {
+    min-width: 36px;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 .7rem;
+    font-size: .92rem;
+  }
+}
 
 @media (max-width: 520px) {
   .menu.grid-2,

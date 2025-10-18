@@ -23,11 +23,14 @@ export const loadCart = () => {
 export const getCartCount = () =>
   loadCart().reduce((s, it) => s + Number(it.qty || 1), 0);
 
-
 export const addToCartLocal = (product, variant) => {
   const items = loadCart();
 
-  const variantKey = (variant?.color || "default").toLowerCase();
+  // ✅ Ưu tiên dùng _id của biến thể để tránh trùng theo tên màu
+  const variantKey = (variant?._id || variant?.color || "default")
+    .toString()
+    .toLowerCase();
+
   const _key = `${product._id}|${variantKey}`;
 
   const image =
@@ -44,20 +47,20 @@ export const addToCartLocal = (product, variant) => {
     items[idx].qty = (items[idx].qty || 1) + 1;
   } else {
     items.push({
-      _key,                
+      _key,
       _id: product._id,
       name: product.name,
       price,
       image,
       qty: 1,
+      // ✅ LƯU KÈM _id của biến thể
       variant: variant
-        ? { color: variant.color, hex: variant.hex || null }
+        ? { _id: variant._id, color: variant.color, hex: variant.hex || null }
         : null,
     });
   }
   saveCart(items);
-    window.dispatchEvent(new Event("cart:open"));
-
+  window.dispatchEvent(new Event("cart:open"));
 };
 
 

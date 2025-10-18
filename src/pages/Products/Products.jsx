@@ -1,147 +1,165 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import "./products.css";
 import ProductCard from "../../components/ProductCard/ProductCard.jsx";
 import FilterRow from "../../components/Filter/FilterRow.jsx";
+import api from "../../lib/axios";
 
-const toTitle = (s = "") =>
-  s.split("-").map(w => (w[0]?.toUpperCase() || "") + w.slice(1)).join(" ");
-
-const byCateThenName = (a, b) =>
+const toTitle = (s="") => s.split("-").map(w => (w[0]?.toUpperCase()||"")+w.slice(1)).join(" ");
+const byCateThenName = (a,b) =>
   ((a?.category_id?.name || a?.category?.name || "").toLowerCase())
     .localeCompare((b?.category_id?.name || b?.category?.name || "").toLowerCase())
   || (a?.name || "").localeCompare(b?.name || "");
 
-
-
-
-
+const LOCAL_LIMIT = 5;
 
 export default function Products() {
   const { rootSlug, slug } = useParams();
   const mode = slug ? "category" : rootSlug ? "root" : "all";
   const path = useMemo(() => (
-    mode === "category" ? `/api/products/by-cate/${rootSlug}/${slug}` :
-    mode === "root"     ? `/api/products/by-cate/${rootSlug}` : `/api/products`
+    mode === "category" ? `/products/by-cate/${rootSlug}/${slug}` :
+    mode === "root"     ? `/products/by-cate/${rootSlug}`         : `/products`
   ), [mode, rootSlug, slug]);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageQS = Math.max(parseInt(searchParams.get("page")||"1",10),1);
+  const sortQS = searchParams.get("sort") || "createdAt_desc";
 
-
-
-
-  const [baseItems, setBaseItems] = useState([]); 
-  const [state, setState] = useState({ items: [], loading: true, error: "" });
   const [selectedColors, setSelectedColors] = useState([]);
+  const [state, setState] = useState({ loading:true, error:"", items:[], meta:null, baseItems:[] });
+
+  useEffect(() => {
+    const next = new URLSearchParams(searchParams);
+    next.set("page","1");
+    if (sortQS) next.set("sort", sortQS);
+    setSearchParams(next, { replace:false });
+    // eslint-disable-next-line
+  }, [selectedColors.join(",")]);
 
   useEffect(() => {
     const ac = new AbortController();
-    setState({ items: [], loading: true, error: "" });
-    setSelectedColors([]); 
+    setState(s => ({ ...s, loading:true, error:"", items:[], meta:null }));
+
+    const fetchOneColor = (color) => api.get(
+      `/products/by-color/${encodeURIComponent(color)}`,
+      { params:{ page:pageQS, limit:5, sort: sortQS==="createdAt_desc"?undefined:sortQS }, signal:ac.signal }
+    );
+
+    const fetchMultiColors = async (colors) => {
+      const params = { page:1, limit:60, sort: sortQS==="createdAt_desc"?undefined:sortQS };
+      const rs = await Promise.all(colors.map(c =>
+        api.get(`/products/by-color/${encodeURIComponent(c)}`, { params, signal:ac.signal }).catch(()=>({data:{products:[]}}))
+      ));
+      const seen = new Set();
+      const merged = [];
+      rs.forEach(r => (r?.data?.products||[]).forEach(p => {
+        if (!p?.is_hidden && !seen.has(p._id)) { seen.add(p._id); merged.push(p); }
+      }));
+      return merged.sort(byCateThenName);
+    };
 
     (async () => {
       try {
-        const r = await fetch(path, { signal: ac.signal });
-        if (!r.ok) throw new Error("fetch failed");
-        const data = await r.json();
-        const items = (data?.products || [])
-          .filter(p => !p.is_hidden)
-          .sort(byCateThenName);
-
-        setBaseItems(items);
-        setState({ items, loading: false, error: "" });
-      } catch (e) {
-        if (e.name !== "AbortError") {
-          setState({ items: [], loading: false, error: "lỗi" });
+        if (selectedColors.length === 0) {
+          const serverPaginate = mode==="root" || mode==="category";
+          const params = serverPaginate ? { page:pageQS, limit:5, sort: sortQS==="createdAt_desc"?undefined:sortQS } : {};
+          const { data } = await api.get(path, { params, signal:ac.signal });
+          const list = (data?.products||[]).filter(p=>!p.is_hidden);
+          if (serverPaginate && data?.meta?.total != null) {
+            setState({ loading:false, error:"", items:list, meta:{...data.meta, limit:data.meta.limit??5}, baseItems:[] });
+          } else {
+            setState({ loading:false, error:"", items:[], meta:null, baseItems:[...list].sort(byCateThenName) });
+          }
+          return;
         }
+
+        if (selectedColors.length === 1) {
+          const { data } = await fetchOneColor(selectedColors[0]);
+          const list = (data?.products||[]).filter(p=>!p.is_hidden);
+          setState({ loading:false, error:"", items:list, meta:{...data?.meta, limit:data?.meta?.limit??5, sort:sortQS}, baseItems:[] });
+          return;
+        }
+
+        const base = await fetchMultiColors(selectedColors);
+        setState({ loading:false, error:"", items:[], meta:null, baseItems:base });
+      } catch (e) {
+        if (e.name!=="AbortError") setState(s=>({ ...s, loading:false, error:"Lỗi tải sản phẩm", items:[], meta:null }));
       }
     })();
 
     return () => ac.abort();
-  }, [path]);
+  }, [path, pageQS, sortQS, mode, selectedColors]);
 
-
-
-
-
-  useEffect(() => {
-    if (!selectedColors.length) {
-      setState(s => ({ ...s, items: baseItems }));
-      return;
-    }
-
-    let cancelled = false;
-
-    (async () => {
-      try {
-        setState(s => ({ ...s, loading: true }));
-        const results = await Promise.all(
-          selectedColors.map(c =>
-            fetch(`/api/products/by-color/${encodeURIComponent(c)}`).then(r => r.json())
-          )
-        );
-        const map = new Map();
-        results.forEach(res => {
-          (res?.products || []).forEach(p => {
-            if (!map.has(p._id)) map.set(p._id, p);
-          });
-        });
-        let unionList = Array.from(map.values());
-        if (mode !== "all") {
-          const allowedIds = new Set(baseItems.map(p => p._id));
-          unionList = unionList.filter(p => allowedIds.has(p._id));
-        }
-
-        unionList.sort(byCateThenName);
-
-        if (!cancelled) {
-          setState(s => ({ ...s, items: unionList, loading: false, error: "" }));
-        }
-      } catch (e) {
-        if (!cancelled) setState(s => ({ ...s, loading: false, error: "lỗi" }));
+  const localPaged = state.meta ? null : (() => {
+    const total = state.baseItems.length;
+    const totalPages = Math.max(Math.ceil(total/LOCAL_LIMIT),1);
+    const page = Math.min(pageQS,totalPages);
+    const start = (page-1)*LOCAL_LIMIT;
+    return {
+      items: state.baseItems.slice(start, start+LOCAL_LIMIT),
+      meta: {
+        total, page, limit: LOCAL_LIMIT, totalPages,
+        hasPrev: page>1, hasNext: page<totalPages,
+        prevPage: page>1 ? page-1 : null,
+        nextPage: page<totalPages ? page+1 : null,
+        sort: sortQS
       }
-    })();
+    };
+  })();
 
-    return () => { cancelled = true; };
-  }, [selectedColors, mode, baseItems]);
+  const renderItems = state.meta ? state.items : (localPaged?.items||[]);
+  const meta = state.meta || localPaged?.meta || { total:renderItems.length, page:1, totalPages:1, hasPrev:false, hasNext:false, prevPage:null, nextPage:null, limit:LOCAL_LIMIT, sort:sortQS };
 
+  const rootName  = mode==="all" ? "Products" : toTitle(rootSlug);
+  const childName = mode==="category" ? (renderItems[0]?.category_id?.name || renderItems[0]?.category?.name || toTitle(slug)) : "";
 
+  const goPage = (p) => {
+    if (!p || p<1) return;
+    const next = new URLSearchParams(searchParams);
+    next.set("page", String(p));
+    if (sortQS) next.set("sort", sortQS);
+    setSearchParams(next, { replace:false });
+    window.scrollTo({ top:0, behavior:"smooth" });
+  };
 
+  const changeSort = (e) => {
+    const next = new URLSearchParams(searchParams);
+    const val = e.target.value;
+    val ? next.set("sort", val) : next.delete("sort");
+    next.set("page","1");
+    setSearchParams(next, { replace:false });
+  };
 
-
-
-  const { items, loading, error } = state;
-  const rootName  = mode === "all" ? "Products" : toTitle(rootSlug);
-  const childName = mode === "category"
-    ? (items[0]?.category_id?.name || items[0]?.category?.name || toTitle(slug))
-    : "";
-
+  const pages = Array.from({ length: meta.totalPages||1 }, (_,i)=>i+1);
 
   return (
     <div className="margintop">
       <h1 className="title-product spacing">
-        {mode === "category" ? childName : mode === "root" ? rootName : "All Products"}
+        {mode==="category" ? childName : mode==="root" ? rootName : "All Products"}
       </h1>
-
-
 
       <hr className="spacing" />
       <div className="link_page pad spacing">
         <Link to="/">Home</Link> /{" "}
-        {mode === "all" && <span>Products</span>}
-        {mode === "root" && <span>{rootName}</span>}
-        {mode === "category" && (
-          <>
-            <Link to={`/${rootSlug}`}>{rootName}</Link> / <span>{childName}</span>
-          </>
-        )}
+        {mode==="all" && <span>Products</span>}
+        {mode==="root" && <span>{rootName}</span>}
+        {mode==="category" && (<><Link to={`/${rootSlug}`}>{rootName}</Link> / <span>{childName}</span></>)}
       </div>
 
-
-
-      <FilterRow onColorChange={setSelectedColors} />
+      <div className="sortrow spacing">
+        <FilterRow onColorChange={setSelectedColors} />
+        <div className="pad d-flex gap-2 align-items-center">
+          <label htmlFor="sort" className="me-2">Sort:</label>
+          <select id="sort" value={sortQS} onChange={changeSort}>
+            <option value="createdAt_desc">Newest</option>
+            <option value="price_asc">Price: Low → High</option>
+            <option value="price_desc">Price: High → Low</option>
+          </select>
+        </div>
+      </div>
 
       <div className="products spacing">
-        {loading && (
+        {state.loading && (
           <div className="d-flex justify-content-center py-4">
             <div className="spinner-border" role="status" aria-label="Đang tải">
               <span className="visually-hidden">Loading...</span>
@@ -149,24 +167,39 @@ export default function Products() {
           </div>
         )}
 
-        {!loading && error && <p style={{ color: "red" }}>{error}</p>}
+        {!state.loading && state.error && <p style={{ color:"red" }}>{state.error}</p>}
 
-        {!loading && !error && (
-          <div className="product_row row">
-            {items.length === 0 && <p>No Products.</p>}
-            {items.map(p => (
-              <ProductCard
-                key={p._id}
-                product={p}
-                rootSlug={
-                  rootSlug ||
-                  p?.category_id?.parent?.slug ||
-                  p?.category?.parent?.slug ||
-                  ""
-                }
-              />
-            ))}
-          </div>
+        {!state.loading && !state.error && (
+          <>
+            <div className="product_row row">
+              {renderItems.length===0 && <p>No Products.</p>}
+              {renderItems.map(p => (
+                <ProductCard
+                  key={p._id}
+                  product={p}
+                  rootSlug={rootSlug || p?.category_id?.parent?.slug || p?.category?.parent?.slug || ""}
+                />
+              ))}
+            </div>
+
+            {meta.totalPages>1 && (
+              <nav className="spacing d-flex justify-content-center">
+                <ul className="pagination">
+                  <li className={`page-item ${!meta.hasPrev?"disabled":""}`}>
+                    <button className="page-link" onClick={() => goPage(meta.prevPage)} disabled={!meta.hasPrev}>‹ Prev</button>
+                  </li>
+                  {pages.map(n => (
+                    <li key={n} className={`page-item ${n===meta.page?"active":""}`}>
+                      <button className="page-link" onClick={() => goPage(n)}>{n}</button>
+                    </li>
+                  ))}
+                  <li className={`page-item ${!meta.hasNext?"disabled":""}`}>
+                    <button className="page-link" onClick={() => goPage(meta.nextPage)} disabled={!meta.hasNext}>Next ›</button>
+                  </li>
+                </ul>
+              </nav>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -302,12 +302,10 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import "./ProductDetail.css";
 import { addToCartLocal } from "../../lib/cartStore.jsx";
 import Usp from "../../components/usp/usp.jsx";
+import api from "../../lib/axios"; // ✅ dùng axios instance có baseURL từ .env
 
 const deriveStatus = (p = {}) => {
-  const norm = (v) =>
-    String(v ?? "")
-      .trim()
-      .toLowerCase();
+  const norm = (v) => String(v ?? "").trim().toLowerCase();
   const s = norm(p.status);
   if (["preorder", "pre-order"].includes(s)) return { text: "Pre-Order" };
   if (["sale", "discount", "clearance"].includes(s)) return { text: "Sale" };
@@ -326,61 +324,62 @@ const orderImages = (images = []) => {
   return [...arr.filter((i) => i?.is_main), ...arr.filter((i) => !i?.is_main)];
 };
 
-const fetchJSON = async (url, signal) => {
-  const r = await fetch(url, { signal });
-  if (!r.ok) throw new Error(`HTTP ${r.status} @ ${url}`);
-  return r.json();
-};
-
 export default function ProductDetail() {
   const { rootSlug, slug, categorySlug: cSlug, productSlug } = useParams();
   const categorySlug = cSlug || slug || "";
   const idFromState = useLocation()?.state?.id;
 
   const [product, setProduct] = useState(null);
-  const [variants, setVariants] = useState([]); 
-  const [selectedVariant, setSelectedVariant] = useState(null); 
+  const [variants, setVariants] = useState([]);
+  const [selectedVariant, setSelectedVariant] = useState(null);
   const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     const ac = new AbortController();
+
     (async () => {
       try {
         setLoading(true);
         setError("");
         setProduct(null);
+
+        // 1) Lấy id từ state hoặc query theo slug
         let id = idFromState;
         if (!id) {
-          const listUrl = `/api/products/by-cate/${rootSlug}/${categorySlug}`;
-          const data = await fetchJSON(listUrl, ac.signal);
+          // ❗ KHÔNG có /api vì baseURL đã chứa /api
+          const listUrl =
+            `/products/by-cate/${encodeURIComponent(rootSlug)}/${encodeURIComponent(categorySlug)}`;
+          const { data } = await api.get(listUrl, { signal: ac.signal });
           id = (data?.products || []).find((p) => p?.slug === productSlug)?._id;
           if (!id) throw new Error(`not-found slug=${productSlug}`);
         }
 
-        const detailUrl = `/api/products/by-id/${id}`;
-        const json = await fetchJSON(detailUrl, ac.signal);
-        const p = json?.product || json;
+        // 2) Lấy chi tiết
+        const detailUrl = `/products/by-id/${id}`;
+        const { data: detailData } = await api.get(detailUrl, { signal: ac.signal });
+        const p = detailData?.product || detailData;
         if (!p?._id) throw new Error("bad-payload");
 
         setProduct(p);
 
-        const variantUrl = `/api/variants/by-product/${p._id}`;
-        const variantData = await fetchJSON(variantUrl, ac.signal);
+        // 3) Lấy variants theo product
+        const variantUrl = `/variants/by-product/${p._id}`;
+        const { data: variantData } = await api.get(variantUrl, { signal: ac.signal });
         const variantList = variantData?.variant?.Variation || [];
         setVariants(variantList);
 
+        // 4) Chọn default variant
         const defaultVar =
-          variantList.find((v) => v.color?.toLowerCase() === "copper") ||
-          variantList[0];
-
+          variantList.find((v) => v.color?.toLowerCase() === "copper") || variantList[0];
         setSelectedVariant(defaultVar);
         setSelectedImage(defaultVar?.images?.[0]?.url || p?.images?.[0]?.url || "");
 
+        // 5) Title
         document.title = `${p.name} – AetherHouse`;
       } catch (e) {
-        if (e.name !== "AbortError") {
+        if (e.name !== "CanceledError" && e.name !== "AbortError") {
           console.error("[ProductDetail]", e);
           setError("Không tìm thấy sản phẩm.");
         }
@@ -388,6 +387,7 @@ export default function ProductDetail() {
         if (!ac.signal.aborted) setLoading(false);
       }
     })();
+
     return () => ac.abort();
   }, [rootSlug, categorySlug, productSlug, idFromState]);
 
@@ -447,15 +447,13 @@ export default function ProductDetail() {
           {product.description && (
             <div
               className="pd_desc"
-              dangerouslySetInnerHTML={{
-                __html: product.description
-              }}
+              dangerouslySetInnerHTML={{ __html: product.description }}
             />
           )}
 
           <hr className="pd_divider" />
 
-          {/* ✅ Hiển thị các màu (có thể click đổi ảnh) */}
+          {/* ✅ Chọn màu để đổi ảnh */}
           <div className="pd_variant">
             <div className="variant_colors">
               {variants.map((v) => (
@@ -476,8 +474,6 @@ export default function ProductDetail() {
                 ></span>
               ))}
             </div>
-
-
           </div>
 
           <hr className="pd_divider" />
@@ -489,9 +485,7 @@ export default function ProductDetail() {
           </p>
 
           <div className="pd_purchaseCard">
-            <p className="pd_eta">
-              Be the first! Order today to receive in late September
-            </p>
+            <p className="pd_eta">Be the first! Order today to receive in late September</p>
             <div className="pd_priceRow">
               <div className="pd_price">
                 ${Number(product.price || 0).toLocaleString()}
