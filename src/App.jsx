@@ -13,6 +13,7 @@ import UserProfile from "./pages/UserProfile/UserProfile.jsx";
 import CheckoutPage from "./pages/checkout/Checkout.jsx";
 import Verify from "./pages/Login/Verify.jsx";
 import OrderSuccess from "./pages/Order/Order";
+import SearchResults from "./pages/search/SearchResults.jsx";
 function App() {
   return (
     <Router>
@@ -21,6 +22,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/:rootSlug" element={<Products />} />
           <Route path="/:rootSlug/:slug" element={<Products />} />
+          <Route path="/search" element={<SearchResults />} />
           <Route
             path="/:rootSlug/:slug/:productSlug"
             element={<ProductDetails />}
