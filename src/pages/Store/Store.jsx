@@ -2,22 +2,26 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Usp from "../../components/usp/usp.jsx";
 import "./store.css";
+import api from "../../lib/axios"; 
 
 const Store = () => {
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch("http://localhost:3000/api/stores")
-      .then((res) => res.json())
-      .then((data) => {
-        setStores(data.stores);
-        setLoading(false);
+useEffect(() => {
+    const controller = new AbortController(); 
+    api
+      .get("/stores", { signal: controller.signal }) 
+      .then(({ data }) => {
+        setStores(data.stores || []); 
       })
       .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
+        if (err.name === "CanceledError") return;
+        console.error("Load stores failed:", err);
+      })
+      .finally(() => setLoading(false));
+
+    return () => controller.abort();
   }, []);
 
   return (
