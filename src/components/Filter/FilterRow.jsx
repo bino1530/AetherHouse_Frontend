@@ -3,7 +3,7 @@ import FilterItem from "./FilterItem.jsx";
 import "./FilterItem.css";
 import api from "../../lib/axios";
 
-const FilterRow = ({ onColorChange = () => {} }) => {
+const FilterRow = ({ onColorChange = () => {}, scopeParams = { scope: "all" } }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [colorOptions, setColorOptions] = useState([]);
   const [loadingColors, setLoadingColors] = useState(false);
@@ -11,29 +11,30 @@ const FilterRow = ({ onColorChange = () => {} }) => {
 
   useEffect(() => {
     let ignore = false;
+
     (async () => {
       try {
         setLoadingColors(true);
-        // Gọi qua axios instance để ăn VITE_API_URL
-        const res = await api.get("/variants/colors");
-        const colors = res.data?.colors || []; // [{label,value,count}]
+        const res = await api.get("/variants/colors", { params: scopeParams });
+        const colors = res.data?.colors || []; 
         if (!ignore) setColorOptions(colors);
       } catch (e) {
         console.error("fetch colors failed", e);
+        if (!ignore) setColorOptions([]);
       } finally {
         if (!ignore) setLoadingColors(false);
       }
     })();
+
     return () => { ignore = true; };
-  }, []);
+  }, [JSON.stringify(scopeParams)]); // refetch khi đổi category/page
 
   useEffect(() => {
     onColorChange(selectedColors);
   }, [selectedColors, onColorChange]);
 
   return (
-    <div className="filter-row ">
-
+    <div className="filter-row">
       <FilterItem
         label={loadingColors ? "Colour (loading…)" : "Colour"}
         name="colour"

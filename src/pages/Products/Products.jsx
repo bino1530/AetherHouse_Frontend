@@ -27,7 +27,17 @@ export default function Products() {
 
   const [selectedColors, setSelectedColors] = useState([]);
   const [state, setState] = useState({ loading:true, error:"", items:[], meta:null, baseItems:[] });
-
+  const colorScope = useMemo(() => {
+    if (mode === "category") {
+      // /lighting/floor-lamps
+      return { scope: "category", parentSlug: rootSlug, childSlug: slug };
+    }
+    if (mode === "root") {
+      // /lighting
+      return { scope: "category", rootSlug };
+    }
+    return { scope: "all" };
+  }, [mode, rootSlug, slug]);
   useEffect(() => {
     const next = new URLSearchParams(searchParams);
     next.set("page","1");
@@ -139,7 +149,7 @@ export default function Products() {
       </h1>
 
       <hr className="spacing" />
-      <div className="link_page pad spacing">
+      <div className="link_page spacing">
         <Link to="/">Home</Link> /{" "}
         {mode==="all" && <span>Products</span>}
         {mode==="root" && <span>{rootName}</span>}
@@ -147,8 +157,8 @@ export default function Products() {
       </div>
 
       <div className="sortrow spacing">
-        <FilterRow onColorChange={setSelectedColors} />
-        <div className="pad d-flex gap-2 align-items-center">
+        <FilterRow onColorChange={setSelectedColors} scopeParams={colorScope} />
+          <div className="pad d-flex gap-2 align-items-center">
           <label htmlFor="sort" className="me-2">Sort:</label>
           <select id="sort" value={sortQS} onChange={changeSort}>
             <option value="createdAt_desc">Newest</option>

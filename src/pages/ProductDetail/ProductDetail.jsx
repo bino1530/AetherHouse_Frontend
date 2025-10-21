@@ -302,7 +302,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import "./ProductDetail.css";
 import { addToCartLocal } from "../../lib/cartStore.jsx";
 import Usp from "../../components/usp/usp.jsx";
-import api from "../../lib/axios"; // ✅ dùng axios instance có baseURL từ .env
+import api from "../../lib/axios"; 
 
 const deriveStatus = (p = {}) => {
   const norm = (v) => String(v ?? "").trim().toLowerCase();
