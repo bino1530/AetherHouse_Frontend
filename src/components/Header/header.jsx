@@ -4,6 +4,7 @@ import "./Header.css";
 import NavItem from "./navItem.jsx";
 import Cart from "../Cart/Cart.jsx";
 import { useCartBadge } from "../../lib/cartStore.jsx";
+import api from "../../lib/axios";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -61,27 +62,36 @@ useEffect(() => {
     return () => (document.body.style.overflow = "");
   }, [isCartOpen, isMenuOpen]);
 
-  useEffect(() => {
-    setLoading(true);
-    fetch("http://localhost:3000/api/categories/menu")
-      .then((res) => {
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        return res.json();
-      })
-      .then((json) => {
-        const list = Array.isArray(json?.data)
-          ? json.data
-          : Array.isArray(json)
-          ? json
-          : [];
-        setMenu(list);
-      })
-      .catch((e) => {
-        console.error(e);
-        setErr(String(e?.message || e));
-      })
-      .finally(() => setLoading(false));
-  }, []);
+useEffect(() => {
+  const controller = new AbortController(); // để hủy khi unmount
+  setLoading(true);
+  setErr(null);
+
+  api
+    .get("/categories/menu", { signal: controller.signal })
+    .then(({ data }) => {
+      // chấp nhận cả dạng { data: [...] } hoặc [] thuần
+      const list = Array.isArray(data?.data)
+        ? data.data
+        : Array.isArray(data)
+        ? data
+        : [];
+      setMenu(list);
+    })
+    .catch((e) => {
+      // bỏ qua lỗi do abort
+      if (e.name === "CanceledError") return;
+      console.error(e);
+      const msg =
+        e?.response?.data?.message ||
+        e?.message ||
+        "Cannot load menu";
+      setErr(msg);
+    })
+    .finally(() => setLoading(false));
+
+  return () => controller.abort();
+}, []);
   const ROOTS = useMemo(
     () => menu.map((it) => it.parent).filter(Boolean),
     [menu]
