@@ -219,7 +219,6 @@ body {
   font-weight: bold;
   transition: all 0.5s ease-in-out;
   margin-left: 1rem;
-
 }
 
 .ua-btn:hover {
@@ -401,13 +400,13 @@ body {
   line-height: 1.6;
   font-size: 15px;
   color: #333;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
   transition: all 0.2s ease;
 }
 
 .ua-muted:hover {
   background: #fff;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
   border-color: #dcdcdc;
 }
 
@@ -441,18 +440,34 @@ body {
   background: #fff;
   text-decoration: none;
   color: inherit;
-  transition: box-shadow .15s ease, transform .1s ease;
+  transition: box-shadow 0.15s ease, transform 0.1s ease;
 }
 .od-order-row:hover {
-  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
   transform: translateY(-1px);
 }
-.od-order-col { display: flex; flex-direction: column; gap: 4px; }
-.od-order-main { min-width: 160px; }
-.od-order-id { font-weight: 600; letter-spacing: .3px; }
-.od-order-date { color: #666; font-size: 13px; }
+.od-order-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.od-order-main {
+  min-width: 160px;
+}
+.od-order-id {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.od-order-date {
+  color: #666;
+  font-size: 13px;
+}
 
-.od-order-mid { align-items: flex-start; gap: 6px; }
+.od-order-mid {
+  align-items: flex-start;
+  gap: 6px;
+}
 .od-badge {
   display: inline-block;
   padding: 4px 8px;
@@ -463,14 +478,29 @@ body {
   background: #eef1f5;
   color: #334155;
 }
-.od-badge--pending { background:#fff7ed; color:#b45309; }
-.od-badge--prepare { background:#eff6ff; color:#1d4ed8; }
-.od-badge--shipping { background:#ecfeff; color:#0e7490; }
-.od-badge--completed { background:#ecfdf5; color:#15803d; }
-.od-badge--canceled { background:#fef2f2; color:#b91c1c; }
+.od-badge--pending {
+  background: #fff7ed;
+  color: #b45309;
+}
+.od-badge--prepare {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+.od-badge--shipping {
+  background: #ecfeff;
+  color: #0e7490;
+}
+.od-badge--completed {
+  background: #ecfdf5;
+  color: #15803d;
+}
+.od-badge--canceled {
+  background: #fef2f2;
+  color: #b91c1c;
+}
 
 .od-chip {
-  display:inline-block;
+  display: inline-block;
   padding: 2px 8px;
   border-radius: 999px;
   background: #f1f5f9;
@@ -479,10 +509,20 @@ body {
   border: 1px dashed #cbd5e1;
 }
 
-.od-order-right { align-items: flex-end; }
-.od-order-total { font-weight: 700; }
-.od-order-cta { font-size: 12px; color: #2563eb; }
-.od-error .od-empty-head { color: #b91c1c; }
+.od-order-right {
+  align-items: flex-end;
+}
+.od-order-total {
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+.od-order-cta {
+  font-size: 12px;
+  color: #2563eb;
+}
+.od-error .od-empty-head {
+  color: #b91c1c;
+}
 
 /* Mobile (<768px) */
 @media (max-width: 767px) {

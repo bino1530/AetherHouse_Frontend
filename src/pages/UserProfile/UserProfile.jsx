@@ -284,7 +284,6 @@ const fmtDate = (s) => {
     return s || "";
   }
 };
-const shortId = (id = "") => (id.length > 8 ? `${id.slice(0, 6)}…` : id);
 
 
 
@@ -503,26 +502,21 @@ localStorage.setItem("address_updated", "1");
             to={`/ordersuccess/${o?._id}`}
             key={o?._id}
             className="od-order-row"
-            title="Xem chi tiết đơn"
           >
             <div className="od-order-col od-order-main">
-              <div className="od-order-id">#{shortId(o?._id)}</div>
+              <div className="od-order-id">#{o?._id}</div>
               <div className="od-order-date">{fmtDate(o?.createdAt)}</div>
+              <div className="od-order-total">{money(o?.total_amount)}</div>
+
             </div>
 
             <div className="od-order-col od-order-mid">
               <span className={`od-badge od-badge--${o?.status || "pending"}`}>
                 {o?.status || "pending"}
               </span>
-              {o?.voucher_id && (
-                <span className="od-chip">Voucher</span>
-              )}
+
             </div>
 
-            <div className="od-order-col od-order-right">
-              <div className="od-order-total">{money(o?.total_amount)}</div>
-              <div className="od-order-cta">View</div>
-            </div>
           </Link>
         ))}
       </div>

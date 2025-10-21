@@ -90,8 +90,8 @@ export default function OrderSuccess() {
 
   return (
     <div className="os_wrap pad margintop">
-        <h2>Mã đơn</h2>
-        <p><strong>{order?._id || id}</strong></p>
+        <h1>Your Order</h1>
+        <p className="order_id"><strong>{order?._id || id}</strong></p>
       <div className="os_summary">
      
         <div className="os_row">
@@ -184,10 +184,7 @@ export default function OrderSuccess() {
               </div>
             )}
 
-            <div className="muted">
-              <span>Shipping</span>
-              <strong>Tính sau</strong>
-            </div>
+          
 
             <div className="os_grand">
               <span>Total</span>
@@ -207,11 +204,11 @@ export default function OrderSuccess() {
       )}
 
       <div className="os_actions">
-        <Link className="btn_style_3" to="/">
-          Tiếp tục mua sắm
+        <Link className="btn_style_3" to="/lighting">
+          <span>Continue Shopping</span> 
         </Link>
-        <Link className="btn" to="/userprofile?tab=orders">
-          Xem đơn của tôi
+        <Link className="btn_style_3" to="/userprofile?tab=orders">
+          <span>My Order</span>
         </Link>
       </div>
     </div>
