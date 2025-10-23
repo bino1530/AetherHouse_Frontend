@@ -102,15 +102,24 @@ export default function CheckoutPage() {
   }, [subtotal]);
 
   const discount = useMemo(() => {
-    if (!applied) return 0;
-    const val = Number(applied.value || 0);
-    return Math.max(0, Math.min(val, subtotal));
-  }, [applied, subtotal]);
-  const grandTotal = useMemo(
-    () => Math.max(0, subtotal - discount),
-    [subtotal, discount]
-  );
+  if (!applied) return 0;
 
+  // Lấy phần trăm từ applied.percent hoặc applied.value
+  const pctRaw = Number(applied.percent ?? applied.value ?? 0);
+  if (!isFinite(pctRaw) || pctRaw <= 0) return 0;
+
+  // Hỗ trợ cả 15 (15%) và 0.15 (15%)
+  const pct = pctRaw > 1 ? pctRaw / 100 : pctRaw;
+
+  const raw = subtotal * pct;
+
+  // Không cho giảm vượt quá subtotal
+  return Math.max(0, Math.min(raw, subtotal));
+}, [applied, subtotal]);
+const grandTotal = useMemo(
+  () => Math.max(0, subtotal - discount),
+  [subtotal, discount]
+);
   const applyVoucher = (v) => setApplied(v);
   const clearVoucher = () => {
     setApplied(null);
@@ -615,7 +624,7 @@ const lockAddr = addresses.length > 0;
                       <div className="co_voucher_head">
                         <span className="co_vcode">{v.voucher_code}</span>
                         <span className="co_vval">
-                          -${Number(v.value || 0).toLocaleString()}
+                          -%{Number(v.value || 0).toLocaleString()}
                         </span>
                       </div>
                       {v.description && (

@@ -12,7 +12,6 @@ export default function UserProfile() {
     return VALID_TABS.has(q) ? q : "account";
   })();
 
-  // ⬇️ PHẢI đặt ngay sau initialTab
   const [tab, setTab] = useState(initialTab);
 
   useEffect(() => {
@@ -75,6 +74,7 @@ useEffect(() => {
             console.error("Lỗi khi lấy user:", err); 
     });
 }, [navigate]);
+
 
 
 
@@ -205,7 +205,6 @@ const handleSaveAddress = async () => {
       phone: phoneValue,
       user_id: id,
     };
-
     if (addressList.length === 0) {
   await api.post("/address", payload);
 } else {
@@ -230,6 +229,11 @@ const openAddressModal = () => {
   SetCityValue(a?.city || "");
   setShowAddressModal(true);
 };
+
+
+
+
+
 
 
 // ==== ORDERS (history) ====

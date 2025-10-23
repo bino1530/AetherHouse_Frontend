@@ -78,7 +78,7 @@ const Cart = ({ isOpen, toggleCart }) => {
                     </p>
                   )}
                   <p className="cart_price">
-                    £{Number(item.price).toLocaleString()}
+                    ${Number(item.price).toLocaleString()}
                   </p>
                 </div>
                 <div className="cart_actions">
@@ -123,7 +123,7 @@ const Cart = ({ isOpen, toggleCart }) => {
           <div className="cart_footer">
             <div className="subtotal">
               <span>Subtotal</span>
-              <strong>£{subtotal.toLocaleString()}</strong>
+              <strong>${subtotal.toLocaleString()}</strong>
             </div>
             <button
               className="btn_style_3 checkout_btn"
