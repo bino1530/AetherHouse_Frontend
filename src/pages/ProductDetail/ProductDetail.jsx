@@ -265,7 +265,7 @@
 //                           <div className="color_square" style={{ backgroundColor: v.hex || "#ccc" }} />
 //                           <div className="color_info">
 //                             <p className="color_name">{v.color}</p>
-//                             {v.price && <p className="color_price">£{v.price}</p>}
+//                             {v.price && <p className="color_price">${v.price}</p>}
 //                           </div>
 //                           {pendingVariant?._id === v._id && (
 //                             <div className="color_selected">✔</div>
