@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import "./ProductCard.css"
-const StudioProductCard = ({ product, categories, productCategories }) => {
+const StudioProductCard = ({ product, categories = [], productCategories = [] }) => {
   const productCat = productCategories.find(
     (pc) => pc.productId === product.id
   );
