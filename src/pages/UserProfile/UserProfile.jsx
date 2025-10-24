@@ -27,27 +27,18 @@ export default function UserProfile() {
     setSearchParams(next, { replace: true });
   };
 
-
-
-
-
-
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
   const fileInputRef = useRef(null);
 
-    const [user, setUser] = useState(null);
-
-
+  const [user, setUser] = useState(null);
 
   const [avatarFiles, setAvatarFiles] = useState([]);
   const [avatarPreview, setAvatarPreview] = useState("");
   const [avatarErr, setAvatarErr] = useState("");
   const [savingAvatar, setSavingAvatar] = useState(false);
 
-
-  
   // Name edit
   const [editingName, setEditingName] = useState(false);
   const [newName, setNewName] = useState("");
@@ -55,41 +46,26 @@ export default function UserProfile() {
   const [nameErr, setNameErr] = useState("");
   const [showNameModal, setShowNameModal] = useState(false);
 
+  useEffect(() => {
+    const cached = JSON.parse(localStorage.getItem("user") || "null");
+    const id = cached?._id;
+    const hasToken = !!localStorage.getItem("token");
+    if (!hasToken || !id) return navigate("/login", { replace: true });
 
-  
-useEffect(() => {
-  const cached = JSON.parse(localStorage.getItem("user") || "null");
-  const id = cached?._id;
-  const hasToken = !!localStorage.getItem("token");
-  if (!hasToken || !id) return navigate("/login", { replace: true });
+    api
+      .get(`/users/${id}`)
+      .then(({ data }) => {
+        const user = data?.user ?? cached;
+        setUser(user);
+        setAddress(data?.addresses || []);
+        localStorage.setItem("user", JSON.stringify(user));
+      })
+      .catch((err) => {
+        console.error("Lỗi khi lấy user:", err);
+      });
+  }, [navigate]);
 
-  api.get(`/users/${id}`)
-    .then(({ data }) => {
-      const user = data?.user ?? cached;
-      setUser(user);
-      setAddress(data?.addresses || []); 
-      localStorage.setItem("user", JSON.stringify(user));
-    })
-    .catch((err) => {
-            console.error("Lỗi khi lấy user:", err); 
-    });
-}, [navigate]);
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-// AVATAR
-
+  // AVATAR
 
   const handleOpenPicker = () => {
     fileInputRef.current?.click();
@@ -106,8 +82,6 @@ useEffect(() => {
       setAvatarPreview("");
     }
   };
-
-
 
   const handleSaveAvatar = async () => {
     const first = avatarFiles[0];
@@ -135,14 +109,7 @@ useEffect(() => {
   };
   const avatarUrl = user?.avatar?.url || "";
 
-
-
-
-
-
-
-
-// NAME
+  // NAME
 
   const handleCancelEditName = () => {
     setEditingName(false);
@@ -150,182 +117,161 @@ useEffect(() => {
     setNameErr("");
   };
 
+  const openNameModal = () => {
+    setNameErr("");
+    setNewName(user?.name || "");
+    setShowNameModal(true);
+  };
 
-const openNameModal = () => {
-  setNameErr("");
-  setNewName(user?.name || "");
-  setShowNameModal(true);
-};
-
-const closeNameModal = () => {
-  setShowNameModal(false);
-  setNameErr("");
-};
-
-const handleSaveName = async () => {
-
-  try {
-    setSavingName(true);
-    await api.put(`/users/${user._id}/infor`, { name: newName.trim(), email: user.email });
-    const updatedUser = { ...JSON.parse(localStorage.getItem("user") || "{}"), name: newName.trim() };
-    localStorage.setItem("user", JSON.stringify(updatedUser));
+  const closeNameModal = () => {
     setShowNameModal(false);
-    window.location.reload();
-  } catch (err) {
-    setNameErr(err?.response?.data?.error || "Cập nhật name thất bại.");
-  } finally {
-    setSavingName(false);
-  }
-};
+    setNameErr("");
+  };
 
-
+  const handleSaveName = async () => {
+    try {
+      setSavingName(true);
+      await api.put(`/users/${user._id}/infor`, {
+        name: newName.trim(),
+        email: user.email,
+      });
+      const updatedUser = {
+        ...JSON.parse(localStorage.getItem("user") || "{}"),
+        name: newName.trim(),
+      };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      setShowNameModal(false);
+      window.location.reload();
+    } catch (err) {
+      setNameErr(err?.response?.data?.error || "Cập nhật name thất bại.");
+    } finally {
+      setSavingName(false);
+    }
+  };
 
   const [addressList, setAddress] = useState([]);
-  const [addressValue , setAddressValue] = useState('');
-  const [wardValue , SetWardValue] = useState('');
-  const [countryValue , SetCountryValue] = useState('');
-  const [phoneValue , SetPhoneValue] = useState('');
-  const [cityValue , SetCityValue] = useState('');
-  const [loading , SetLoading] = useState(false);
+  const [addressValue, setAddressValue] = useState("");
+  const [wardValue, SetWardValue] = useState("");
+  const [countryValue, SetCountryValue] = useState("");
+  const [phoneValue, SetPhoneValue] = useState("");
+  const [cityValue, SetCityValue] = useState("");
+  const [loading, SetLoading] = useState(false);
   const [showAddressModal, setShowAddressModal] = useState(false);
-  const id = JSON.parse(localStorage.getItem("user")||"{}")?._id;
-  console.log(id)
+  const id = JSON.parse(localStorage.getItem("user") || "{}")?._id;
+  console.log(id);
 
+  const handleSaveAddress = async () => {
+    try {
+      SetLoading(true);
+      console.log(id);
+      const payload = {
+        name: user?.name,
+        address: addressValue,
+        city: cityValue,
+        ward: wardValue,
+        country: countryValue,
+        phone: phoneValue,
+        user_id: id,
+      };
+      if (addressList.length === 0) {
+        await api.post("/address", payload);
+      } else {
+        await api.put(`/address/${addressList[0]._id}/upaddress`, payload);
+      }
+      const { data } = await api.get(`/users/${id}`);
+      setAddress(data?.addresses || []);
+      setShowAddressModal(false);
+    } catch (err) {
+      alert("Lưu address thất bại!", err);
+    } finally {
+      SetLoading(false);
+    }
+  };
 
-const handleSaveAddress = async () => {
-  try {
-    SetLoading(true);
-    console.log(id)
-    const payload = {
-      name: user?.name,
-      address: addressValue,
-      city: cityValue,
-      ward: wardValue,
-      country: countryValue,
-      phone: phoneValue,
-      user_id: id,
-    };
-    if (addressList.length === 0) {
-  await api.post("/address", payload);
-} else {
-  await api.put(`/address/${addressList[0]._id}/upaddress`, payload);
-}   const { data } = await api.get(`/users/${id}`);
-    setAddress(data?.addresses || []);
-    setShowAddressModal(false);
-  } catch (err) {
-    alert("Lưu address thất bại!",err);
-  } finally {
-    SetLoading(false);
-  }
-};
+  const openAddressModal = () => {
+    const a = addressList[0];
+    setAddressValue(a?.address || "");
+    SetWardValue(a?.ward || "");
+    SetCountryValue(a?.country || "");
+    SetPhoneValue(a?.phone || "");
+    SetCityValue(a?.city || "");
+    setShowAddressModal(true);
+  };
 
+  // ==== ORDERS (history) ====
+  const [orders, setOrders] = useState([]);
+  const [oLoading, setOLoading] = useState(false);
+  const [oErr, setOErr] = useState("");
+  // optional: phân trang (nếu BE có)
+  const [oPage, setOPage] = useState(1);
+  const O_LIMIT = 10;
 
-const openAddressModal = () => {
-  const a = addressList[0]; 
-  setAddressValue(a?.address || "");
-  SetWardValue(a?.ward || "");
-  SetCountryValue(a?.country || "");
-  SetPhoneValue(a?.phone || "");
-  SetCityValue(a?.city || "");
-  setShowAddressModal(true);
-};
+  const fetchOrders = async (page = 1) => {
+    try {
+      setOLoading(true);
+      setOErr("");
+      // nếu BE hỗ trợ phân trang ?page=&limit=, giữ params; nếu không BE sẽ bỏ qua
+      const { data } = await api.get("/orders/me/list", {
+        params: { page, limit: O_LIMIT },
+      });
+      // data có thể là { orders: [], meta: {} } hoặc [] thuần
+      const list = Array.isArray(data) ? data : data?.orders || [];
+      setOrders(list);
+      // nếu có meta có thể set tiếp:
+      // setOMeta(data?.meta || null);
+    } catch (err) {
+      console.error("[Orders] getMyOrders error:", {
+        url: err?.config?.url,
+        method: err?.config?.method,
+        status: err?.response?.status,
+        data: err?.response?.data,
+      });
+      setOErr(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Không tải được đơn hàng."
+      );
+      setOrders([]);
+    } finally {
+      setOLoading(false);
+    }
+  };
 
+  // auto fetch khi chuyển sang tab "orders"
+  useEffect(() => {
+    if (tab === "orders") {
+      fetchOrders(oPage);
+    }
+  }, [tab, oPage]);
 
-
-
-
-
-
-// ==== ORDERS (history) ====
-const [orders, setOrders] = useState([]);
-const [oLoading, setOLoading] = useState(false);
-const [oErr, setOErr] = useState("");
-// optional: phân trang (nếu BE có)
-const [oPage, setOPage] = useState(1);
-const O_LIMIT = 10;
-
-const fetchOrders = async (page = 1) => {
-  try {
-    setOLoading(true);
-    setOErr("");
-    // nếu BE hỗ trợ phân trang ?page=&limit=, giữ params; nếu không BE sẽ bỏ qua
-    const { data } = await api.get("/orders/me/list", {
-      params: { page, limit: O_LIMIT },
-    });
-    // data có thể là { orders: [], meta: {} } hoặc [] thuần
-    const list = Array.isArray(data) ? data : (data?.orders || []);
-    setOrders(list);
-    // nếu có meta có thể set tiếp:
-    // setOMeta(data?.meta || null);
-  } catch (err) {
-    console.error("[Orders] getMyOrders error:", {
-      url: err?.config?.url,
-      method: err?.config?.method,
-      status: err?.response?.status,
-      data: err?.response?.data,
-    });
-    setOErr(err?.response?.data?.message || err?.message || "Không tải được đơn hàng.");
-    setOrders([]);
-  } finally {
-    setOLoading(false);
-  }
-};
-
-// auto fetch khi chuyển sang tab "orders"
-useEffect(() => {
-  if (tab === "orders") {
-    fetchOrders(oPage);
-  }
-}, [tab, oPage]);
-
-
-
-const money = (n = 0) => `$${Number(n || 0).toLocaleString()}`;
-const fmtDate = (s) => {
-  try {
-    return new Date(s).toLocaleString();
-  } catch {
-    return s || "";
-  }
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
+  const money = (n = 0) => `$${Number(n || 0).toLocaleString()}`;
+  const fmtDate = (s) => {
+    try {
+      return new Date(s).toLocaleString();
+    } catch {
+      return s || "";
+    }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) navigate("/login", { replace: true });
   }, [navigate]);
 
+  const handleLogout = () => {
+    const token = localStorage.getItem("token");
+    const p = token ? api.post("/auth/logout") : Promise.resolve();
 
-
-
-
-const handleLogout = () => {
-  const token = localStorage.getItem("token");
-  const p = token ? api.post("/auth/logout") : Promise.resolve();
-
-  p.catch(err => console.error("Logout failed:", err))
-   .finally(() => {
-     localStorage.removeItem("token");
-     localStorage.removeItem("user");
-     localStorage.removeItem("token_expiry");
-     window.location.href = "/";
-   });
-};
+    p.catch((err) => console.error("Logout failed:", err)).finally(() => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("token_expiry");
+      window.location.href = "/";
+    });
+  };
 
   useEffect(() => {
-    function onDocClick(e) { 
+    function onDocClick(e) {
       if (!dropdownRef.current) return;
       if (!dropdownRef.current.contains(e.target)) setOpen(false);
     }
@@ -333,17 +279,7 @@ const handleLogout = () => {
     return () => document.removeEventListener("mousedown", onDocClick);
   }, [open]);
 
-
-localStorage.setItem("address_updated", "1");
-
-
-
-
-
-
-
-
-
+  localStorage.setItem("address_updated", "1");
 
   return (
     <div className="od-page">
@@ -415,27 +351,8 @@ localStorage.setItem("address_updated", "1");
               </svg>
             </Link>
             <nav className="od-nav">
-              <button
-  type="button"
-  className={`od-nav-link ${tab === "shop" ? "active" : ""}`}
-  onClick={() => goTab("shop")}
->
-  Shop
-</button>
-<button
-  type="button"
-  className={`od-nav-link ${tab === "account" ? "active" : ""}`}
-  onClick={() => goTab("account")}
->
-  Your Account
-</button>
-<button
-  type="button"
-  className={`od-nav-link ${tab === "orders" ? "active" : ""}`}
-  onClick={() => goTab("orders")}
->
-  Orders
-</button>
+              
+              
             </nav>
           </div>
 
@@ -452,6 +369,20 @@ localStorage.setItem("address_updated", "1");
             </div>
 
             <div className={`od-dropdown ${open ? "open" : ""}`}>
+              <button
+                type="button"
+                className={` ${tab === "orders" ? "active" : ""}`}
+                onClick={() => goTab("orders")}
+              >
+                Orders
+              </button>
+              <button
+                type="button"
+                className={` ${tab === "account" ? "active" : ""}`}
+                onClick={() => goTab("account")}
+              >
+                Your Account
+              </button>
               <button
                 onClick={() => {
                   setTab("account");
@@ -471,64 +402,84 @@ localStorage.setItem("address_updated", "1");
       <main className="od-main">
         <div className="od-container">
           {tab === "orders" && (
-  <>
-    <h2 className="od-title">Orders</h2>
+            <>
+              <h2 className="od-title">Orders</h2>
 
-    {oLoading && (
-      <div className="od-empty-card"><div className="od-empty-inner">
-        <strong className="od-empty-head">Loading…</strong>
-        <p className="od-empty-sub">Đang tải lịch sử mua hàng.</p>
-      </div></div>
-    )}
+              {oLoading && (
+                <div className="od-empty-card">
+                  <div className="od-empty-inner">
+                    <strong className="od-empty-head">Loading…</strong>
+                    <p className="od-empty-sub">Đang tải lịch sử mua hàng.</p>
+                  </div>
+                </div>
+              )}
 
-    {oErr && !oLoading && (
-      <div className="od-empty-card od-error"><div className="od-empty-inner">
-        <strong className="od-empty-head">Oops</strong>
-        <p className="od-empty-sub">{oErr}</p>
-        <button className="ua-btn" onClick={() => fetchOrders(oPage)}>Thử lại</button>
-      </div></div>
-    )}
+              {oErr && !oLoading && (
+                <div className="od-empty-card od-error">
+                  <div className="od-empty-inner">
+                    <strong className="od-empty-head">Oops</strong>
+                    <p className="od-empty-sub">{oErr}</p>
+                    <button
+                      className="ua-btn"
+                      onClick={() => fetchOrders(oPage)}
+                    >
+                      Thử lại
+                    </button>
+                  </div>
+                </div>
+              )}
 
-    {!oLoading && !oErr && orders.length === 0 && (
-      <div className="od-empty-card">
-        <div className="od-empty-inner">
-          <strong className="od-empty-head">No orders yet.</strong>
-          <p className="od-empty-sub">Visit the store to place an order.</p>
-          <Link to="/" className="ua-btn ua-btn-primary" style={{marginTop: 8}}>Go to shop</Link>
-        </div>
-      </div>
-    )}
+              {!oLoading && !oErr && orders.length === 0 && (
+                <div className="od-empty-card">
+                  <div className="od-empty-inner">
+                    <strong className="od-empty-head">No orders yet.</strong>
+                    <p className="od-empty-sub">
+                      Visit the store to place an order.
+                    </p>
+                    <Link
+                      to="/"
+                      className="ua-btn ua-btn-primary"
+                      style={{ marginTop: 8 }}
+                    >
+                      Go to shop
+                    </Link>
+                  </div>
+                </div>
+              )}
 
-    {!oLoading && !oErr && orders.length > 0 && (
-      <div className="od-orders-list">
-        {orders.map((o) => (
-          <Link
-            to={`/ordersuccess/${o?._id}`}
-            key={o?._id}
-            className="od-order-row"
-          >
-            <div className="od-order-col od-order-main">
-              <div className="od-order-id">#{o?._id}</div>
-              <div className="od-order-date">{fmtDate(o?.createdAt)}</div>
-              <div className="od-order-total">{money(o?.total_amount)}</div>
+              {!oLoading && !oErr && orders.length > 0 && (
+                <div className="od-orders-list">
+                  {orders.map((o) => (
+                    <Link
+                      to={`/ordersuccess/${o?._id}`}
+                      key={o?._id}
+                      className="od-order-row"
+                    >
+                      <div className="od-order-col od-order-main">
+                        <div className="od-order-id">#{o?._id}</div>
+                        <div className="od-order-date">
+                          {fmtDate(o?.createdAt)}
+                        </div>
+                        <div className="od-order-total">
+                          {money(o?.total_amount)}
+                        </div>
+                      </div>
 
-            </div>
-
-            <div className="od-order-col od-order-mid">
-              <span className={`od-badge od-badge--${o?.status || "pending"}`}>
-                {o?.status || "pending"}
-              </span>
-
-            </div>
-
-          </Link>
-        ))}
-      </div>
-    )}
-
-
-  </>
-)}
+                      <div className="od-order-col od-order-mid">
+                        <span
+                          className={`od-badge od-badge--${
+                            o?.status || "pending"
+                          }`}
+                        >
+                          {o?.status || "pending"}
+                        </span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
           {tab === "account" && (
             <>
               <h1 className="od-title">Your Account</h1>
@@ -580,21 +531,22 @@ localStorage.setItem("address_updated", "1");
                     <div className="ua-row">
                       <div className="ua-col-left">
                         <p className="ua-name">
-                          <strong>Name 
+                          <strong>
+                            Name
                             <button
-                            type="button"
-                            className="ua-icon-btn"
-                            title="Edit name"
-                            onClick={openNameModal}
-                          >
-                            <svg
-                              width="18"
-                              height="18"
-                              viewBox="0 0 24 24"
-                              aria-hidden="true"
+                              type="button"
+                              className="ua-icon-btn"
+                              title="Edit name"
+                              onClick={openNameModal}
                             >
-                              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.004 1.004 0 0 0 0-1.42l-2.34-2.34a1.004 1.004 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z" />
-                            </svg>
+                              <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                              >
+                                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.004 1.004 0 0 0 0-1.42l-2.34-2.34a1.004 1.004 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z" />
+                              </svg>
                             </button>
                           </strong>
                         </p>
@@ -603,7 +555,6 @@ localStorage.setItem("address_updated", "1");
                       {!editingName ? (
                         <div className="ua-col-right ua-inline">
                           <p className="ua-name">{user?.name || "User"}</p>
-                         
                         </div>
                       ) : (
                         <div className="ua-col-right">
@@ -653,12 +604,6 @@ localStorage.setItem("address_updated", "1");
                   </div>
                 </div>
 
-
-
-
-
-
-
                 <div className="ua-card">
                   <p className="ua-card-title">
                     Address
@@ -676,11 +621,11 @@ localStorage.setItem("address_updated", "1");
                       <div>Phone: {addressList[0].phone}</div>
                     </div>
                   ) : (
-                    <p className="ua-muted">You haven’t added any addresses yet.</p>
+                    <p className="ua-muted">
+                      You haven’t added any addresses yet.
+                    </p>
                   )}
                 </div>
-
-                
               </section>
             </>
           )}
@@ -698,10 +643,6 @@ localStorage.setItem("address_updated", "1");
           )}
         </div>
       </main>
-
-
-
-
 
       {showNameModal && (
         <div
@@ -775,37 +716,77 @@ localStorage.setItem("address_updated", "1");
         </div>
       )}
 
-
-
-
-
-
       {/* address modal */}
       {showAddressModal && (
-                  <div className="ua-modal-backdrop" onClick={e=>e.target===e.currentTarget&&setShowAddressModal(false)}>
-                    <div className="ua-modal">
-                      <div className="ua-modal-header">
-                        <h3>{addressList.length ? "Edit address" : "Add address"}</h3>
-                        <button className="ua-modal-x" onClick={()=>setShowAddressModal(false)}>×</button>
-                      </div>
+        <div
+          className="ua-modal-backdrop"
+          onClick={(e) =>
+            e.target === e.currentTarget && setShowAddressModal(false)
+          }
+        >
+          <div className="ua-modal">
+            <div className="ua-modal-header">
+              <h3>{addressList.length ? "Edit address" : "Add address"}</h3>
+              <button
+                className="ua-modal-x"
+                onClick={() => setShowAddressModal(false)}
+              >
+                ×
+              </button>
+            </div>
 
-                      <div className="ua-modal-body grid">
-                        <input className="ua-input" placeholder="Address" value={addressValue} onChange={e=>setAddressValue(e.target.value)}/>
-                        <input className="ua-input" placeholder="Ward" value={wardValue} onChange={e=>SetWardValue(e.target.value)}/>
-                        <input className="ua-input" placeholder="City" value={cityValue} onChange={e=>SetCityValue(e.target.value)}/>
-                        <input className="ua-input" placeholder="Country" value={countryValue} onChange={e=>SetCountryValue(e.target.value)}/>
-                        <input className="ua-input" placeholder="Phone" value={phoneValue} onChange={e=>SetPhoneValue(e.target.value)}/>
-                      </div>
+            <div className="ua-modal-body grid">
+              <input
+                className="ua-input"
+                placeholder="Address"
+                value={addressValue}
+                onChange={(e) => setAddressValue(e.target.value)}
+              />
+              <input
+                className="ua-input"
+                placeholder="Ward"
+                value={wardValue}
+                onChange={(e) => SetWardValue(e.target.value)}
+              />
+              <input
+                className="ua-input"
+                placeholder="City"
+                value={cityValue}
+                onChange={(e) => SetCityValue(e.target.value)}
+              />
+              <input
+                className="ua-input"
+                placeholder="Country"
+                value={countryValue}
+                onChange={(e) => SetCountryValue(e.target.value)}
+              />
+              <input
+                className="ua-input"
+                placeholder="Phone"
+                value={phoneValue}
+                onChange={(e) => SetPhoneValue(e.target.value)}
+              />
+            </div>
 
-                      <div className="ua-modal-footer">
-                        <button className="ua-btn" onClick={()=>setShowAddressModal(false)} disabled={loading}>Cancel</button>
-                        <button className="ua-btn ua-btn-primary" onClick={handleSaveAddress} disabled={loading}>
-                          {loading ? "Saving..." : "Save"}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
+            <div className="ua-modal-footer">
+              <button
+                className="ua-btn"
+                onClick={() => setShowAddressModal(false)}
+                disabled={loading}
+              >
+                Cancel
+              </button>
+              <button
+                className="ua-btn ua-btn-primary"
+                onClick={handleSaveAddress}
+                disabled={loading}
+              >
+                {loading ? "Saving..." : "Save"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
