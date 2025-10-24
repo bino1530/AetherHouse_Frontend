@@ -319,6 +319,133 @@
   justify-content: center;
   font-weight: 700;
 }
+.hdr-acc-wrap { position: relative; display: inline-flex; align-items: center; }
+
+.header_avatar_btn {
+  background: none; border: 0; padding: 0; cursor: pointer;
+  display: inline-flex; align-items: center;
+}
+
+.hdr-acc-wrap {
+  position: relative;
+}
+
+.header_avatar_btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.header_avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.hdr-dropdown {
+  position: absolute;
+  top: calc(100% + 8px); /* cách avatar 8px */
+  left: 50%;             /* canh giữa theo avatar */
+  transform: translate(-50%, -6px); /* canh giữa + hiệu ứng trượt */
+  min-width: 180px;
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 8px;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.hdr-dropdown.open {
+  opacity: 1;
+  transform: translate(-50%, 0); /* bật dropdown mượt hơn */
+  pointer-events: auto;
+}
+
+/* Mũi nhọn nhỏ giữa avatar */
+.hdr-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+/* Items */
+.hd-item {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.2;
+  text-decoration: none;
+  color: inherit;              /* dùng màu của .hdr-dropdown */
+  background: transparent;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.hd-item + .hd-item {
+  margin-top: 4px;
+}
+
+.hd-item:hover,
+.hd-item:focus {
+  background: #f3f4f6;         /* xám rất nhạt khi hover */
+  outline: none;
+}
+
+/* Nút nguy hiểm (logout) */
+.hd-item.danger {
+  color: #b91c1c;              /* đỏ */
+}
+
+.hd-item.danger:hover {
+  background: #fee2e2;         /* đỏ nhạt khi hover */
+}
+
+/* Mũi tam giác nhỏ (tùy chọn) */
+.hdr-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 14px;
+  width: 10px;
+  height: 10px;
+  background: #ffffff;         /* cùng màu dropdown */
+  border-left: 1px solid rgba(0,0,0,0.08);
+  border-top: 1px solid rgba(0,0,0,0.08);
+  transform: rotate(45deg);
+}
+
+/* Đảm bảo icon/ảnh không kéo layout */
+.hdr-acc-wrap img {
+  display: block;
+}
+
+/* Mobile: giữ kích thước hợp lý nếu sát mép màn hình */
+@media (max-width: 480px) {
+  .hdr-dropdown {
+    min-width: 160px;
+    right: 0;
+  }
+}
 @media screen and (max-width: 1260px) {
   .header_menu {
     display: none;

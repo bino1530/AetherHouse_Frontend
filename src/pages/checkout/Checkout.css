@@ -1,11 +1,5 @@
-.co_wrap {
-  max-width: 120rem;
-  margin: 0 auto;
-}
 
-.margintop {
-  margin-top: 10rem;
-}
+
 
 .co_grid {
   display: grid;
@@ -350,6 +344,49 @@ label{
 .ua-radio:hover input[type="radio"] {
   border-color: #7b8cf8;
 }
+.co_remove {
+  margin-top: .5rem;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: #ef4444;    
+  color: #fff;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  transition: filter .2s ease;
+}
+.co_addrview {
+  margin-top: .5rem;
+  background: var(--os-soft, #1a1f29);
+  border: 1px solid var(--os-border, #212838);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.co_addrrow {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 8px 16px;
+  align-items: baseline;
+  padding: 6px 0;
+  border-bottom: 1px dashed rgba(255,255,255,.08);
+}
+.co_addrrow:last-child { border-bottom: 0; }
+
+.co_addrlabel {
+  font-size: 1.5rem;
+  opacity: .7;
+}
+
+.co_addrval {
+  font-weight: 500;
+  word-break: break-word;
+  font-size: 1.4rem;
+}
+
+.co_remove:hover { filter: brightness(0.95); }
+.co_remove:active { filter: brightness(0.9); }
 @keyframes spin {
   to {
     transform: rotate(360deg);

@@ -77,21 +77,20 @@ export default function OrderSuccess() {
     return d > 0 ? d : 0;
   }, [order?.total_amount, subtotal]);
 
-  if (loading) return <div className="os_wrap pad margintop">Đang tải...</div>;
+  if (loading) return <div className="os_wrap pad ">Đang tải...</div>;
   if (err)
     return (
-      <div className="os_wrap pad margintop" style={{ color: "red" }}>
+      <div className="os_wrap pad =" style={{ color: "red" }}>
         {err}
       </div>
     );
 
-  // Fallback: nếu BE chưa populate address
   const addr = order?.address_id || {};
 
   return (
-    <div className="os_wrap pad margintop">
+    <div className="os_wrap spacing margintop">
         <h1>Your Order</h1>
-        <p className="order_id"><strong>{order?._id || id}</strong></p>
+        <p className="order_id"><strong>{order?.order_code}</strong></p>
       <div className="os_summary">
      
         <div className="os_row">
@@ -103,7 +102,6 @@ export default function OrderSuccess() {
           </strong>
         </div>
 
-        {/* Nếu có voucher hoặc có discount > 0 thì hiển thị */}
         {(order?.voucher_id || discount > 0) && (
           <div className="os_row">
             <span>Voucher</span>
