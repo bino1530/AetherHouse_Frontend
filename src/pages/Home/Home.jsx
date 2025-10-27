@@ -3,7 +3,6 @@ import "./Home.css";
 import StudioProductCard from "../../components/StudioProductCard/StudioProductCard.jsx";
 import Usp from "../../components/usp/usp.jsx";
 import api from "../../lib/axios.jsx";
-import ProductCard from "../../components/ProductCard/ProductCard.jsx";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -63,7 +62,7 @@ const Home = () => {
             <p>Loading newest products...</p>
           ) : products.length > 0 ? (
             products.map((product) => (
-              <ProductCard
+              <StudioProductCard
                 key={product._id}
                 product={product}
                 rootSlug={product.category_id ? [product.category_id] : []}
