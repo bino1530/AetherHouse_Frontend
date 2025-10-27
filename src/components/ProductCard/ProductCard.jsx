@@ -7,14 +7,9 @@ const getUrl = (img) =>
 const deriveStatus = (p = {}) => {
   const norm = (v) => String(v ?? "").trim().toLowerCase();
 
-
-
-
-
-
   const s = norm(p.status);
-  if (["preorder", "pre-order"].includes(s))          return { text: "Pre-Order" };
-  if (["sale", "discount", "clearance"].includes(s))  return { text: "Sale" };
+  if (["preorder", "pre-order"].includes(s)) return { text: "Pre-Order" };
+  if (["sale", "discount", "clearance"].includes(s)) return { text: "Sale" };
   if (["unavailable", "out_of_stock", "out-of-stock", "oos"].includes(s))
     return { text: "Unavailable" };
   if (["available", "in_stock", "in-stock"].includes(s))
@@ -27,35 +22,35 @@ const deriveStatus = (p = {}) => {
   return { text: "Available" };
 };
 
-
 const isNew = (createdAt) => {
   if (!createdAt) return false;
   const created = new Date(createdAt).getTime();
   if (Number.isNaN(created)) return false;
-  return (Date.now() - created) < 24 * 60 * 60 * 1000; 
+  return Date.now() - created < 24 * 60 * 60 * 1000;
 };
 
 export default function ProductCard({ product, rootSlug }) {
-  const imgs  = Array.isArray(product?.images) ? product.images : [];
-  const main  = imgs.find((i) => i?.is_main) || imgs[0];
+  const imgs = Array.isArray(product?.images) ? product.images : [];
+  const main = imgs.find((i) => i?.is_main) || imgs[0];
   const hover = imgs.find((i) => !i?.is_main) || main;
 
-  
-  const categorySlug = product?.category_id?.slug || product?.category?.slug || "";
+  const categorySlug =
+    product?.category_id?.slug || product?.category?.slug || "";
   const details = `/${rootSlug}/${categorySlug}/${product?.slug}`;
 
   const st = deriveStatus(product);
-
-const disabled = st.text === "Unavailable";
-const Wrapper = disabled ? "div" : Link;
-
-
   const showNew = st.text === "Available" && isNew(product?.createdAt);
-  const badgeText = showNew ? "New" : st.text;    
-  const colSize = product.colspan === 2 ? "col-lg-6" : "col-lg-3";
-  const disable = product.quantity <= 0 ? "d-none" : "";
+  const badgeText = showNew ? "New" : st.text;
+
+  // chỉ dùng Grid span class
+  const spanClass = product.colspan === 2 ? "card-col--w6" : "card-col--w3";
+
+  const hidden = Number(product?.quantity) <= 0;
+
+  if (hidden) return null;
+
   return (
-    <div className={`col_studio_fav_product_1 col-12 col-sm-6 ${colSize} ${disable}`}>
+    <div className={`card-col ${spanClass}`}>
       <div className="studio_card">
         <Link to={details} state={{ id: product?._id }} className="studio_link">
           <div className="studio_img_wrapper">
@@ -63,7 +58,9 @@ const Wrapper = disabled ? "div" : Link;
               className={`studio_status ${showNew ? "is-new" : ""}`}
               aria-label={`Status: ${badgeText}`}
               title={badgeText}
-            >{badgeText}</span>
+            >
+              {badgeText}
+            </span>
 
             <img
               src={getUrl(main)}

@@ -11,7 +11,7 @@ const byCateThenName = (a,b) =>
     .localeCompare((b?.category_id?.name || b?.category?.name || "").toLowerCase())
   || (a?.name || "").localeCompare(b?.name || "");
 
-const LOCAL_LIMIT = 5;
+const LOCAL_LIMIT = 6;
 
 export default function Products() {
   const { rootSlug, slug } = useParams();
@@ -52,7 +52,7 @@ export default function Products() {
 
     const fetchOneColor = (color) => api.get(
       `/products/by-color/${encodeURIComponent(color)}`,
-      { params:{ page:pageQS, limit:5, sort: sortQS==="createdAt_desc"?undefined:sortQS }, signal:ac.signal }
+      { params:{ page:pageQS, limit:6, sort: sortQS==="createdAt_desc"?undefined:sortQS }, signal:ac.signal }
     );
 
     const fetchMultiColors = async (colors) => {
@@ -72,11 +72,11 @@ export default function Products() {
       try {
         if (selectedColors.length === 0) {
           const serverPaginate = mode==="root" || mode==="category";
-          const params = serverPaginate ? { page:pageQS, limit:5, sort: sortQS==="createdAt_desc"?undefined:sortQS } : {};
+          const params = serverPaginate ? { page:pageQS, limit:6, sort: sortQS==="createdAt_desc"?undefined:sortQS } : {};
           const { data } = await api.get(path, { params, signal:ac.signal });
           const list = (data?.products||[]).filter(p=>!p.is_hidden);
           if (serverPaginate && data?.meta?.total != null) {
-            setState({ loading:false, error:"", items:list, meta:{...data.meta, limit:data.meta.limit??5}, baseItems:[] });
+            setState({ loading:false, error:"", items:list, meta:{...data.meta, limit:data.meta.limit??6}, baseItems:[] });
           } else {
             setState({ loading:false, error:"", items:[], meta:null, baseItems:[...list].sort(byCateThenName) });
           }
@@ -86,14 +86,14 @@ export default function Products() {
         if (selectedColors.length === 1) {
           const { data } = await fetchOneColor(selectedColors[0]);
           const list = (data?.products||[]).filter(p=>!p.is_hidden);
-          setState({ loading:false, error:"", items:list, meta:{...data?.meta, limit:data?.meta?.limit??5, sort:sortQS}, baseItems:[] });
+          setState({ loading:false, error:"", items:list, meta:{...data?.meta, limit:data?.meta?.limit??6, sort:sortQS}, baseItems:[] });
           return;
         }
 
         const base = await fetchMultiColors(selectedColors);
         setState({ loading:false, error:"", items:[], meta:null, baseItems:base });
       } catch (e) {
-        if (e.name!=="AbortError") setState(s=>({ ...s, loading:false, error:"Lỗi tải sản phẩm", items:[], meta:null }));
+        if (e.name!=="AbortError") setState(s=>({ ...s, loading:false, error:"Loading...", items:[], meta:null }));
       }
     })();
 
