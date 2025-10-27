@@ -57,7 +57,7 @@ const Footer = () => {
                                 </a>
                             </div>
                             <div className="footer_content__bottom-copyrightname">
-                                <p>2025 - Aether-House - Phạm Hoàng Vũ</p>
+                                <p>@2025 - copyright by AetherHouse</p>
                             </div>
                         </div>
                         <div className="footer_content__bottom-pay col__bottom-right">

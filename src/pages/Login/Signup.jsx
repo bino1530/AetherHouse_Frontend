@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../../lib/axios";
 import "./Login.css";
 
-export default function Login() {
+export default function Signup() {
   const navigate = useNavigate();
   const [Email, SetEmail] = useState("");
   const [loading, setLoading] = useState(false);    
@@ -30,7 +30,7 @@ export default function Login() {
         err?.response?.data?.error ||
         err?.response?.data?.message ||
         err?.message ||
-        "Sign in failed. Please try again.";
+        "Sign up failed. Please try again.";
       setError(msg);
     } finally {
       setLoading(false);
@@ -112,8 +112,8 @@ export default function Login() {
                   </svg>
         </Link>
 
-        <h2 className="title">Sign In</h2>
-        <p className="subtitle">Welcome back! Please Sign In.</p>
+        <h2 className="title">Sign Up</h2>
+        <p className="subtitle">Welcome back! Please Sign Up.</p>
 
         {error && (
           <div className="auth-alert error" role="alert" aria-live="assertive">
@@ -130,7 +130,8 @@ export default function Login() {
             onChange={(e) => SetEmail(e.target.value)}
             disabled={loading}
           />
-          <Link to="/signup" className="link-signup">Create an account</Link>
+                    <Link to="/Login" className="link-signup">You already have an account ?</Link>
+          
           <button
             type="submit"
             disabled={loading}
@@ -167,7 +168,7 @@ export default function Login() {
                 <span>Processing...</span>
               </span>
             ) : (
-              "Sign In"
+              "Sign Up"
             )}
           </button>
         </form>

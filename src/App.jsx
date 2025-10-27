@@ -14,6 +14,7 @@ import CheckoutPage from "./pages/checkout/Checkout.jsx";
 import Verify from "./pages/Login/Verify.jsx";
 import OrderSuccess from "./pages/Order/Order";
 import SearchResults from "./pages/search/SearchResults.jsx";
+import Signup from "./pages/Login/Signup.jsx"
 function App() {
   return (
     <Router>
@@ -41,6 +42,7 @@ function App() {
         </Route>
         <Route element={<Auth />}>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/verify" element={<Verify />} />
 
 

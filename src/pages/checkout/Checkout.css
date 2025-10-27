@@ -384,7 +384,19 @@ label{
   word-break: break-word;
   font-size: 1.4rem;
 }
+.co_voucher_item.dimmed {
+  opacity: 0.5;
+  filter: grayscale(0.4);
+  pointer-events: none; /* Không cho click vào nữa */
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
 
+.co_voucher_item.applied {
+  border: 2px solid black;
+  background: rgba(224, 224, 224, 0.08);
+  opacity: 1;
+  filter: none;
+}
 .co_remove:hover { filter: brightness(0.95); }
 .co_remove:active { filter: brightness(0.9); }
 @keyframes spin {

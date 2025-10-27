@@ -399,9 +399,9 @@ export default function CheckoutPage() {
               <p className="co_label">
                 <strong>Shipping address</strong>
               </p>
-               <button className="btn_style_2" onClick={openAddressModal}>
-                    <span>Edit</span>
-                  </button>
+              <button className="btn_style_2" onClick={openAddressModal}>
+                <span>Edit</span>
+              </button>
             </div>
 
             {addrLoading ? (
@@ -410,15 +410,12 @@ export default function CheckoutPage() {
               <div className="co_note">
                 Bạn chưa có địa chỉ — bấm{" "}
                 <button className="btn_style_2" onClick={openAddressModal}>
-                  <span>Add</span> 
+                  <span>Add</span>
                 </button>
-                
               </div>
             ) : (
               <>
-                <div className="co_note">
-                 
-                </div>
+                <div className="co_note"></div>
 
                 <div className="co_addrview">
                   <div className="co_addrrow">
@@ -516,85 +513,79 @@ export default function CheckoutPage() {
           </ul>
 
           {/* Voucher */}
-          <div className="co_voucher">
-            <p className="co_label">
-              <strong>Voucher</strong>
-            </p>
+          {!vLoading && !vError && eligible.length > 0 && (
+            <div className="co_voucher">
+              <p className="co_label">
+                <strong>Voucher</strong>
+              </p>
 
-            {vLoading && (
-              <div className="co_note muted">Đang tải voucher phù hợp…</div>
-            )}
-            {vError && <div className="co_note error">{vError}</div>}
-
-            {!vLoading && !vError && eligible.length > 0 && (
-              <>
-                <ul className="co_voucher_list">
-                  {list.map((v) => (
-                    <li
-                      key={v._id}
-                      className={`co_voucher_item ${
-                        applied && applied._id === v._id ? "applied" : ""
-                      }`}
-                    >
-                      <div className="co_voucher_head">
-                        <span className="co_vcode">{v.voucher_code}</span>
-                        <span className="co_vval">
-                          -%{Number(v.value || 0).toLocaleString()}
+              <ul className="co_voucher_list">
+                {list.map((v) => (
+                  <li
+                    key={v._id}
+                    className={`co_voucher_item ${
+                      applied
+                        ? applied._id === v._id
+                          ? "applied"
+                          : "dimmed"
+                        : ""
+                    }`}
+                  >
+                    <div className="co_voucher_head">
+                      <span className="co_vcode">{v.voucher_code}</span>
+                      <span className="co_vval">
+                        -%{Number(v.value || 0).toLocaleString()}
+                      </span>
+                    </div>
+                    {v.description && (
+                      <div className="co_vdesc">{v.description}</div>
+                    )}
+                    <div className="co_vlimits">
+                      <small>
+                        Min ${Number(v.min_total ?? 0).toLocaleString()} — Max $
+                        {Number(v.max_total ?? 0).toLocaleString()}
+                      </small>
+                      <small> | Còn: {Number(v.quantity ?? 0)}</small>
+                    </div>
+                    <div className="co_voucher_row">
+                      <button
+                        className="btn_style_2"
+                        onClick={() => applyVoucher(v)}
+                        disabled={applied && applied._id === v._id}
+                      >
+                        <span>
+                          {applied && applied._id === v._id
+                            ? "Đã áp dụng"
+                            : "Dùng mã"}
                         </span>
-                      </div>
-                      {v.description && (
-                        <div className="co_vdesc">{v.description}</div>
-                      )}
-                      <div className="co_vlimits">
-                        <small>
-                          Min ${Number(v.min_total ?? 0).toLocaleString()} — Max
-                          ${Number(v.max_total ?? 0).toLocaleString()}
-                        </small>
-                        <small> | Còn: {Number(v.quantity ?? 0)}</small>
-                      </div>
-                      <div className="co_voucher_row">
+                      </button>
+                      {applied && applied._id === v._id && (
                         <button
                           className="btn_style_2"
-                          onClick={() => applyVoucher(v)}
-                          disabled={applied && applied._id === v._id}
+                          onClick={clearVoucher}
+                          title="Bỏ voucher"
                         >
-                          <span>
-                            {applied && applied._id === v._id
-                              ? "Đã áp dụng"
-                              : "Dùng mã"}
-                          </span>
+                          <span>Remove</span>
                         </button>
-                        {applied && (
-                          <button
-                            className="btn_style_2"
-                            onClick={clearVoucher}
-                            title="Bỏ voucher"
-                          >
-                            <span>Remove</span>
-                          </button>
-                        )}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-                {eligible.length > PREVIEW_COUNT && (
-                  <button
-                    className="btn_link"
-                    onClick={() => setShowAllVouchers((s) => !s)}
-                    style={{ marginTop: ".25rem" }}
-                  >
-                    {showAllVouchers
-                      ? "Thu gọn"
-                      : `Xem thêm ${eligible.length - PREVIEW_COUNT} mã`}
-                  </button>
-                )}
-              </>
-            )}
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
 
-            {!vLoading && !vError && eligible.length === 0 && (
-              <div className="co_note muted">None</div>
-            )}
-          </div>
+              {eligible.length > PREVIEW_COUNT && (
+                <button
+                  className="btn_link"
+                  onClick={() => setShowAllVouchers((s) => !s)}
+                  style={{ marginTop: ".25rem" }}
+                >
+                  {showAllVouchers
+                    ? "Thu gọn"
+                    : `Xem thêm ${eligible.length - PREVIEW_COUNT} mã`}
+                </button>
+              )}
+            </div>
+          )}
           <p className="co_label">
             <strong>Payment Method</strong>
           </p>

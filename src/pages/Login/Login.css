@@ -43,7 +43,6 @@
   color: #6b7280;
   margin-bottom: 20px;
 }
-
 /* Form */
 .form input {
   width: 100%;
@@ -72,12 +71,21 @@
   cursor: pointer;
   font-size: 15px;
   transition: background 0.3s;
+  margin-top: 1rem;
 }
 
 .form button:hover {
   background: #5b21b6;
 }
-
+.link-signup{
+  color: rgb(134, 134, 134);
+  display: flex;
+  justify-content: flex-end;
+  transition: all 1s ease-in-out;
+}
+.link-signup:hover{
+  color: #6b7280;
+}
 /* Chính sách */
 .policy {
   margin-top: 20px;
@@ -138,6 +146,7 @@
 .spinner-arc { opacity: 1; }
 
 /* quay */
+
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
