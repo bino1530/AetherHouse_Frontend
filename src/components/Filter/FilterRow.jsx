@@ -1,63 +1,49 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FilterItem from "./FilterItem.jsx";
-import "./FilterItem.css"; 
+import "./FilterItem.css";
+import api from "../../lib/axios";
 
-const FilterRow = () => {
+const FilterRow = ({ onColorChange = () => {}, scopeParams = { scope: "all" } }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [colorOptions, setColorOptions] = useState([]);
+  const [loadingColors, setLoadingColors] = useState(false);
+  const [selectedColors, setSelectedColors] = useState([]);
+
+  useEffect(() => {
+    let ignore = false;
+
+    (async () => {
+      try {
+        setLoadingColors(true);
+        const res = await api.get("/variants/colors", { params: scopeParams });
+        const colors = res.data?.colors || []; 
+        if (!ignore) setColorOptions(colors);
+      } catch (e) {
+        console.error("fetch colors failed", e);
+        if (!ignore) setColorOptions([]);
+      } finally {
+        if (!ignore) setLoadingColors(false);
+      }
+    })();
+
+    return () => { ignore = true; };
+  }, [JSON.stringify(scopeParams)]); // refetch khi đổi category/page
+
+  useEffect(() => {
+    onColorChange(selectedColors);
+  }, [selectedColors, onColorChange]);
 
   return (
-    <div className="filter-row spacing">
+    <div className="filter-row">
       <FilterItem
-        label="Price"
-        name="price"
-        openDropdown={openDropdown}
-        setOpenDropdown={setOpenDropdown}
-        options={[
-          "Under 1,000,000",
-          "1,000,000 – 3,000,000",
-          "3,000,000 – 5,000,000",
-          "5,000,000+"
-        ]}
-      />
-
-      <FilterItem
-        label="Room"
-        name="room"
-        openDropdown={openDropdown}
-        setOpenDropdown={setOpenDropdown}
-        columns={2}
-        options={[
-          "Living Room",
-          "Bedroom",
-          "Dining",
-          "Kitchen",
-          "Office",
-          "Outdoor"
-        ]}
-      />
-
-      <FilterItem
-        label="Colour"
+        label={loadingColors ? "Colour (loading…)" : "Colour"}
         name="colour"
         openDropdown={openDropdown}
         setOpenDropdown={setOpenDropdown}
         columns={3}
-        options={[
-          "Black", "White", "Gold",
-          "Silver", "Bronze", "Copper"
-        ]}
-      />
-
-      <FilterItem
-        label="Material"
-        name="material"
-        openDropdown={openDropdown}
-        setOpenDropdown={setOpenDropdown}
-        columns={2}
-        options={[
-          "Metal", "Glass", "Wood",
-          "Fabric", "Ceramic", "Plastic"
-        ]}
+        options={colorOptions}
+        selected={selectedColors}
+        onChange={setSelectedColors}
       />
     </div>
   );

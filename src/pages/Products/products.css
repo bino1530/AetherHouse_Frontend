@@ -5,11 +5,11 @@
 .link_page p {
   margin: 0;
 }
-.title {
-  font-size: 4rem;
+.title-product {
+  font-size: 3rem;
   font-weight: 600;
-  margin-bottom: 2rem;
-}
+  padding-top: 2rem;
+}   
 .desc_text {
   margin: 0;
   font-size: 2rem;
@@ -103,6 +103,96 @@
   block-size: 16px;
   margin-right: 10px;
   accent-color: #111;
+}
+.sortrow{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/* Pagination – clean, rounded, subtle */
+.pagination {
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+.pagination .page-item {
+  --pg-h: 40px;
+  margin-top: 3rem;
+}
+
+.pagination .page-link {
+  min-width: 40px;
+  height: var(--pg-h);
+  padding: 0 .9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: #fff;
+  color: #222;
+  line-height: var(--pg-h);
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  transition: transform .12s ease, box-shadow .12s ease, background .12s, color .12s;
+}
+
+.pagination .page-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,.08);
+  background: #f8f9fa;
+}
+
+.pagination .page-item.active .page-link {
+  border-color: #222;
+  background: #222;
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(0,0,0,.18);
+}
+
+.pagination .page-item.disabled .page-link,
+.pagination .page-item.disabled .page-link:hover {
+  background: #f2f2f2;
+  color: #9aa0a6;
+  border-color: rgba(0,0,0,.06);
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+}
+
+/* icon arrows nhỏ gọn */
+.pagination .page-link svg,
+.pagination .page-link i {
+  vertical-align: -2px;
+}
+.sortrow select {
+  appearance: none;
+  border-radius: 8px;
+  padding: 8px 36px 8px 12px;
+  font-size: 15px;
+  font-family: "Outfit", sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.sortrow select:hover {
+  border-color: #7c3aed; /* tím highlight */
+  box-shadow: 0 0 0 2px rgba(124,58,237,0.2);
+}
+
+.sortrow select:focus {
+  outline: none;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 2px rgba(124,58,237,0.35);
+}
+/* Nhỏ hơn trên mobile */
+@media (max-width: 576px) {
+  .pagination .page-link {
+    min-width: 36px;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 .7rem;
+    font-size: .92rem;
+  }
 }
 
 @media (max-width: 520px) {

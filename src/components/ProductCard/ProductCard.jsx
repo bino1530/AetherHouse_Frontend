@@ -1,66 +1,98 @@
-import "./ProductCard.css";
 import { Link } from "react-router-dom";
+import "./ProductCard.css";
 
-const getUrl = (img) => (typeof img === "string" ? img : img?.url) || "/placeholder.png";
+const getUrl = (img) =>
+  (typeof img === "string" ? img : img?.url) || "/placeholder.png";
 
-const ProductCard = ({ product }) => {
+const deriveStatus = (p = {}) => {
+  const norm = (v) => String(v ?? "").trim().toLowerCase();
+
+  const s = norm(p.status);
+  if (["preorder", "pre-order"].includes(s)) return { text: "Pre-Order" };
+  if (["sale", "discount", "clearance"].includes(s)) return { text: "Sale" };
+  if (["unavailable", "out_of_stock", "out-of-stock", "oos"].includes(s))
+    return { text: "Unavailable" };
+  if (["available", "in_stock", "in-stock"].includes(s))
+    return { text: "Available" };
+
+  if (p.is_hidden) return { text: "Unavailable" };
+  const qty = Number(p.quantity);
+  if (Number.isFinite(qty) && qty <= 0) return { text: "Unavailable" };
+
+  return { text: "Available" };
+};
+
+const isNew = (createdAt) => {
+  if (!createdAt) return false;
+  const created = new Date(createdAt).getTime();
+  if (Number.isNaN(created)) return false;
+  return Date.now() - created < 24 * 60 * 60 * 1000;
+};
+
+export default function ProductCard({ product, rootSlug }) {
   const imgs = Array.isArray(product?.images) ? product.images : [];
-  const mainImg  = imgs.find(i => i?.is_main) || imgs[0];
-  const hoverImg = imgs.find(i => !i?.is_main) || mainImg;
+  const main = imgs.find((i) => i?.is_main) || imgs[0];
+  const hover = imgs.find((i) => !i?.is_main) || main;
 
-  const mainUrl  = getUrl(mainImg);
-  const hoverUrl = getUrl(hoverImg);
+  const categorySlug =
+    product?.category_id?.slug || product?.category?.slug || "";
+  const details = `/${rootSlug}/${categorySlug}/${product?.slug}`;
 
-  const status =
-    typeof product?.status === "string"
-      ? product.status
-      : typeof product?.quantity === "number" && product.quantity > 0
-      ? "available"
-      : "out of stock";
-  const categoryName = product?.category_id?.name || product?.category?.name || "";
+  const st = deriveStatus(product);
+  const showNew = st.text === "Available" && isNew(product?.createdAt);
+  const badgeText = showNew ? "New" : st.text;
 
-  const colClass =
-    String(product?.colspan) === "2"
-      ? "col-12 col-sm-12 col-lg-6"
-      : "col-12 col-sm-6 col-lg-3";
+  // chỉ dùng Grid span class
+  const spanClass = product.colspan === 2 ? "card-col--w6" : "card-col--w3";
+
+  const hidden = Number(product?.quantity) <= 0;
+
+  if (hidden) return null;
 
   return (
-    <div className={`col_studio_fav_product_1 ${colClass}`}>
+    <div className={`card-col ${spanClass}`}>
       <div className="studio_card">
-        <div className="studio_img_wrapper">
-          {/* Ảnh chính (is_main:true) */}
-            <Link to={`/product/${product.slug}`}  state={{ productId: product._id }} className="studio_card">
-          <img
-            src={mainUrl}
-            alt={product?.name || "Product"}
-            className="studio_img studio_img--main"
-            loading="lazy"
-          />
-          {hoverUrl !== mainUrl && (
+        <Link to={details} state={{ id: product?._id }} className="studio_link">
+          <div className="studio_img_wrapper">
+            <span
+              className={`studio_status ${showNew ? "is-new" : ""}`}
+              aria-label={`Status: ${badgeText}`}
+              title={badgeText}
+            >
+              {badgeText}
+            </span>
+
             <img
-              src={hoverUrl}
-              alt={product?.name || "Product alt"}
-              className="studio_img studio_img--hover"
-              loading="lazy"
+              src={getUrl(main)}
+              alt={product?.name}
+              className="studio_img studio_img--main"
             />
-          )}
-          {status && <span className="studio_status">{status}</span>}
-          </Link>
-        </div>
+            {getUrl(hover) !== getUrl(main) && (
+              <img
+                src={getUrl(hover)}
+                alt={`${product?.name} alt`}
+                className="studio_img studio_img--hover"
+              />
+            )}
+          </div>
+        </Link>
 
         <div className="studio_info_wrapper">
           <div className="studio_info_content">
-            <h3>{product?.name}</h3>
-                        {categoryName && <p className="studio_category">{categoryName}</p>}
-
+            <h1>{product?.name}</h1>
+            {(product?.category_id?.name || product?.category?.name) && (
+              <p className="studio_category">
+                {product?.category_id?.name || product?.category?.name}
+              </p>
+            )}
           </div>
           <div className="studio_info_price">
-            <span className="studio_price">${Number(product?.price || 0).toLocaleString()}</span>
+            <span className="studio_price">
+              ${Number(product?.price || 0).toLocaleString()}
+            </span>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default ProductCard;
+}
