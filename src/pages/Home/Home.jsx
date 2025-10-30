@@ -1,40 +1,66 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
 import "./Home.css";
 import StudioProductCard from "../../components/StudioProductCard/StudioProductCard.jsx";
 import Usp from "../../components/usp/usp.jsx";
 import api from "../../lib/axios.jsx";
-
+import Explore from"../Explore/Explore.jsx";
 const Home = () => {
+  const [banners, setBanners] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🧠 Lấy 3 sản phẩm mới nhất từ API
-  useEffect(() => {
-    const fetchNewest = async () => {
-      try {
-        const { data } = await api.get("/products/newest");
-        if (data?.success) {
-          setProducts(data.products || []);
-        }
-      } catch (err) {
-        console.error("Error fetching newest products:", err);
-      } finally {
-        setLoading(false);
+  // 🧩 Fetch tất cả banner 1 lần
+  const fetchBanners = async () => {
+    try {
+      const res = await api.get("/banners");
+      setBanners(res.data || []);
+    } catch (err) {
+      console.error("❌ Error fetching banners:", err);
+      setBanners([]);
+    }
+  };
+
+  // 🧩 Fetch sản phẩm mới
+  const fetchNewest = async () => {
+    try {
+      const { data } = await api.get("/products/newest");
+      if (data?.success) {
+        setProducts(data.products || []);
       }
-    };
+    } catch (err) {
+      console.error("❌ Error fetching newest products:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBanners();
     fetchNewest();
   }, []);
-  console.log(products)
+
+  // 🧠 Chia banner ra hero1 / hero2
+  const hero1 = banners.find((b) => b.key === "hero1");
+  const hero2 = banners.find((b) => b.key === "hero2");
   return (
     <div>
       {/* --- Banner chính --- */}
-      <div className="home-banner">
+     <div
+        className="home-banner"
+        style={{
+          backgroundImage: `url('${hero1?.image_url || "/quality_80.webp"}')`,
+        }}
+      >
         <div className="banner-content">
-          <h1>Welcome to Aether House</h1>
-          <p>Discover the amazing living space!</p>
-          <button className="btn_style_1">
-            <span>Explore Now</span>
-          </button>
+          <h1>{hero1?.title || "Welcome to Aether House"}</h1>
+          <p>{hero1?.subtitle || "Discover the amazing living space!"}</p>
+          {hero1?.button_text && (
+            <a href={hero1?.button_link || "#"} className="btn_style_1">
+              <span>{hero1.button_text}</span>
+            </a>
+          )}
         </div>
       </div>
 
@@ -79,19 +105,27 @@ const Home = () => {
       </div>
 
       {/* --- Banner phụ --- */}
-      <div className="home-banner-2 spacing">
-        <div className="banner-content-2">
-          <h1>Portable Lighting</h1>
-          <p>
-            Versatile, rechargeable, and expertly designed. Compact yet powerful,
-            our portable lights offer 9 hours of battery life and
-            energy-efficient LED lighting.
-          </p>
-          <button className="btn_style_1">
-            <span>Shop Now</span>
-          </button>
+      {hero2 && (
+        <div
+          className="home-banner-2 spacing"
+          style={{
+            backgroundImage: `url('${hero2.image_url || "/quality_80.webp"}')`,
+          }}
+        >
+          <div className="banner-content-2">
+            <h1>{hero2.title || "Portable Lighting"}</h1>
+            <p>
+              {hero2.subtitle ||
+                "Versatile, rechargeable, and expertly designed. Compact yet powerful, our portable lights offer 9 hours of battery life and energy-efficient LED lighting."}
+            </p>
+            {hero2?.button_text && (
+              <a href={hero2?.button_link || "#"} className="btn_style_1">
+                <span>{hero2.button_text}</span>
+              </a>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* --- Newsletter Section --- */}
       <div className="home-newsletter spacing">
@@ -126,10 +160,10 @@ const Home = () => {
         </div>
         <div className="contact-buttons">
           <button className="btn_style_3">
-            <span>Contact Us</span>
+            <Link to="/explore"><span>Contact Us</span></Link>
           </button>
           <button className="btn_style_3">
-            <span>Visit Us</span>
+            <Link to="/explore"><span>Visit Us</span></Link>
           </button>
         </div>
       </div>
