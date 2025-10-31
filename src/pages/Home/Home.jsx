@@ -56,11 +56,9 @@ const Home = () => {
         <div className="banner-content">
           <h1>{hero1?.title || "Welcome to Aether House"}</h1>
           <p>{hero1?.subtitle || "Discover the amazing living space!"}</p>
-          {hero1?.button_text && (
-            <a href={hero1?.button_link || "#"} className="btn_style_1">
-              <span>{hero1.button_text}</span>
-            </a>
-          )}
+            <Link to={'/lighting'} className="btn_style_1">
+              <span>Lighting</span>
+            </Link>
         </div>
       </div>
 

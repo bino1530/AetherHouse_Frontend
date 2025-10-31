@@ -33,9 +33,9 @@
     padding: 8rem 5rem;
 }
 .icon-usp{
-    width: 32px; 
+    width: 3rem; 
     height: 32px;
-    margin: 0 1.6rem 0 2rem;
+    /* margin: 0 1.6rem 0 2rem; */
 }
 
 
@@ -82,7 +82,7 @@
     }
 
     .icon-usp{
-        width: 32px; 
+        width: 1rem; 
         height: 32px;
         margin: 0 1.6rem 0 2rem;
     }
