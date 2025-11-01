@@ -5,7 +5,10 @@ const getUrl = (img) =>
   (typeof img === "string" ? img : img?.url) || "/placeholder.png";
 
 const deriveStatus = (p = {}) => {
-  const norm = (v) => String(v ?? "").trim().toLowerCase();
+  const norm = (v) =>
+    String(v ?? "")
+      .trim()
+      .toLowerCase();
 
   const s = norm(p.status);
   if (["preorder", "pre-order"].includes(s)) return { text: "Pre-Order" };
@@ -30,9 +33,10 @@ const isNew = (createdAt) => {
 };
 
 export default function ProductCard({ product, rootSlug }) {
-  const imgs = Array.isArray(product?.images) ? product.images : [];
-  const main = imgs.find((i) => i?.is_main) || imgs[0];
-  const hover = imgs.find((i) => !i?.is_main) || main;
+  let imgs = Array.isArray(product?.images) ? [...product.images] : [];
+  imgs.sort((a, b) => (b?.is_main === true) - (a?.is_main === true));
+  const main = imgs[0];
+  const hover = imgs[1] || imgs[0];
 
   const categorySlug =
     product?.category_id?.slug || product?.category?.slug || "";
